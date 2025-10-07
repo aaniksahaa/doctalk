@@ -1,4 +1,17 @@
 todo
 - we have yt audio download setup ready, and data links too 
+- maybe have a ui for data preparation 
+    - the ui should be like a chat-ui 
+    - at top, the video playing from youtube 
+    - then below, at left, a primary predicted annotation if possible 
+    - and at right a chat ui, where an annotator can switch role, like doctor1/2/3, patient1/2/3, interviewer, and can send message
+    - can also reply to a previous message  
+- first make list of video-id and metadata, for playlist, we need video-ids separate, maybe with some command 
 - so in a machine, download some data first with proper metadata info 
+- recruit volunteer, annotators 
+- then transcription in a fixed format - like multi turn conv format - interviewer, doctor1/2, patient1/2 
+- 
+
+
+- maybe we can publish this annotator software as a paper too in system demo track 
 - 
