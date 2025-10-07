@@ -1,0 +1,16 @@
+
+# Youtube Audio Downloading
+
+python3 -m pip install -U yt-dlp
+
+yt-dlp --version
+
+yt-dlp https://www.youtube.com/watch?v=OtigY6XCE7U
+
+yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=OtigY6XCE7U
+
+# Audio Transcription
+
+# QA Gen
+
+
