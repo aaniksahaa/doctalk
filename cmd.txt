@@ -5,12 +5,45 @@ python3 -m pip install -U yt-dlp
 
 yt-dlp --version
 
+if problem --> update yt-dlp, that should work 
+
+# may also try to get subtitles from yt 
+
 yt-dlp https://www.youtube.com/watch?v=OtigY6XCE7U
 
 yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=OtigY6XCE7U
 
+
+
 # Audio Transcription
 
+maybe we can use whisper / wav2vec2 finetuned based solutions and then polish with an LLM like TigerLLM
+
+audio trans:
+
+https://github.com/shhossain/BanglaSpeech2Text
+https://github.com/menon92/BangalASR
+
+take long audio, split into chunks, feed in parallel to ASR model, then recheck the text manually if possible 
+
+llm for fixing maybe... like converting to json format:
+
+https://huggingface.co/md-nishat-008/TigerLLM-9B-it
+
+https://huggingface.co/md-nishat-008/TigerLLM-1B-it
+
+
+# Workflow
+
+so, from each video
+    - audio
+    - metadata like doctor info, date, disease / medical condition name 
+    - nicelly formatted (like json) text transcription 
+    - if possible, also QA pairs like for this patient query, this reply
+    - or multi turn conversation 
+
 # QA Gen
+
+
 
 
