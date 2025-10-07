@@ -1,0 +1,4 @@
+todo
+- we have yt audio download setup ready, and data links too 
+- so in a machine, download some data first with proper metadata info 
+- 

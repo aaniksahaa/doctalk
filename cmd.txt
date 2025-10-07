@@ -37,7 +37,7 @@ https://huggingface.co/md-nishat-008/TigerLLM-1B-it
 
 so, from each video
     - audio
-    - metadata like doctor info, date, disease / medical condition name 
+    - metadata like doctor info, date, disease / medical condition name, video-id, video desc, 
     - nicelly formatted (like json) text transcription 
     - if possible, also QA pairs like for this patient query, this reply
     - or multi turn conversation 
