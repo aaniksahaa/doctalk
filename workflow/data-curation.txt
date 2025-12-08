@@ -1,0 +1,6 @@
+We have a collection of videos / channel names / program names / playlists in data-sources.txt
+
+Tentative Steps:
+
+- Gathering a list of youtube urls 
+

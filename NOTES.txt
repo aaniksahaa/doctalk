@@ -12,6 +12,11 @@ todo
 - then transcription in a fixed format - like multi turn conv format - interviewer, doctor1/2, patient1/2 
 - 
 
+
+https://rapidapi.com/ytjar/api/yt-api/playground/endpoint_7a15a536-16f8-4d81-9509-1b9e042d1592
+
+
+
 - annotation plan - 
 - focusing on a specific genre of disease 
 - concern ethical 
