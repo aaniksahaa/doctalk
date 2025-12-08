@@ -1,0 +1,12 @@
+Next, we need to do audio transcription 
+
+- One option is local model inference (difficult to get gold standard)
+    - in this case we also need to download the audios from videos 
+    - may use yt-dlp (please see cmd.txt)
+- A bit costly option is to use Gemini Multimodal API
+    - https://ai.google.dev/gemini-api/docs/audio
+    - Interestingly, here we can directy give youtube url and say to process audio 
+
+Trannscription Format
+----------------------
+
