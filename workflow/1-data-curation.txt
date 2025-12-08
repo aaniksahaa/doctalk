@@ -4,14 +4,17 @@ We may use:
 
 - YT-API from RapidAPI (https://rapidapi.com/ytjar/api/yt-api)
 - 300 / month, so we may gather API-keys from multiple accounts 
+- or may search some other api with higher use-limits 
 
 Tentative Steps:
 
 - Gathering a list of youtube urls (when possible playlists, otherwise video urls)
 - Making a complete list of urls or video-ids (fetching video urls from playlists where applicable)
 - Then, using YT-API to collect metadata corresponding to videos 
-- Dividing the videos into medical sections - cardio, opthalmo, neuro, maternal etc. 
-- Having a simple pipeline type for this, where input will be a list of urls and a persistent output box 
+- Dividing the videos into medical sections - cardio, opthalmo, neuro, maternal etc.
+    - We may do it with searching for english/bangla marker words in title/description
+    - or for the ones where not resolved, may feed title, desc to llm
+- Having a simple pipeline type for this, where input will be a list of urls and a persistent output box for the metadata  
     - so that we may first check whether exists, otherwise add etc 
     - so that we may add urls anytime
     - and also key trial-and-error (like a file where multiple keys stored and it will try from there upon failure etc...)
