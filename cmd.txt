@@ -14,8 +14,25 @@ yt-dlp https://www.youtube.com/watch?v=OtigY6XCE7U
 yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=OtigY6XCE7U
 
 
+yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
+
+# Metadata extraction
+
+yt-dlp -j "iQGd-XYFfoc" > metadata.json
 
 # Audio Transcription
+
+## Google Auto generated captions:
+
+yt-dlp --write-auto-subs --sub-lang bn --skip-download "FNpaffTRcwg"
+
+
+yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "FNpaffTRcwg"
+
+yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "iQGd-XYFfoc"
+
+
+
 
 maybe we can use whisper / wav2vec2 finetuned based solutions and then polish with an LLM like TigerLLM
 
