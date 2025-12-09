@@ -1,0 +1,37 @@
+We finally want a conversational dataset / QA dataset with adequate metadata 
+
+Each video may be presented as the following:
+
+{
+    id: 
+    yt-source: 
+    "date":
+    "topic_of_disease": cardio/opthalmo/osteo 
+    person_data: doctor_info  
+    messages: [
+        {
+            "id": 
+            "reply_to_id":
+            "sender":"i / d1/d2/d3 / p1/p2/p3" 
+            "text:
+            "start":
+            "end" 
+        },
+        {
+            "id": 
+            "reply_to_id":
+            "sender": 
+            "text:
+            "start":
+            "end" 
+        },
+        {
+            "id": 
+            "reply_to_id":
+            "sender": 
+            "text:
+            "start":
+            "end" 
+        }
+    ]
+}
