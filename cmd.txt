@@ -16,6 +16,8 @@ yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=OtigY6XCE7U
 
 yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
 
+yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
+
 # Metadata extraction
 
 yt-dlp -j "iQGd-XYFfoc" > metadata.json
@@ -30,6 +32,9 @@ yt-dlp --write-auto-subs --sub-lang bn --skip-download "FNpaffTRcwg"
 yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "FNpaffTRcwg"
 
 yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "iQGd-XYFfoc"
+
+
+yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "gLOuDuoYjHs"
 
 
 
