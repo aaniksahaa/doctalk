@@ -8,6 +8,9 @@ We may use:
 
 Tentative Steps:
 
+- We will do on our unlisted youtube playlists 
+
+
 - Gathering a list of youtube urls (when possible playlists, otherwise video urls)
 - Making a complete list of urls or video-ids (fetching video urls from playlists where applicable)
 - Then, using YT-API to collect metadata corresponding to videos 

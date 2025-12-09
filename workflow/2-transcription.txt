@@ -1,5 +1,7 @@
 Next, we need to do audio transcription 
 
+- We may use Google auto generated transcriptions 
+
 - One option is local model inference (difficult to get gold standard)
     - in this case we also need to download the audios from videos 
     - may use yt-dlp (please see cmd.txt)
