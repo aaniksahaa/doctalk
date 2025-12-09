@@ -59,6 +59,11 @@ so, from each video
     - if possible, also QA pairs like for this patient query, this reply
     - or multi turn conversation 
 
+Yt Metadata Extraction 
+
+https://rapidapi.com/ytjar/api/yt-api/playground/endpoint_7a15a536-16f8-4d81-9509-1b9e042d1592
+
+
 # QA Gen
 
 
