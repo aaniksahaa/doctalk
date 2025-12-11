@@ -5,47 +5,172 @@
 
 wav 
 
+
+
+
+CURRENTS:
+
+BTV
+স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television 
+
+ATN Bangla 
+Sustho Thakun - ATN Bangla
+
+NTV 
+Shastho Protidin - NTV Health Show
+
+RTV 
+Sustho Thakun - Rtv Health Program
+
+MyTV 
+My Health - Mytv
+
+GTV 
+Doctor's Chamber - GTV
+
+DBC News 
+DBC NEWS - স্বাস্থ্যকথা
+
+Channel 24 
+Channel 24 - সুরক্ষায় প্রতিদিন
+
+Jamuna TV 
+Doctors On Call – Jamuna TV
+
+Maasranga TV 
+Doctor's Chamber – Maasranga TV Program
+
+Channel 24
+Sustho Merudondo - Channel 24 
+
+Deepto Health Show 
+Sustha Jibon - Deepto Health Show 
+
+Banglavision 
+Shastha Katha - Banglavision
+
+Boishakhi TV 
+Boishakhi Health - Boishakhi TV Health
+
+News24
+Health Tips - News24
+
+
+
+
+
+
+
+This is nice, but does not seem to have doc-patient interactions, but has recent videos 
 * **My Health** (MyTV Show)
+
+do not use playlist, rather fetch by searching and keep recents 
 Playlist: https://www.youtube.com/playlist?list=PLgnJ2Qk5X-C3UfPEFRb2u8-PfZTvTQCBX
 
+
 * **Aalok Healthcare** (ATN Bangla)
+
+
+This is nice, but does not seem to include patient-doctor interaction, however, since these are recent, they have auto subtitles (recent ones), these are plenty in number, need to search in YT-API 
 * **স্বাস্থ্য প্রতিদিন** | NTV Health Show - Shastho Protidin | স্বাস্থ্য প্রতিদিন | NTV Health Show
+
+
+
 * **পুষ্টি কথা** | Pushti Kotha – NTV Health
-* **সুস্থ থাকুন** | Rtv Health Program
+
+
+This has recents with auto annotation, and also patient interactions, 3 on average generally
+find with YT-API 
+* **সুস্থ থাকুন** | Sustho Thakun | Rtv Health Program
+
+This is pretty fine. Many doctor patient interactions 
 * **স্বাস্থ্য জিজ্ঞাসা** – BTV
+
+This was streamed previously in 2023 etc 
 * **স্বাস্থ্য বার্তা** – BTV
 
   * [https://www.youtube.com/playlist?list=PLoijsUvO6bOURTIZbdVqQUEibtRI8mZ_3](https://www.youtube.com/playlist?list=PLoijsUvO6bOURTIZbdVqQUEibtRI8mZ_3)
+
 * **স্বাস্থ্য সুরক্ষা** – Global TV Health
 * **Doctor's Voice** | ডক্টর'স ভয়েস | SATV (English)
-* **Shastho Prohor** – SATV
-* **My Health – Shastha Katha** (Banglavision)
-* **Doctor's Chamber** – GTV
-* **স্বাস্থ্য কথা** – Channel 24
 
-  * [https://www.youtube.com/playlist?list=PLc_kkJn0dwWuBDVvfJ0Xt8P4MYwG5j6a1](https://www.youtube.com/playlist?list=PLc_kkJn0dwWuBDVvfJ0Xt8P4MYwG5j6a1)
+* **Shastho Prohor** – SATV
+
+This was of 5 years ago , also recent 
+* **My Health – Shastha Katha** (Banglavision)
+
+
+This is nice, but not doc patient inter... Has recents with annots 
+* **Doctor's Chamber** – GTV
+
+6 years ago 
+* **স্বাস্থ্য কথা** – Channel 24
+* [https://www.youtube.com/playlist?list=PLc_kkJn0dwWuBDVvfJ0Xt8P4MYwG5j6a1](https://www.youtube.com/playlist?list=PLc_kkJn0dwWuBDVvfJ0Xt8P4MYwG5j6a1)
+
+
+
 * **Amar Daktar** – Deepto Health Show
+
+
+## This is valuable, each has one interaction on average, those that are recent like in 1 year, have auto subtitles... medium or long len 
 * **ডিবিসি নিউজ স্বাস্থ্যকথা**
+
+
+## The following is a very rich source, but not interact... has recent 
 * **সুরক্ষায় প্রতিদিন** – Channel 24
 
   * [https://www.youtube.com/playlist?list=PLc_kkJn0dwWuqaEHWorJHtFqncDnPFczE](https://www.youtube.com/playlist?list=PLc_kkJn0dwWuqaEHWorJHtFqncDnPFczE) (Thousands of videos)
+
+
+
+
 * **Doctor's Corner** – Bangla TV Europe
 
   * [https://www.youtube.com/playlist?list=PL9-3t8CLUF3CDbOyC-g9JunvLTtYMKfCm](https://www.youtube.com/playlist?list=PL9-3t8CLUF3CDbOyC-g9JunvLTtYMKfCm)
+  
+  
+### This is rich in patient interactions, each video contains 2 on average
+    but no playlist, so YT-API needed to search through all 
 * **Shastho Prohor** – SATV
+
+
 * **পুষ্টি কথা** – Health TV Bangla *(not official television)*
 
   * [https://www.youtube.com/playlist?list=PLP6fbfxvmJDgsfxHqKD0f18q5y3zO6c7T](https://www.youtube.com/playlist?list=PLP6fbfxvmJDgsfxHqKD0f18q5y3zO6c7T)
-* **Doctors On Call** – Jamuna TV
 
+
+## This is very rich in patient interaction, best part is, google auto caption is also available many - on avg one interaction in each video 
+
+* Doctors On Call – Jamuna TV
+
+The following is a playlist but not includes all, best to fetch all vids through search 
   * [https://www.youtube.com/playlist?list=PLAHVDBLW1GY5gyEyGraQHoREcr_CJnSoy](https://www.youtube.com/playlist?list=PLAHVDBLW1GY5gyEyGraQHoREcr_CJnSoy)
-* **Doctor's Chamber** – Maasranga TV Program
+  
+  
+
+Doctor's Chamber – Maasranga TV Program
+
+Has recents, has patients 
+Doctor's Chamber – Maasranga TV Program
+
+
+
 * **পুষ্টি আলাপ** – Deepto Health Show
-* **My Health Shastha Katha** / Shastha Katha – Banglavision Program
+
+* **My Health Shastha Katha** / 
+
+Has recents, patients 
+Shastha Katha – Banglavision Program
 
 
 BSOH Susastho - ATN Bangla 
 
+has recent, patients 
+Sustho Thakun | ATN Bangla
+
+
+
+### This source is very rich in terms of patient conversations 
 Live Prescription - ATN Bangla 
 https://www.youtube.com/playlist?list=PLpm1pl0eN2Q5nicYFi090DQg8DWON53as
 
