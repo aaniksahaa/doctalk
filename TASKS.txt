@@ -1,0 +1,26 @@
+script writing:
+
+- find current programs for all major bengali tv channels 
+- given concrete search term (fetching metadata and specifics of all videos, like through continuation token)
+  - this is necessary when there is no organized playlist 
+  - like **Shastho Prohor** – SATV
+  - with YT-API search term "Shastho Prohor SATV", (select region BD, duration long -- important)
+  - we seem to get 20 at each turn and a continuation token 
+  - so as such fetching all 671 tentative as it says 
+  - **Doctors On Call** – Jamuna TV - this also - medium and long - almost 2100 - all annotated 
+  - also it is always best to prioritize recent videos - they more tend to have auto subtitles in bangla 
+  - keep in mind that we need to filter too, by title, description - 
+    - at once do, medical specialty (/misc/undetected, also allow multiple) and also whether health related 
+  - keep the search term clean without ** etc 
+  - search term must be crafted very carefully so that those exact episodes come, without others
+  - be careful, we must search both long and medium, the default is only medium 
+  - we also may need deduplication 
+  -  
+- vtt and srt processing 
+- from a plylist id, fetching all specifics and metadata 
+- local llm setup at lab pcs 
+- prompting scripts
+    - finding the specialty of a video like cardio or what etc 
+    - raw transcription --> corpus of chunks (along with time span)
+    - 
+- 
