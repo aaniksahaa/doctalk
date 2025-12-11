@@ -16,11 +16,13 @@ script writing:
   - be careful, we must search both long and medium, the default is only medium 
   - we also may need deduplication 
   -  
-- vtt and srt processing 
-- from a plylist id, fetching all specifics and metadata 
+- google auto gen vtt and srt processing 
+- from a playlist id, fetching all specifics and metadata 
 - local llm setup at lab pcs 
 - prompting scripts
     - finding the specialty of a video like cardio or what etc 
     - raw transcription --> corpus of chunks (along with time span)
-    - 
+    - raw transcription --> doctor patient multi turn convos 
+    - RAG maybe 
+    - or zero-shot or CoT eval 
 - 
