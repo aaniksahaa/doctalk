@@ -5,6 +5,14 @@ In general, it is best to follow SWE-like practice like having step by step exec
 
 Another way could be to look up for the video ID in output dirs at runtime. 
 
+Finally, the curation scripts should be added to the paper’s repository. A best practice is to follow a **“one task, one script”** approach: each script should be isolated and granular, perform a single well-defined task, take a clear input, and produce a specific output.
+
+It is also recommended that these granular scripts be manageable via command-line arguments, for example:
+
+```bash
+python search-yt-api.py --query ABC --duration long --region BD
+```
+
 ***
 
 Following are the currently running programs in channels. We consider currently alive programs due to this: Google offers a high quality Bengali auto-generated transcription for almost all Bengali videos published after the last year. So, to fully automate, we target the videos of the last one year. 
