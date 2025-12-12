@@ -1,3 +1,0 @@
-- video metadata, audio download 
-- audio transcription, diarization 
-- 
