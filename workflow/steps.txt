@@ -313,5 +313,5 @@ Next we will do experiments on downstream applications. Like plain benchmarking,
 
 *** 
 
-Finally writing paper targeting ARR January 5
+Finally writing paper targeting ARR
 
