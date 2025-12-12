@@ -156,7 +156,103 @@ yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "FNpaf
 
 Now a crucial task is to process the repetitive srt and vtt fiiles into nice non-repetitives texts with timestamps. We may also use pyannotate on the audio files themselves to further align. 
 
-Note that, these commands try to fetch auto generated captions. 
+This srt processing is actually a non-trivial task if we want to also preserve time alignment. One reason why time-alignment may be useful if we want to show exact timespan of a doctor's comment while referencing in RAG. In addition, if we want to train a med specific banglai ASR, then too. 
+
+Example SRT:
+
+
+1
+00:00:00,400 --> 00:00:03,030
+
+আমাদেরকে একজন প্রশ্ন করেছেন, আমি অনেকদিন
+
+2
+00:00:03,030 --> 00:00:03,040
+আমাদেরকে একজন প্রশ্ন করেছেন, আমি অনেকদিন
+ 
+
+3
+00:00:03,040 --> 00:00:04,950
+আমাদেরকে একজন প্রশ্ন করেছেন, আমি অনেকদিন
+ধরে গ্যাস্ট্রিকের সমস্যায় ভুগছি। গলা
+
+4
+00:00:04,950 --> 00:00:04,960
+ধরে গ্যাস্ট্রিকের সমস্যায় ভুগছি। গলা
+ 
+
+5
+00:00:04,960 --> 00:00:07,110
+ধরে গ্যাস্ট্রিকের সমস্যায় ভুগছি। গলা
+বুক জ্বালাপোড়া করে। পেটে অনেক গ্যাস
+
+6
+00:00:07,110 --> 00:00:07,120
+বুক জ্বালাপোড়া করে। পেটে অনেক গ্যাস
+ 
+
+7
+00:00:07,120 --> 00:00:09,509
+বুক জ্বালাপোড়া করে। পেটে অনেক গ্যাস
+হয়েছে বলে মনে হয়। পেট ফাঁপা লাগে। মুখে
+
+8
+00:00:09,509 --> 00:00:09,519
+হয়েছে বলে মনে হয়। পেট ফাঁপা লাগে। মুখে
+ 
+
+9
+00:00:09,519 --> 00:00:12,310
+হয়েছে বলে মনে হয়। পেট ফাঁপা লাগে। মুখে
+একটু টকটক লাগে। বমি আসে এমন মনে হয়। আর
+
+10
+00:00:12,310 --> 00:00:12,320
+একটু টকটক লাগে। বমি আসে এমন মনে হয়। আর
+ 
+
+11
+00:00:12,320 --> 00:00:14,549
+একটু টকটক লাগে। বমি আসে এমন মনে হয়। আর
+প্রত্যেকদিন গ্যাসের ওষুধ খেতে হয়। তো এই
+
+12
+00:00:14,549 --> 00:00:14,559
+প্রত্যেকদিন গ্যাসের ওষুধ খেতে হয়। তো এই
+ 
+
+13
+00:00:14,559 --> 00:00:16,230
+প্রত্যেকদিন গ্যাসের ওষুধ খেতে হয়। তো এই
+ওষুধ ছাড়া কি গ্যাস্ট্রিক সারানো যাবে
+
+14
+00:00:16,230 --> 00:00:16,240
+ওষুধ ছাড়া কি গ্যাস্ট্রিক সারানো যাবে
+ 
+
+15
+00:00:16,240 --> 00:00:19,029
+ওষুধ ছাড়া কি গ্যাস্ট্রিক সারানো যাবে
+না? কি করলে এই সমস্যা থেকে মুক্তি পাবো?
+
+16
+00:00:19,029 --> 00:00:19,039
+না? কি করলে এই সমস্যা থেকে মুক্তি পাবো?
+ 
+
+17
+00:00:19,039 --> 00:00:22,790
+না? কি করলে এই সমস্যা থেকে মুক্তি পাবো?
+আজকে আমি আর ডক্টর ইমা ইসলাম খুব সহজ
+
+
+As you can see, there are much overlaps, but the bright side is that, the transcriptions are almost cent per cent accurate. 
+
+You may understand here that, having just a raw deduplicated text is fairly easy, but managing timestamps, may require some trial and error. 
+
+
+Note that, the above srt, vtt commands try to fetch auto generated captions. 
 
 For old videos, these commands will give error. We may either skip them, or try to tackle them in some other way later. Other ways may include:
     API:
