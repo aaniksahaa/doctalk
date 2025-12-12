@@ -2,9 +2,7 @@
 # Youtube Audio Downloading
 
 python3 -m pip install -U yt-dlp
-
 yt-dlp --version
-
 if problem --> update yt-dlp, that should work 
 
 # may also try to get subtitles from yt 
@@ -21,6 +19,9 @@ yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
 # Metadata extraction
 
 yt-dlp -j "iQGd-XYFfoc" > metadata.json
+
+
+
 
 # Audio Transcription
 
