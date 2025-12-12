@@ -1,8 +1,13 @@
+
+***
+
 In general, it is best to follow SWE-like practice like having step by step execution, tracing, deduplication etc, for instance, one solution could be having a status directory, where individual json files will be there each video ID. Like it will contain "is_metadata_collected", "is_transcribed", "transcription_method" etc. 
 
 Another way could be to look up for the video ID in output dirs at runtime. 
 
-1. Following are the currently running programs in channels. We consider currently alive programs due to this: Google offers a high quality Bengali auto-generated transcription for almost all Bengali videos published after the last year. So, to fully automate, we target the videos of the last one year. 
+***
+
+Following are the currently running programs in channels. We consider currently alive programs due to this: Google offers a high quality Bengali auto-generated transcription for almost all Bengali videos published after the last year. So, to fully automate, we target the videos of the last one year. 
 
 BTV
 স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television 
@@ -54,9 +59,10 @@ We have YT-API, and Youtube V3 in RapidAPI. RapidAPI keys are same over APIs. I 
 
 
 
+***
 
 
-2. Now that we know the program names, we now need the video IDs corresponding to these search terms. Please note that, we have to carefully craft API parameters. For instance, in case of YT-API, 
+Now that we know the program names, we now need the video IDs corresponding to these search terms. Please note that, we have to carefully craft API parameters. For instance, in case of YT-API, 
 
 search-term --> best if not includes any extra characters like ** etc, rather just program name and channel name hyphenated, almost as written above by playing around. However, please free to explore. The issue actually is that, the search is very sensitive to this param for some reason... We just need to test in the playground whether it captures the recent videos 
 
@@ -87,7 +93,9 @@ Here I have noticed the Following things:
 
 
 
-3. Now let us say, we have the video IDs. Then our task is to fetch detailed metadata for individual videos by the IDs. Since this is scrapable, the command line tool "yt-dlp" allows to do this in bulk easiily. 
+***
+
+Now let us say, we have the video IDs. Then our task is to fetch detailed metadata for individual videos by the IDs. Since this is scrapable, the command line tool "yt-dlp" allows to do this in bulk easiily. 
 
 Installation:
 --------------
@@ -111,7 +119,9 @@ Thus after this step, we expect to attain a whole set of target videos with all 
 
 
 
-4. Now, we may either proceed to step 5 directly, or in this step, do a filtering. From the metadata, concat title, description etc, and feed LLM to tag into specialties. Options may be as such: 
+***
+
+Now, we may either proceed to next step directly, or in this step, do a filtering. From the metadata, concat title, description etc, and feed LLM to tag into specialties. Options may be as such: 
 
 Opthalmo
 Cardio
@@ -144,7 +154,9 @@ We plan to do these LLM tasks locally actually. Like with Qwen locally is we hav
 Here we may filter out the videos not related to health. 
 
 
-5. Next comes the interesing part, audio transcription. We plan to go with Google's auto-generated captions now when available, since they seem to be very accurate in most cases. 
+***
+
+Next comes the interesing part, audio transcription. We plan to go with Google's auto-generated captions now when available, since they seem to be very accurate in most cases. 
 
 Examples:
 
@@ -264,7 +276,11 @@ For old videos, these commands will give error. We may either skip them, or try 
 
 Note that, while Gemini API can be used for far more (like giving diarization too, who said what, chunkd etc), with other locals, it is enough to have a decent transcription raw text, since we will do an LLM pass later anyway. 
 
-6. Finally, at this point, we have title, description etc all metadata and also the the context raw text. Here we will do an LLM pass to have as much structured infor as possible. We may target:
+
+***
+
+
+Finally, at this point, we have title, description etc all metadata and also the the context raw text. Here we will do an LLM pass to have as much structured info as possible. We may target:
 
 - QA pairs from interviewer + doctor 
     - here the answer may be more granular, like diagnosis, prescription, advices
@@ -274,6 +290,17 @@ Note that, while Gemini API can be used for far more (like giving diarization to
 
 This final step is the most time, cost intensive, and most crucial for downstream tasks later. This step will create the final dataset. 
 
-7. Next we will do experiments on downstream applications. Like plain benchmarking, RAG, reasoning, agentic etc 
 
-8. Finally writing paper 
+***
+
+Generating detailed multi-dimensional stats for the data for paper. 
+
+***
+
+Next we will do experiments on downstream applications. Like plain benchmarking, RAG, reasoning, agentic etc 
+
+
+*** 
+
+Finally writing paper targeting ARR January 5
+
