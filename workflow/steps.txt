@@ -13,6 +13,8 @@ It is also recommended that these granular scripts be manageable via command-lin
 python search-yt-api.py --query ABC --duration long --region BD
 ```
 
+Finally we can chain/pipeline these scripts to obtain a complete workflow with state tracing. 
+
 ***
 
 Following are the currently running programs in channels. We consider currently alive programs due to this: Google offers a high quality Bengali auto-generated transcription for almost all Bengali videos published after the last year. So, to fully automate, we target the videos of the last one year. 
