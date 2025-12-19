@@ -1,0 +1,48 @@
+[
+  {
+    "type": "host_doctor_qa",
+    "turns": [
+      { "speaker": "host", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  },
+  {
+    "type": "host_doctor_qa",
+    "turns": [
+      { "speaker": "host", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  },
+  {
+    "type": "host_doctor_qa",
+    "turns": [
+      { "speaker": "host", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  },
+  {
+    "type": "patient_call",
+    "turns": [
+      { "speaker": "patient", "text": "" },
+      { "speaker": "doctor", "text": "" },
+      { "speaker": "patient", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  },
+  {
+    "type": "host_doctor_qa",
+    "turns": [
+      { "speaker": "host", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  },
+  {
+    "type": "patient_call",
+    "turns": [
+      { "speaker": "patient", "text": "" },
+      { "speaker": "doctor", "text": "" },
+      { "speaker": "patient", "text": "" },
+      { "speaker": "doctor", "text": "" }
+    ]
+  }
+]
