@@ -1,26 +1,79 @@
-# this is just a basic test, we need to handle pagination etc many things...
-# search-videos-yt-api.py
+"""
+search_videos_yt_api.py
+
+Basic YouTube search using yt-api (RapidAPI)
+- Clean parameter handling
+- No manual URL encoding
+- Pretty JSON output
+"""
 
 import json
 import http.client
+import os
+from urllib.parse import urlencode
 
-conn = http.client.HTTPSConnection("yt-api.p.rapidapi.com")
 
-KEY = "683351e6d6msh5280d130f8100c4p1b86d2jsn83e8d30556e0"
+# -----------------------
+# Configuration
+# -----------------------
 
-headers = {
-    'x-rapidapi-key': KEY,
-    'x-rapidapi-host': "yt-api.p.rapidapi.com"
+API_HOST = "yt-api.p.rapidapi.com"
+API_KEY = os.getenv("RAPIDAPI_KEY", "683351e6d6msh5280d130f8100c4p1b86d2jsn83e8d30556e0")
+
+OUTPUT_FILE = "search_results.json"
+
+
+# -----------------------
+# Search Parameters
+# -----------------------
+
+params = {
+    "query": "Sustho Thakun - Rtv Health",
+    "geo": "BD",
+    "duration": "long",
+    "sort_by": "date",
+    # pagination-ready 👇
+    # "continuation": None,
 }
 
-conn.request(
-    "GET", "/search?query=Sustho%20Thakun%20-%20Rtv%20Health&geo=BD&duration=long&sort_by=date", headers=headers)
 
-res = conn.getresponse()
-data = res.read()
+# -----------------------
+# Request Setup
+# -----------------------
 
-# data as json
-data_json = json.loads(data.decode("utf-8"))
+headers = {
+    "x-rapidapi-key": API_KEY,
+    "x-rapidapi-host": API_HOST,
+}
 
-# pretty print the json
-print(json.dumps(data_json, indent=4))
+query_string = urlencode(params)
+endpoint = f"/search?{query_string}"
+
+
+# -----------------------
+# Make Request
+# -----------------------
+
+conn = http.client.HTTPSConnection(API_HOST)
+conn.request("GET", endpoint, headers=headers)
+
+response = conn.getresponse()
+raw_data = response.read()
+
+conn.close()
+
+
+# -----------------------
+# Parse & Save JSON
+# -----------------------
+
+data_json = json.loads(raw_data.decode("utf-8"))
+
+# Pretty print to console
+print(json.dumps(data_json, indent=4, ensure_ascii=False))
+
+# Save nicely to file
+with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    json.dump(data_json, f, indent=4, ensure_ascii=False)
+
+print(f"\n✅ Results saved to: {OUTPUT_FILE}")
