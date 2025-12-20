@@ -1,4 +1,10 @@
+# Example usage:
+# python process-srt-with-timestamp.py input.srt output.txt
+# python process-srt-with-timestamp.py RkWh5fOOx9s_yt-auto-transcription.srt RkWh5fOOx9s_transcription-processed-with-timestamp.txt
+
+
 import re
+import argparse
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -247,9 +253,18 @@ def srt_to_clean_text_with_turn_timestamps(
 
     return text
 
-# Example usage:
-with open("RkWh5fOOx9s.srt", "r", encoding="utf-8") as f:
-    srt = f.read()
-txt = srt_to_clean_text_with_turn_timestamps(srt)
-with open("RkWh5fOOx9s.txt", "w", encoding="utf-8") as f:
-    f.write(txt)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Process SRT file and generate clean text with speaker turn timestamps"
+    )
+    parser.add_argument("input_srt", help="Input SRT file (e.g., input.srt)")
+    parser.add_argument("output_txt", help="Output text file (e.g., output.txt)")
+    args = parser.parse_args()
+    
+    with open(args.input_srt, "r", encoding="utf-8") as f:
+        srt = f.read()
+    txt = srt_to_clean_text_with_turn_timestamps(srt)
+    with open(args.output_txt, "w", encoding="utf-8") as f:
+        f.write(txt)
+    
+    print(f"Successfully processed {args.input_srt} -> {args.output_txt}")
