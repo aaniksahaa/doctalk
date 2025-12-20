@@ -17,3 +17,7 @@ a possible structure for handling the details of individual videos
 	- getting parsed conversation json with an llm 
 - hopefully in this scheme, we have a unique expected filename for each intermediate task, so that we can easily implement deduplication of computing effort
 
+possible code structure
+- isolated code / scripts for each task 
+- then linear pipelining with deduplication and checking in a wrapper script 
+
