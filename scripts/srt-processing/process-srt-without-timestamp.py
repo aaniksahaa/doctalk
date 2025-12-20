@@ -1,6 +1,6 @@
 # Example usage:
 # python process-srt-without-timestamp.py input.srt output.txt
-# python process-srt-without-timestamp.py RkWh5fOOx9s_yt-auto-transcription.srt RkWh5fOOx9s_transcription-processed-without-timestamp.txt
+# python process-srt-without-timestamp.py RkWh5fOOx9s_transcription.srt RkWh5fOOx9s_transcription-processed-without-timestamp.txt
 
 import re
 import argparse

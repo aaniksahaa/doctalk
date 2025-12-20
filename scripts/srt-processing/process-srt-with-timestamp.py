@@ -1,6 +1,6 @@
 # Example usage:
 # python process-srt-with-timestamp.py input.srt output.txt
-# python process-srt-with-timestamp.py RkWh5fOOx9s_yt-auto-transcription.srt RkWh5fOOx9s_transcription-processed-with-timestamp.txt
+# python process-srt-with-timestamp.py RkWh5fOOx9s_transcription.srt RkWh5fOOx9s_transcription-processed-with-timestamp.txt
 
 
 import re

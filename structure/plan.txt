@@ -1,0 +1,19 @@
+a possible structure
+
+- collecting metadata for channels from RapidAPI and storing at yt_api_metadata
+- then for each video id, creating in a data folder a subdir with that id name (if not exists)
+- then like linearly going as pipeline, and checking whether the desired output of that step already exists or not, if not - execute the step, if yes - proceed to next step 
+- each step has an associated desired file 
+- currently we are having the files in the example subdir in 'data'
+- i actually did too much nesting in the dir structure to afford changing methods later, so that we can store results from multiple combinations of methods and later choose from them 
+- so actually it will be like
+	data/<VIDEO_ID>/transcribed/<TR_METHOD>/parsed/<PR_method>/<VIDEO_ID>_conversation.json
+- linear sequential steps
+	- getting metadata from yt-dlp
+	- getting derived-metadata like relevance, tags with llm
+	- note that, if not derived we will 
+	- getting auto transcription srt (if not available - write to status.json that n/a) 
+	- processing srt 
+	- getting parsed conversation json with an llm 
+- hopefully in this scheme, we have a unique expected filename for each intermediate, so that we can easily implement deduplication of computing effort
+
