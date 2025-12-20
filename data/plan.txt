@@ -4,9 +4,9 @@ a possible structure for handling the details of individual videos
 - then for each video id, creating in a data folder a subdir with that id name (if not exists)
 - then like linearly going as pipeline, and checking whether the desired output of that step already exists or not, if not - execute the step, if yes - proceed to next step 
 - each step has an associated desired file 
-- currently we are having the files in the example subdir in 'data'
+- currently we are having the files in the example subdir in 'data/video_data' folder 
 - i actually did too much nesting in the dir structure to afford changing methods later, so that we can store results from multiple combinations of methods and later choose from them 
-- so the end file will be like
+- so the end conversation json file will be like
 	data/video_data/<VIDEO_ID>/transcribed/<TR_METHOD>/parsed/<PR_method>/<VIDEO_ID>_conversation.json
 - linear sequential steps
 	- getting metadata from yt-dlp
