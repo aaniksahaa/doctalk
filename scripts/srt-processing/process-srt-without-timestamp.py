@@ -52,6 +52,15 @@ def srt_to_clean_text(srt: str, drop_bracket_cues: bool = True) -> str:
     text = re.sub(r"\s*>>", "\n\n>>", text)
     text = re.sub(r"\n{3,}", "\n\n", text).strip()
 
+    # add sequence numbers before every >>
+    lines = text.split("\n")
+    sequence_num = 1
+    for i, line in enumerate(lines):
+        if line.startswith(">>"):
+            lines[i] = f"{sequence_num}. {line}"
+            sequence_num += 1
+    text = "\n".join(lines)
+
     return text
 
 

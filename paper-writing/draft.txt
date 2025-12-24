@@ -1,0 +1,5 @@
+So we are planning to publish a dataset oriented paper in a high-end nlp conference with statistics, analysis, and downstream applications of the dataset. 
+
+Data source: In Bangladesh, many public TV channels arrange live shows featuring expert doctors where patients from remote areas call and describe their conditions. Doctors often ask suppplementary questions to bring out full details of the condition, thus yielding a multi-turn conversational dataset of expert doctor-patient conversation fully in Bengali, a low resource language. In addition to the doctor-patient multi-turn conversations, we also get host-doctor conversations which is generally single turn QA where the host asks practical medical questions which are aimed for the end viewers of the TV shows, and thus are easy to understand and also answered by expert doctors. 
+
+Now we will basically get a json with many many such convos of two types, patient-doctor, and host-doctor, all in bengali. We also need cool research ideas like in downstream application type, what to do with the dataset so that I can show such improvement kinda...

@@ -1,0 +1,10 @@
+
+curl -fsSL https://ollama.com/install.sh | sh
+
+ollama --version
+
+ollama pull qwen2.5:1.5b-instruct
+
+pip install ollama
+
+
