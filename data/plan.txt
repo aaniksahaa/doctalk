@@ -9,13 +9,20 @@ a possible structure for handling the details of individual videos
 - so the end conversation json file will be like
 	data/video_data/<VIDEO_ID>/transcribed/<TR_METHOD>/parsed/<PR_method>/<VIDEO_ID>_conversation.json
 - linear sequential steps
-	- getting metadata from yt-dlp
-	- getting derived-metadata like relevance, tags with llm
-	- note that, if not derived we will 
+	- getting metadata from yt-dlp 
 	- getting auto transcription srt (if not available - write to status.json that n/a) 
-	- processing srt 
-	- getting parsed conversation json with an llm 
+	- processing srt ---> done 
+	- getting derived-metadata like relevance, tags with llm
+	- note that, if not relevant we will ignore 
+	- getting parsed conversation json with an llm --- most cost intensive --- carefully ignore irrelevant 
 - hopefully in this scheme, we have a unique expected filename for each intermediate task, so that we can easily implement deduplication of computing effort
+
+step 
+
+1 - input - output 
+2 - 
+3
+
 
 possible code structure
 - isolated code / scripts for each task 
