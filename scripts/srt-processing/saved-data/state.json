@@ -1,0 +1,11 @@
+{
+  "query": "স্বাস্থ্য জিজ্ঞাসা",
+  "channel": "UClzwimpLoZu9us9MwalLbtA",
+  "geo": "BD",
+  "sort": "date",
+  "limit": 6,
+  "duration": "medium",
+  "token": null,
+  "long-finished": true,
+  "medium-finished": true
+}
