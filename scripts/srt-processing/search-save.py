@@ -19,7 +19,7 @@ if not RAPIDAPI_KEY:
     raise RuntimeError("RAPIDAPI_KEY not found in .env file")
 
 BASE_URL = "https://yt-api.p.rapidapi.com/search"
-SAVED_DATA_DIR = Path("saved-data")
+SAVED_DATA_DIR = None  # Will be set via command-line argument or default
 
 # Retry configuration
 MAX_RETRIES = 5
@@ -77,6 +77,7 @@ def get_results(query: str, channel: str, duration: str, geo: str = "BD", sort: 
 
 def init_saved_data_dir():
     """Create saved-data directory if it doesn't exist"""
+    global SAVED_DATA_DIR
     SAVED_DATA_DIR.mkdir(exist_ok=True)
 
 
@@ -321,8 +322,17 @@ def main():
         default="date",
         help="Sort order (default: date)"
     )
+    parser.add_argument(
+        "-d", "--data-dir",
+        default="saved-data",
+        help="Directory to save data (default: saved-data)"
+    )
 
     args = parser.parse_args()
+
+    # Set global SAVED_DATA_DIR variable
+    global SAVED_DATA_DIR
+    SAVED_DATA_DIR = Path(args.data_dir)
 
     # Initialize saved-data directory
     init_saved_data_dir()
