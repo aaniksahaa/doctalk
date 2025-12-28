@@ -184,6 +184,52 @@ def save_results_to_file(data_list: list, filename: str, append: bool = False):
         json.dump(data_to_save, f, ensure_ascii=False, indent=2)
 
 
+def merge_results():
+    """
+    Merge long.json and medium.json into a single merged.json file sorted by publishedAt
+    """
+    print("\n--- Merging results ---")
+    
+    long_path = SAVED_DATA_DIR / "long.json"
+    medium_path = SAVED_DATA_DIR / "medium.json"
+    merged_path = SAVED_DATA_DIR / "merged.json"
+    
+    merged_data = []
+    
+    # Load and merge long.json
+    if long_path.exists():
+        with open(long_path, "r", encoding="utf-8") as f:
+            long_data = json.load(f)
+        merged_data.extend(long_data)
+        print(f"  Loaded {len(long_data)} videos from long.json")
+    
+    # Load and merge medium.json
+    if medium_path.exists():
+        with open(medium_path, "r", encoding="utf-8") as f:
+            medium_data = json.load(f)
+        merged_data.extend(medium_data)
+        print(f"  Loaded {len(medium_data)} videos from medium.json")
+    
+    # Remove duplicates based on videoId
+    seen_ids = set()
+    unique_data = []
+    for video in merged_data:
+        video_id = video.get("videoId")
+        if video_id not in seen_ids:
+            seen_ids.add(video_id)
+            unique_data.append(video)
+    
+    # Sort by publishedAt (most recent first)
+    unique_data.sort(key=lambda x: x.get("publishedAt", ""), reverse=True)
+    
+    # Save merged results
+    with open(merged_path, "w", encoding="utf-8") as f:
+        json.dump(unique_data, f, ensure_ascii=False, indent=2)
+    
+    print(f"  Merged total: {len(unique_data)} unique videos (after deduplication)")
+    print(f"  Saved to merged.json")
+
+
 def process_duration(query: str, channel_id: str, duration: str, geo: str, sort: str, limit_months: int, state: dict):
     """
     Process results for a specific duration (long or medium)
@@ -348,6 +394,9 @@ def main():
         save_state(state)
     else:
         print("\n--- Skipping MEDIUM duration (already completed) ---")
+    
+    # Merge results from long and medium
+    merge_results()
     
     print("\n✓ All processing complete!")
     print(f"Results saved in {SAVED_DATA_DIR}/")
