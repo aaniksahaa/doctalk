@@ -7,6 +7,8 @@ import time
 from datetime import datetime, timedelta, UTC
 from pathlib import Path
 from dotenv import load_dotenv
+import re
+import unicodedata
 
 # Load environment variables
 load_dotenv()
@@ -17,13 +19,13 @@ if not YOUTUBE_API_KEY:
     raise RuntimeError("YOUTUBE_API_KEY not found in .env file")
 
 BASE_URL = "https://www.googleapis.com/youtube/v3/search"
+VIDEOS_BASE_URL = "https://www.googleapis.com/youtube/v3/videos"
 SAVED_DATA_DIR = None  # Will be set via command-line argument or default
 
 # Retry configuration
 MAX_RETRIES = 5
 INITIAL_BACKOFF = 1  # seconds
-MAX_BACKOFF = 60  # seconds
-
+MAX_BACKOFF = 60  # secondsBATCH_SIZE = 50  # Maximum videos to fetch details in one request
 
 def get_published_after_date(limit_months: int):
     """Calculate the publishedAfter date based on limit months"""
@@ -74,6 +76,140 @@ def get_results(query: str, channel_id: str, region_code: str, published_after: 
 
     # If all retries failed, raise the last exception
     raise last_exception
+
+def normalize_youtube_description(
+    text: str,
+    *,
+    replace_urls: bool = True,
+    replace_emails: bool = True,
+    normalize_unicode: bool = True,
+    keep_hashtags: bool = True,
+    min_line_length: int = 0
+) -> str:
+    """
+    Normalize YouTube video descriptions for LLM processing.
+    Language-agnostic (Bangla, English, Spanish, etc.).
+
+    Args:
+        text (str): Raw description text
+        replace_urls (bool): Replace URLs with <URL>
+        replace_emails (bool): Replace emails with <EMAIL>
+        normalize_unicode (bool): Apply NFC unicode normalization
+        keep_hashtags (bool): Keep hashtags or remove them
+        min_line_length (int): Drop lines shorter than this length
+
+    Returns:
+        str: Cleaned description
+    """
+
+    if not text:
+        return ""
+
+    # Normalize unicode (important for Bangla, Arabic, etc.)
+    if normalize_unicode:
+        text = unicodedata.normalize("NFC", text)
+
+    # Replace URLs
+    if replace_urls:
+        text = re.sub(
+            r"(https?://\S+|www\.\S+)",
+            "<URL>",
+            text,
+            flags=re.IGNORECASE
+        )
+
+    # Replace emails
+    if replace_emails:
+        text = re.sub(
+            r"\b[\w\.-]+@[\w\.-]+\.\w+\b",
+            "<EMAIL>",
+            text
+        )
+
+    # Normalize line breaks
+    lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip()
+    ]
+
+    # Remove very short noise lines if requested
+    if min_line_length > 0:
+        lines = [l for l in lines if len(l) >= min_line_length]
+
+    text = "\n".join(lines)
+
+    # Collapse repeated separators
+    text = re.sub(r"_+", "_", text)
+    text = re.sub(r"-{3,}", "---", text)
+
+    # Optionally remove hashtags
+    if not keep_hashtags:
+        text = re.sub(r"#\w+", "", text)
+
+    # Normalize excessive whitespace
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+
+    return text.strip()
+
+
+def get_video_details(video_ids: list):
+    """Fetch video details from YouTube Data API v3 for multiple videos"""
+    # Join video IDs with comma
+    ids_param = ",".join(video_ids)
+
+    params = {
+        "part": "snippet,statistics,contentDetails",
+        "id": ids_param,
+        "key": YOUTUBE_API_KEY
+    }
+
+    headers = {
+        "Accept": "application/json"
+    }
+
+    # Exponential backoff with retry
+    backoff = INITIAL_BACKOFF
+    last_exception = None
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = requests.get(VIDEOS_BASE_URL, params=params, headers=headers, timeout=30)
+            response.raise_for_status()
+            return response.json()
+        except (requests.exceptions.RequestException, requests.exceptions.Timeout) as e:
+            last_exception = e
+            if attempt < MAX_RETRIES - 1:
+                print(f"    Attempt {attempt + 1} failed: {str(e)}")
+                print(f"    Retrying in {backoff} seconds...")
+                time.sleep(backoff)
+                backoff = min(backoff * 2, MAX_BACKOFF)
+            else:
+                print(f"    All {MAX_RETRIES} attempts failed")
+
+    # If all retries failed, raise the last exception
+    raise last_exception
+
+
+def parse_duration(iso_duration: str):
+    """Parse ISO 8601 duration string (PT22M11S) to seconds"""
+    import re
+    pattern = r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?'
+    match = re.match(pattern, iso_duration)
+    if not match:
+        return None
+    
+    hours, minutes, seconds = match.groups()
+    total_seconds = 0
+    if hours:
+        total_seconds += int(hours) * 3600
+    if minutes:
+        total_seconds += int(minutes) * 60
+    if seconds:
+        total_seconds += int(seconds)
+    
+    return total_seconds
 
 
 def init_saved_data_dir():
@@ -147,6 +283,68 @@ def process_results(results: dict):
     next_page_token = results.get("nextPageToken")
 
     return processed_data, next_page_token
+
+
+def enrich_videos_with_details(videos: list):
+    """
+    Enrich video data by fetching additional details from YouTube API
+    Updates description, adds duration and viewCount
+    """
+    if not videos:
+        return videos
+    
+    # Extract video IDs
+    video_ids = [v.get("videoId") for v in videos if v.get("videoId")]
+    
+    if not video_ids:
+        return videos
+    
+    print(f"  Fetching detailed metadata for {len(video_ids)} videos...")
+    
+    try:
+        # Fetch video details
+        response = get_video_details(video_ids)
+        
+        if "items" not in response:
+            return videos
+        
+        # Create a mapping of videoId to details
+        details_map = {}
+        for item in response["items"]:
+            video_id = item.get("id")
+            snippet = item.get("snippet", {})
+            content_details = item.get("contentDetails", {})
+            statistics = item.get("statistics", {})
+            
+            details_map[video_id] = {
+                "description": snippet.get("description"),
+                "duration": parse_duration(content_details.get("duration")),
+                "durationText": content_details.get("duration"),
+                "viewCount": int(statistics.get("viewCount", 0)) if statistics.get("viewCount") else 0,
+                "likeCount": int(statistics.get("likeCount", 0)) if statistics.get("likeCount") else 0
+            }
+        
+        # Update videos with fetched details
+        for video in videos:
+            video_id = video.get("videoId")
+            if video_id in details_map:
+                details = details_map[video_id]
+                video["description"] = details["description"]
+                video["normalizedDescription"] = normalize_youtube_description(details["description"])
+                if details["duration"] is not None:
+                    video["duration"] = details["duration"]
+                if details["durationText"]:
+                    video["durationText"] = details["durationText"]
+                video["viewCount"] = details["viewCount"]
+                video["likeCount"] = details["likeCount"]
+        
+        print(f"  ✓ Enriched {len(video_ids)} videos with metadata")
+        
+    except Exception as e:
+        print(f"  Warning: Failed to enrich videos: {str(e)}")
+        print(f"  Continuing with basic data...")
+    
+    return videos
 
 
 def save_results_to_file(data_list: list, filename: str, append: bool = False):
@@ -279,6 +477,9 @@ def main():
             processed_videos, next_page_token = process_results(results)
 
             if processed_videos:
+                # Enrich videos with additional metadata
+                processed_videos = enrich_videos_with_details(processed_videos)
+                
                 save_results_to_file(processed_videos, "results.json", append=(total_videos > 0))
                 total_videos += len(processed_videos)
                 print(f"  Saved {len(processed_videos)} videos (Total: {total_videos})")

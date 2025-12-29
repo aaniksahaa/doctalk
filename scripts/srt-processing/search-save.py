@@ -187,13 +187,13 @@ def save_results_to_file(data_list: list, filename: str, append: bool = False):
 
 def merge_results():
     """
-    Merge long.json and medium.json into a single merged.json file sorted by publishedAt
+    Merge long.json and medium.json into a single results.json file sorted by publishedAt
     """
     print("\n--- Merging results ---")
     
     long_path = SAVED_DATA_DIR / "long.json"
     medium_path = SAVED_DATA_DIR / "medium.json"
-    merged_path = SAVED_DATA_DIR / "merged.json"
+    merged_path = SAVED_DATA_DIR / "results.json"
     
     merged_data = []
     
@@ -228,7 +228,7 @@ def merge_results():
         json.dump(unique_data, f, ensure_ascii=False, indent=2)
     
     print(f"  Merged total: {len(unique_data)} unique videos (after deduplication)")
-    print(f"  Saved to merged.json")
+    print(f"  Saved to results.json")
 
 
 def process_duration(query: str, channel_id: str, duration: str, geo: str, sort: str, limit_months: int, state: dict):
