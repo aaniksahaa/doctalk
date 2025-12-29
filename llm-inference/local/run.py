@@ -6,6 +6,7 @@ import os
 from ollama import chat
 
 MODEL = "qwen2.5:1.5b-instruct"
+MODEL = "qwen2.5:3b-instruct"
 # MODEL = "gpt-oss:20b"
 # MODEL = "qwen3:30b"
 # MODEL = "qwen2.5:14b-instruct"
