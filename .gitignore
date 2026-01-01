@@ -1,3 +1,4 @@
 # Secrets
 keys.json
 .env
+__pycache__

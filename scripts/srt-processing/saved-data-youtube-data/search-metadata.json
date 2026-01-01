@@ -2,8 +2,6 @@
   "query": "স্বাস্থ্য জিজ্ঞাসা",
   "channel": "UClzwimpLoZu9us9MwalLbtA",
   "region_code": "BD",
-  "limit_months": 6,
-  "published_after": "2025-06-02T00:00:00Z",
-  "page_token": null,
-  "finished": true
+  "limit": 6,
+  "published_after": "2025-06-05T00:00:00Z"
 }
