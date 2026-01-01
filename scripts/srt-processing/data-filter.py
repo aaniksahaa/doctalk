@@ -35,6 +35,25 @@ def save_state(state_path: str, state: Dict[str, Any]) -> None:
         json.dump(state, f, indent=2)
 
 
+def load_metadata(metadata_path: str, folder: str, file: str, model: str) -> Dict[str, Any]:
+    """Load or create filter metadata."""
+    if os.path.exists(metadata_path):
+        return json.load(open(metadata_path, 'r', encoding='utf-8'))
+    
+    return {
+        'folder': folder,
+        'file': file,
+        'model': model,
+        'failures': []
+    }
+
+
+def save_metadata(metadata_path: str, metadata: Dict[str, Any]) -> None:
+    """Save filter metadata."""
+    with open(metadata_path, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+
 def load_filtered_results(filtered_path: str) -> List[Dict[str, Any]]:
     """Load filtered results if they exist."""
     if os.path.exists(filtered_path):
@@ -47,6 +66,15 @@ def save_filtered_results(filtered_path: str, results: List[Dict[str, Any]]) -> 
     """Save filtered results."""
     with open(filtered_path, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
+
+
+def add_failure(metadata: Dict[str, Any], index: int, video_id: str, reason: str) -> None:
+    """Add a failure entry to metadata."""
+    metadata['failures'].append({
+        'index': index,
+        'video_id': video_id,
+        'reason': reason
+    })
 
 
 def is_healthcare_video(model: str, title: str, description: str) -> bool:
@@ -87,7 +115,7 @@ def process_batch(
     start_idx: int,
     batch_size: int,
     filtered_results: List[Dict[str, Any]],
-    failed_indexes: List[int]
+    metadata: Dict[str, Any]
 ) -> tuple[int, int]:
     """
     Process a batch of results.
@@ -102,6 +130,7 @@ def process_batch(
         result = results[i]
         title = result.get('title', '')
         normalized_desc = result.get('normalizedDescription', '')
+        video_id = result.get('videoId', 'unknown')
         
         try:
             print(f"  [{i}] Processing: {title[:50]}...", end=' ')
@@ -116,12 +145,12 @@ def process_batch(
                 print("✓ Healthcare")
             else:
                 print("✗ Not healthcare")
-                failed_indexes.append(i)
+                add_failure(metadata, i, video_id, "not healthcare-related")
                 failed_count += 1
                 
         except Exception as e:
             print(f"✗ Error: {str(e)}")
-            failed_indexes.append(i)
+            add_failure(metadata, i, video_id, f"classification error: {str(e)}")
             failed_count += 1
     
     return end_idx, failed_count
@@ -173,6 +202,7 @@ def main():
     
     results_path = folder_path / file_name
     state_path = folder_path / 'filter-state.json'
+    metadata_path = folder_path / 'filter-metadata.json'
     filtered_path = folder_path / 'filtered-results.json'
     
     # Validate results.json exists
@@ -191,11 +221,11 @@ def main():
     if existing_state and not args.force_restart:
         # Resume from existing state
         print(f"\nResuming from existing state...")
-        start_idx = existing_state['start_idx']
+        start_idx = existing_state['last_processed_index'] + 1
         batch_size = existing_state['batch_size']
-        model = existing_state['model_name']
+        model = existing_state['model']
         filtered_results = load_filtered_results(str(filtered_path))
-        failed_indexes = existing_state.get('failed_indexes', [])
+        metadata = load_metadata(str(metadata_path), args.folder, args.file, args.model)
         
         if model != args.model:
             print(f"Warning: State has model '{model}' but using '{args.model}'")
@@ -210,11 +240,10 @@ def main():
         batch_size = args.batch_size
         model = args.model
         filtered_results = []
-        failed_indexes = []
+        metadata = load_metadata(str(metadata_path), args.folder, args.file, args.model)
     
     # Process batches
     current_idx = start_idx
-    total_failed = len(failed_indexes)
     
     try:
         while current_idx < len(results):
@@ -225,25 +254,26 @@ def main():
                 current_idx,
                 batch_size,
                 filtered_results,
-                failed_indexes
+                metadata
             )
-            total_failed += batch_failed
             
-            # Save state
+            # Save state after each batch
             state = {
-                'model_name': model,
-                'start_idx': next_idx,
+                'folder': args.folder,
+                'file': args.file,
+                'model': model,
                 'batch_size': batch_size,
-                'failed_indexes': failed_indexes,
-                'total_processed': next_idx,
-                'total_results': len(results)
+                'last_processed_index': next_idx - 1
             }
             save_state(str(state_path), state)
+            
+            # Save metadata
+            save_metadata(str(metadata_path), metadata)
             
             # Save filtered results
             save_filtered_results(str(filtered_path), filtered_results)
             
-            print(f"  Saved: {len(filtered_results)} healthcare videos, {len(failed_indexes)} non-healthcare")
+            print(f"  Saved: {len(filtered_results)} healthcare videos, {len(metadata['failures'])} non-healthcare")
             
             current_idx = next_idx
     
@@ -259,16 +289,18 @@ def main():
         print(f"\n✓ Processing complete!")
         print(f"  Total videos processed: {len(results)}")
         print(f"  Healthcare videos found: {len(filtered_results)}")
-        print(f"  Non-healthcare videos: {len(failed_indexes)}")
+        print(f"  Non-healthcare videos: {len(metadata['failures'])}")
         
-        if failed_indexes:
-            print(f"\n  Failed indexes (non-healthcare): {failed_indexes}")
+        if metadata['failures']:
+            print(f"\n  See filter-metadata.json for details on {len(metadata['failures'])} failures")
         
         # Remove state file on completion
         if state_path.exists():
             state_path.unlink()
+            print(f"\n✓ Removed filter-state.json (processing complete)")
         
         print(f"\nResults saved to: {filtered_path}")
+        print(f"Metadata saved to: {metadata_path}")
     
     return 0
 

@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta, UTC
 from pathlib import Path
 from dotenv import load_dotenv
+from typing import Dict, Any
 import re
 import unicodedata
 
@@ -21,6 +22,7 @@ if not YOUTUBE_API_KEY:
 BASE_URL = "https://www.googleapis.com/youtube/v3/search"
 VIDEOS_BASE_URL = "https://www.googleapis.com/youtube/v3/videos"
 SAVED_DATA_DIR = None  # Will be set via command-line argument or default
+STATE_FILE = "search-state.json"
 
 # Retry configuration
 MAX_RETRIES = 5
@@ -153,6 +155,23 @@ def normalize_youtube_description(
 
     return text.strip()
 
+def load_metadata(metadata_path: str, folder: str, file: str, model: str) -> Dict[str, Any]:
+    """Load or create filter metadata."""
+    if os.path.exists(metadata_path):
+        return json.load(open(metadata_path, 'r', encoding='utf-8'))
+    
+    return {
+        'folder': folder,
+        'file': file,
+        'model': model,
+        'failures': []
+    }
+
+
+def save_metadata(metadata_path: str, metadata: Dict[str, Any]) -> None:
+    """Save filter metadata."""
+    with open(metadata_path, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
 
 def get_video_details(video_ids: list):
     """Fetch video details from YouTube Data API v3 for multiple videos"""
@@ -219,7 +238,7 @@ def init_saved_data_dir():
 
 
 def create_initial_state(query: str, channel: str, region_code: str, limit: int, published_after: str):
-    """Create initial state.json"""
+    """Create initial search-state.json"""
     state = {
         "query": query,
         "channel": channel,
@@ -233,15 +252,15 @@ def create_initial_state(query: str, channel: str, region_code: str, limit: int,
 
 
 def save_state(state: dict):
-    """Save state to state.json"""
-    state_path = SAVED_DATA_DIR / "state.json"
+    """Save state to search-state.json"""
+    state_path = SAVED_DATA_DIR / STATE_FILE
     with open(state_path, "w", encoding="utf-8") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
 
 def load_state():
-    """Load state from state.json"""
-    state_path = SAVED_DATA_DIR / "state.json"
+    """Load state from search-state.json"""
+    state_path = SAVED_DATA_DIR / STATE_FILE
     if state_path.exists():
         with open(state_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -409,11 +428,13 @@ def main():
     # Calculate published_after date
     published_after = get_published_after_date(args.limit + 1)
 
+    metadata_path = SAVED_DATA_DIR / 'search-metadata.json'
+
     # Check if resuming from existing state
     existing_state = load_state()
 
     if existing_state:
-        print("Found existing state.json - resuming from previous run")
+        print("Found existing search-state.json - resuming from previous run")
         if existing_state.get("finished"):
             print("  Previous run finished successfully")
         else:
@@ -429,7 +450,16 @@ def main():
             limit=args.limit,
             published_after=published_after
         )
+
+        metadata = {
+            "query": args.query,
+            "channel": args.channel,
+            "region_code": args.region,
+            "limit": args.limit,
+            "published_after": published_after
+        }
         save_state(state)
+        save_metadata(str(metadata_path), metadata)
 
     print(f"Configuration:")
     print(f"  Query: {state['query']}")
@@ -505,6 +535,10 @@ def main():
 
     print(f"\n✓ Completed: {total_videos} total videos saved")
     print(f"Results saved in {SAVED_DATA_DIR}/results.json")
+
+    state_path = SAVED_DATA_DIR / STATE_FILE
+    if state_path.exists():
+        state_path.unlink()
 
 
 if __name__ == "__main__":
