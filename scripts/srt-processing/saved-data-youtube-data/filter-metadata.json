@@ -1,0 +1,12 @@
+{
+  "folder": "saved-data-youtube-data",
+  "file": "results.json",
+  "model": "qwen3:4b",
+  "failures": [
+    {
+      "index": 0,
+      "video_id": "Kb67DEkmJ7c",
+      "reason": "not healthcare-related"
+    }
+  ]
+}
