@@ -138,8 +138,9 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
         return False
     
     # Save metadata
+    metadata_json = json.loads(output)
     with open(metadata_file, 'w', encoding='utf-8') as f:
-        f.write(output)
+        json.dump(metadata_json, f, indent=2, ensure_ascii=False)
     print(f"  ✓ Metadata saved")
     
     # Step 2: Download subtitles
