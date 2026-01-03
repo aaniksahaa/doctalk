@@ -100,10 +100,10 @@ def add_failure(metadata: Dict, idx: int, video_id: str, reason: str):
     })
 
 
-def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 5, force_rewrite: bool = False) -> bool:
+def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 5, force_rewrite: bool = False) -> tuple[bool, bool]:
     """
     Process a video with retry logic and exponential backoff.
-    Returns True if successful, False otherwise.
+    Returns (success: bool, was_skipped: bool) - was_skipped is True if lock file was found and video was skipped.
     """
     video_id = video_data["videoId"]
     
@@ -113,18 +113,18 @@ def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lan
             print(f"  ⏳ Retry attempt {attempt + 1}/{max_retries} after {wait_time}s...")
             time.sleep(wait_time)
         
-        success = process_video(video_data, idx, dataset_path, lang, metadata, attempt, force_rewrite)
+        success, was_skipped = process_video(video_data, idx, dataset_path, lang, metadata, attempt, force_rewrite)
         if success:
-            return True
+            return True, was_skipped
     
     print(f"  ✗ Failed after {max_retries} attempts")
-    return False
+    return False, False
 
 
-def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, attempt: int = 0, force_rewrite: bool = False) -> bool:
+def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, attempt: int = 0, force_rewrite: bool = False) -> tuple[bool, bool]:
     """
     Process a single video: download metadata, transcription, and process files.
-    Returns True if successful, False otherwise.
+    Returns (success: bool, was_skipped: bool) - was_skipped is True if lock file was found and video was skipped.
     """
     video_id = video_data["videoId"]
     
@@ -141,7 +141,7 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     if video_folder.exists():
         if lock_file.exists() and not force_rewrite:
             print(f"  ✓ Video {video_id} already processed (lock file found). Skipping.")
-            return True
+            return True, True  # Success, was skipped
         elif lock_file.exists() and force_rewrite:
             print(f"  ⚠ Force rewrite enabled. Deleting and reprocessing...")
             shutil.rmtree(video_folder)
@@ -157,14 +157,15 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     # Step 1: Download video metadata
     print(f"  → Downloading metadata...")
     metadata_file = video_folder / f"{video_id}_yt-dlp-metadata.json"
-    cmd = ["yt-dlp", "-j", video_id]
+    # Quote video_id with -- to handle IDs starting with dash (e.g., -bdJJXgVlLg)
+    cmd = ["yt-dlp", "-j", "--", video_id]
     success, output = run_command(cmd)
     
     if not success:
         print(f"  ✗ Failed to get metadata: {output}")
         add_failure(metadata, idx, video_id, "failed to get metadata")
         shutil.rmtree(video_folder)
-        return False
+        return False, False
     
     # Save metadata
     metadata_json = json.loads(output)
@@ -183,8 +184,8 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
         "--sub-lang", lang,
         "--convert-subs", "srt",
         "--skip-download",
-        video_id,
-        "-o", str(transcribed_folder / "file")
+        "-o", str(transcribed_folder / "file"),
+        "--", video_id  # Use -- to handle IDs starting with dash
     ]
     success, output = run_command(cmd)
     
@@ -192,7 +193,7 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
         print(f"  ✗ Failed to get subtitles: {output}")
         add_failure(metadata, idx, video_id, "failed to get srt")
         shutil.rmtree(video_folder)
-        return False
+        return False, False
     
     # Rename subtitle file
     srt_temp_file.rename(srt_final_file)
@@ -223,14 +224,14 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
         print(f"  ✗ Failed to process: {str(e)}")
         add_failure(metadata, idx, video_id, "failed to process")
         shutil.rmtree(video_folder)
-        return False
+        return False, False
     
     # Step 4: Create lock file
     lock_file.touch()
     print(f"  ✓ Lock file created")
     print(f"  ✓ Video {video_id} processed successfully!")
     
-    return True
+    return True, False  # Success, not skipped (actually processed)
 
 
 def main():
@@ -290,15 +291,15 @@ def main():
         if idx < start_index:
             continue
         
-        success = process_video_with_retry(video_data, idx, dataset_path, args.lang, metadata, max_retries=5, force_rewrite=args.force_rewrite)
+        success, was_skipped = process_video_with_retry(video_data, idx, dataset_path, args.lang, metadata, max_retries=5, force_rewrite=args.force_rewrite)
         
         # Update state after each video (success or failure)
         state["last_processed_index"] = idx
         save_state(str(folder_path), state)
         save_metadata(str(folder_path), metadata)
         
-        # Add delay between videos to avoid bombarding the server
-        if idx < len(video_data_list) - 1:  # Don't delay after the last video
+        # Add delay between videos to avoid bombarding the server (only if video was actually processed)
+        if not was_skipped and idx < len(video_data_list) - 1:  # Don't delay after skipped or last video
             print(f"  ⏸ Waiting 5 seconds before next video...")
             time.sleep(5)
     
