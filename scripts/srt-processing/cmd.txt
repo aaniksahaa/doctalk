@@ -19,7 +19,8 @@ python data_filter.py \
 
 python save.py --folder saved-data \
   --file filtered-results.json \
-  --lang bn
+  --lang bn \
+  --force-rewrite
 
 python extract_metadata.py \
   --folder saved-data \

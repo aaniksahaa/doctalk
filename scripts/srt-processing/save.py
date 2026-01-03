@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import shutil
+import time
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -99,13 +100,38 @@ def add_failure(metadata: Dict, idx: int, video_id: str, reason: str):
     })
 
 
-def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict) -> bool:
+def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 5, force_rewrite: bool = False) -> bool:
+    """
+    Process a video with retry logic and exponential backoff.
+    Returns True if successful, False otherwise.
+    """
+    video_id = video_data["videoId"]
+    
+    for attempt in range(max_retries):
+        if attempt > 0:
+            wait_time = min(2 ** attempt, 60)  # Exponential backoff, max 60s
+            print(f"  ⏳ Retry attempt {attempt + 1}/{max_retries} after {wait_time}s...")
+            time.sleep(wait_time)
+        
+        success = process_video(video_data, idx, dataset_path, lang, metadata, attempt, force_rewrite)
+        if success:
+            return True
+    
+    print(f"  ✗ Failed after {max_retries} attempts")
+    return False
+
+
+def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, attempt: int = 0, force_rewrite: bool = False) -> bool:
     """
     Process a single video: download metadata, transcription, and process files.
     Returns True if successful, False otherwise.
     """
     video_id = video_data["videoId"]
-    print(f"\n[{idx}] Processing video: {video_id}")
+    
+    if attempt == 0:
+        print(f"\n[{idx}] Processing video: {video_id}")
+    else:
+        print(f"  → Attempting to process video: {video_id}")
     
     # Create video folder
     video_folder = dataset_path / video_id
@@ -113,9 +139,12 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     
     # Check if already processed
     if video_folder.exists():
-        if lock_file.exists():
+        if lock_file.exists() and not force_rewrite:
             print(f"  ✓ Video {video_id} already processed (lock file found). Skipping.")
             return True
+        elif lock_file.exists() and force_rewrite:
+            print(f"  ⚠ Force rewrite enabled. Deleting and reprocessing...")
+            shutil.rmtree(video_folder)
         else:
             print(f"  ⚠ Folder exists but no lock file. Deleting and reprocessing...")
             shutil.rmtree(video_folder)
@@ -223,6 +252,11 @@ def main():
         default="bn",
         help="Subtitle language code (default: bn)"
     )
+    parser.add_argument(
+        "--force-rewrite",
+        action="store_true",
+        help="Force reprocessing even if lock file exists"
+    )
     
     args = parser.parse_args()
     
@@ -256,12 +290,17 @@ def main():
         if idx < start_index:
             continue
         
-        success = process_video(video_data, idx, dataset_path, args.lang, metadata)
+        success = process_video_with_retry(video_data, idx, dataset_path, args.lang, metadata, max_retries=5, force_rewrite=args.force_rewrite)
         
         # Update state after each video (success or failure)
         state["last_processed_index"] = idx
         save_state(str(folder_path), state)
         save_metadata(str(folder_path), metadata)
+        
+        # Add delay between videos to avoid bombarding the server
+        if idx < len(video_data_list) - 1:  # Don't delay after the last video
+            print(f"  ⏸ Waiting 5 seconds before next video...")
+            time.sleep(5)
     
     # Remove state file after completion
     state_file = folder_path / "save-state.json"
