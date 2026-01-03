@@ -42,13 +42,16 @@ def get_results(query: str, channel_id: str, region_code: str, published_after: 
         "part": "snippet",
         "type": "video",
         "order": "date",
-        "regionCode": region_code,
         "maxResults": 50,
         "q": query,
         "channelId": channel_id,
         "publishedAfter": published_after,
         "key": YOUTUBE_API_KEY
     }
+
+    # Only include regionCode if provided
+    if region_code:
+        params["regionCode"] = region_code
 
     if page_token:
         params["pageToken"] = page_token
@@ -401,8 +404,14 @@ def main():
     )
     parser.add_argument(
         "-r", "--region",
-        default="BD",
-        help="Region code (default: BD)"
+        default=None,
+        help="Region code (optional, not included in API query if not specified)"
+    )
+    parser.add_argument(
+        "--min-duration-in-minutes",
+        type=float,
+        default=None,
+        help="Minimum video duration in minutes (videos shorter than this will be rejected)"
     )
     parser.add_argument(
         "-l", "--limit",
@@ -464,9 +473,11 @@ def main():
     print(f"Configuration:")
     print(f"  Query: {state['query']}")
     print(f"  Channel ID: {state['channel']}")
-    print(f"  Region: {state['region_code']}")
+    print(f"  Region: {state['region_code'] if state['region_code'] else 'Not specified (global)'}")
     print(f"  Limit: {state['limit_months']} months")
     print(f"  Published After: {state['published_after']}")
+    if args.min_duration_in_minutes:
+        print(f"  Min Duration: {args.min_duration_in_minutes} minutes")
     print(f"  Saved data directory: {SAVED_DATA_DIR}")
 
     # Skip if already finished
@@ -509,6 +520,18 @@ def main():
             if processed_videos:
                 # Enrich videos with additional metadata
                 processed_videos = enrich_videos_with_details(processed_videos)
+                
+                # Filter by minimum duration if specified
+                if args.min_duration_in_minutes is not None:
+                    min_duration_seconds = args.min_duration_in_minutes * 60
+                    before_filter = len(processed_videos)
+                    processed_videos = [
+                        v for v in processed_videos 
+                        if v.get("duration") is not None and v.get("duration") >= min_duration_seconds
+                    ]
+                    filtered_out = before_filter - len(processed_videos)
+                    if filtered_out > 0:
+                        print(f"  Filtered out {filtered_out} videos shorter than {args.min_duration_in_minutes} minutes")
                 
                 save_results_to_file(processed_videos, "results.json", append=(total_videos > 0))
                 total_videos += len(processed_videos)

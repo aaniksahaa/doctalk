@@ -15,5 +15,28 @@ python search.py \
   --channel UC9zgYOQB6zkleAQjW53DLeQ \
   --data-dir saved-data
 
+python search.py \
+  --query "Sustho Thakun - ATN Bangla" \
+  --channel UCVg8WjB-6bgtcYmrl1hj_Fg \
+  --data-dir saved-data
+
+python search.py \
+  --query "Sustho Thakun - Rtv Health" \
+  --channel UCRdlnfKVt7lP5oW-EeS7fmg \
+  --data-dir saved-data
+
+python search.py \
+  --query "Doctor's Chamber – Maasranga TV Program" \
+  --channel UC7lUFHcujxyC76r2LkmSOZA \
+  --data-dir saved-data
+
+python search-bulk.py \
+  --queries-json a.json \
+  --data-dir saved-data
+
+python search-bulk.py \
+  --queries-json search_queries.json \
+  --data-dir saved-data
+
 python save.py --folder test --file filtered-results.json --lang bn
 

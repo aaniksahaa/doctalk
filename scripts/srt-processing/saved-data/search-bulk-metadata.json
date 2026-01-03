@@ -1,0 +1,13 @@
+{
+  "queries_file": "search_queries.json",
+  "region_code": null,
+  "limit_months": 60,
+  "min_duration_minutes": null,
+  "published_after": "2020-12-30T00:00:00Z",
+  "total_queries": 19,
+  "processed_queries": 9,
+  "failed_queries": 0,
+  "total_videos": 5490,
+  "new_videos_added": 172,
+  "timestamp": "2026-01-03T14:31:30.274342+00:00"
+}
