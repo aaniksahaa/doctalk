@@ -44,5 +44,11 @@ python data_filter.py \
   --model qwen2.5:3b-instruct \
   --force-restart
 
+python extract_metadata.py \
+  --folder saved-data \
+  --file filtered-results.json \
+  --model qwen2.5:3b-instruct \
+  --force-rewrite
+
 python save.py --folder test --file filtered-results.json --lang bn
 

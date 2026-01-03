@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from llm import get_response
 
+from constants import PROGRAM_NAMES
 
 class HealthcareResponse(BaseModel):
     """Structured response for healthcare classification."""
@@ -106,29 +107,6 @@ def add_failure(metadata: Dict[str, Any], index: int, video_id: str, reason: str
         'reason': reason
     })
 
-
-program_names = [
-    "স্বাস্থ্য জিজ্ঞাসা",
-    "স্বাস্থ্য বার্তা",
-    "সুস্থ থাকুন",
-    "স্বাস্থ্য প্রতিদিন",
-    "সুস্থ থাকুন",
-    "Sustho Thakun",
-    "RTV Health Program",
-    "My Health",
-    "Doctor’s Chamber",
-    "স্বাস্থ্যকথা",
-    "সুরক্ষায় প্রতিদিন",
-    "সুস্থ মেরুদণ্ড",
-    "Doctors On Call",
-    "Doctor’s Chamber",
-    "সুস্থ জীবন",
-    "স্বাস্থ্য কথা",
-    "Boishakhi Health",
-    "Health Tips"
-]
-
-
 def is_healthcare_video(model: str, title: str, description: str, max_retries: int = 5) -> bool:
     """
     Query LLM to determine if a video is healthcare-related.
@@ -138,8 +116,9 @@ def is_healthcare_video(model: str, title: str, description: str, max_retries: i
     """
 
     # if any of the program names found in title, return true
-    for pname in program_names:
+    for pname in PROGRAM_NAMES:
         if pname.lower() in title.lower():
+            # print("\n\nAUTO\n\n")
             return True
 
     # Build prompt from file-based templates
