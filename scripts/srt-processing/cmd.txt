@@ -1,38 +1,11 @@
+python3 -m pip install -U yt-dlp
+yt-dlp --version
 
 python search.py \
   --query "স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television" \
   --channel UClzwimpLoZu9us9MwalLbtA \
   --data-dir saved-data
   --file results-btv.json
-
-python search.py \
-  --query "Shastho Protidin - NTV Health Show" \
-  --channel UCDnuvgyEX7Qd0EaEEN1cBaQ \
-  --data-dir saved-data
-
-python search.py \
-  --query "My Health - Mytv" \
-  --channel UC9zgYOQB6zkleAQjW53DLeQ \
-  --data-dir saved-data
-
-python search.py \
-  --query "Sustho Thakun - ATN Bangla" \
-  --channel UCVg8WjB-6bgtcYmrl1hj_Fg \
-  --data-dir saved-data
-
-python search.py \
-  --query "Sustho Thakun - Rtv Health" \
-  --channel UCRdlnfKVt7lP5oW-EeS7fmg \
-  --data-dir saved-data
-
-python search.py \
-  --query "Doctor's Chamber – Maasranga TV Program" \
-  --channel UC7lUFHcujxyC76r2LkmSOZA \
-  --data-dir saved-data
-
-python search_bulk.py \
-  --queries-json a.json \
-  --data-dir saved-data
 
 python search_bulk.py \
   --queries-json search_queries.json \
@@ -41,14 +14,16 @@ python search_bulk.py \
 python data_filter.py \
   --folder saved-data \
   --file results.json \
-  --model qwen2.5:3b-instruct \
+  --model qwen3:30b-instruct \
   --force-restart
+
+python save.py --folder saved-data \
+  --file filtered-results.json \
+  --lang bn
 
 python extract_metadata.py \
   --folder saved-data \
   --file filtered-results.json \
-  --model qwen2.5:3b-instruct \
+  --model qwen3:30b-instruct \
   --force-rewrite
-
-python save.py --folder test --file filtered-results.json --lang bn
 
