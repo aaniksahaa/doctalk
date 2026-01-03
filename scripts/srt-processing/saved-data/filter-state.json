@@ -1,0 +1,7 @@
+{
+  "folder": "saved-data",
+  "file": "results.json",
+  "model": "qwen2.5:3b-instruct",
+  "batch_size": 5,
+  "last_processed_index": 1294
+}

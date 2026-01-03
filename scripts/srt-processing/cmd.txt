@@ -30,13 +30,19 @@ python search.py \
   --channel UC7lUFHcujxyC76r2LkmSOZA \
   --data-dir saved-data
 
-python search-bulk.py \
+python search_bulk.py \
   --queries-json a.json \
   --data-dir saved-data
 
-python search-bulk.py \
+python search_bulk.py \
   --queries-json search_queries.json \
   --data-dir saved-data
+
+python data_filter.py \
+  --folder saved-data \
+  --file results.json \
+  --model qwen2.5:3b-instruct \
+  --force-restart
 
 python save.py --folder test --file filtered-results.json --lang bn
 

@@ -1,0 +1,1492 @@
+{
+  "folder": "saved-data",
+  "file": "results.json",
+  "model": "qwen2.5:3b-instruct",
+  "failures": [
+    {
+      "index": 53,
+      "video_id": "0Rti-8xCsLM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 81,
+      "video_id": "5iRsnzW1qxU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 137,
+      "video_id": "nBXZ7Zp4eLs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 142,
+      "video_id": "Q3Kn97onmsE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 161,
+      "video_id": "R2f728gdMgU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 162,
+      "video_id": "NYZajb6zx_w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 163,
+      "video_id": "M0e8bp8ByNg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 164,
+      "video_id": "ZWpeaenjWYc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 166,
+      "video_id": "_jQ5Bq-rBLY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 167,
+      "video_id": "rfnEMTaA9sQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 168,
+      "video_id": "t9V8b3bVSuk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 169,
+      "video_id": "9SqMS_xPTFo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 170,
+      "video_id": "3Vl5Xd_V8zQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 171,
+      "video_id": "9eo7Zg549Cs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 172,
+      "video_id": "tm60ET2GrbA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 173,
+      "video_id": "TPPCW3tqrzM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 174,
+      "video_id": "rZwAETX9bwo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 192,
+      "video_id": "cgAhaRW1bFU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 200,
+      "video_id": "HcDu6baQSyw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 202,
+      "video_id": "f5VGBI-pnXs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 203,
+      "video_id": "B3mDC5owIPk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 204,
+      "video_id": "KY02jdDIuZE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 205,
+      "video_id": "GKuOjZKZWig",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 206,
+      "video_id": "H26Y3ShqUko",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 207,
+      "video_id": "aO--0oOFjII",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 209,
+      "video_id": "nxu5FUpAPMY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 210,
+      "video_id": "8PyuHXhq8PI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 211,
+      "video_id": "LUaVfI5NDGk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 213,
+      "video_id": "3_VYYzgQ3J4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 214,
+      "video_id": "_9U5wyV86YM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 216,
+      "video_id": "ea0WIZr-Yro",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 217,
+      "video_id": "ip_a7vTAuVM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 218,
+      "video_id": "1qwGs5-yrDI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 219,
+      "video_id": "9rYOz78ak24",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 220,
+      "video_id": "3goZtqxqQDU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 221,
+      "video_id": "3FoTCki8OqE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 222,
+      "video_id": "VAbN3R3YzYY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 223,
+      "video_id": "echkehru2x4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 225,
+      "video_id": "SWeRzFmqk3I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 227,
+      "video_id": "-i8b_nsT09k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 231,
+      "video_id": "9eSdtAFxIbM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 232,
+      "video_id": "Ra1NJYBTd0k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 233,
+      "video_id": "pTWtyVlKjLg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 234,
+      "video_id": "LgAgyX-KGe0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 235,
+      "video_id": "k83rX4SAluo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 236,
+      "video_id": "gN7PApbEr4w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 237,
+      "video_id": "OmdA9kLQv4U",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 238,
+      "video_id": "8cN602J0OsM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 239,
+      "video_id": "9osEIBTEo0I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 240,
+      "video_id": "9bpuIE8SHVs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 241,
+      "video_id": "7hsb_JumapA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 242,
+      "video_id": "3pHWdAYmJKc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 243,
+      "video_id": "9adUMgVtIRw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 245,
+      "video_id": "Ti2dIJoP4js",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 246,
+      "video_id": "nypkVFbXf_g",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 247,
+      "video_id": "2mw_tYebhgE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 249,
+      "video_id": "lIAab0UlnWw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 252,
+      "video_id": "95U50W_ylD0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 253,
+      "video_id": "hmMIxlduTIA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 254,
+      "video_id": "z0QspaHvSK8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 255,
+      "video_id": "3053P8UeYg4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 256,
+      "video_id": "3YXX5Ud0Cr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 260,
+      "video_id": "Yy5dQfx1yo4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 317,
+      "video_id": "ScjUnlPtChc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 353,
+      "video_id": "I1gtLJgA3vs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 430,
+      "video_id": "ZiGtH21rUp0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 452,
+      "video_id": "c-cDIhNqKr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 454,
+      "video_id": "31coDkYU0DM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 458,
+      "video_id": "j1FxSgNaW-0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 459,
+      "video_id": "MstdMnIORuY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 478,
+      "video_id": "PxaFOIGdGA4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 481,
+      "video_id": "qAspRsfTfN8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 137,
+      "video_id": "nBXZ7Zp4eLs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 142,
+      "video_id": "Q3Kn97onmsE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 161,
+      "video_id": "R2f728gdMgU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 162,
+      "video_id": "NYZajb6zx_w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 163,
+      "video_id": "M0e8bp8ByNg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 164,
+      "video_id": "ZWpeaenjWYc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 137,
+      "video_id": "nBXZ7Zp4eLs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 142,
+      "video_id": "Q3Kn97onmsE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 161,
+      "video_id": "R2f728gdMgU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 162,
+      "video_id": "NYZajb6zx_w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 163,
+      "video_id": "M0e8bp8ByNg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 164,
+      "video_id": "ZWpeaenjWYc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 166,
+      "video_id": "_jQ5Bq-rBLY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 167,
+      "video_id": "rfnEMTaA9sQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 168,
+      "video_id": "t9V8b3bVSuk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 169,
+      "video_id": "9SqMS_xPTFo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 170,
+      "video_id": "3Vl5Xd_V8zQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 171,
+      "video_id": "9eo7Zg549Cs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 172,
+      "video_id": "tm60ET2GrbA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 173,
+      "video_id": "TPPCW3tqrzM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 174,
+      "video_id": "rZwAETX9bwo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 192,
+      "video_id": "cgAhaRW1bFU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 200,
+      "video_id": "HcDu6baQSyw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 202,
+      "video_id": "f5VGBI-pnXs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 203,
+      "video_id": "B3mDC5owIPk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 204,
+      "video_id": "KY02jdDIuZE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 205,
+      "video_id": "GKuOjZKZWig",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 206,
+      "video_id": "H26Y3ShqUko",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 207,
+      "video_id": "aO--0oOFjII",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 209,
+      "video_id": "nxu5FUpAPMY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 210,
+      "video_id": "8PyuHXhq8PI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 211,
+      "video_id": "LUaVfI5NDGk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 213,
+      "video_id": "3_VYYzgQ3J4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 214,
+      "video_id": "_9U5wyV86YM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 216,
+      "video_id": "ea0WIZr-Yro",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 217,
+      "video_id": "ip_a7vTAuVM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 218,
+      "video_id": "1qwGs5-yrDI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 219,
+      "video_id": "9rYOz78ak24",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 220,
+      "video_id": "3goZtqxqQDU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 221,
+      "video_id": "3FoTCki8OqE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 222,
+      "video_id": "VAbN3R3YzYY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 223,
+      "video_id": "echkehru2x4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 225,
+      "video_id": "SWeRzFmqk3I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 227,
+      "video_id": "-i8b_nsT09k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 231,
+      "video_id": "9eSdtAFxIbM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 232,
+      "video_id": "Ra1NJYBTd0k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 233,
+      "video_id": "pTWtyVlKjLg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 234,
+      "video_id": "LgAgyX-KGe0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 236,
+      "video_id": "gN7PApbEr4w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 237,
+      "video_id": "OmdA9kLQv4U",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 238,
+      "video_id": "8cN602J0OsM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 239,
+      "video_id": "9osEIBTEo0I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 240,
+      "video_id": "9bpuIE8SHVs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 241,
+      "video_id": "7hsb_JumapA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 242,
+      "video_id": "3pHWdAYmJKc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 243,
+      "video_id": "9adUMgVtIRw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 245,
+      "video_id": "Ti2dIJoP4js",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 246,
+      "video_id": "nypkVFbXf_g",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 247,
+      "video_id": "2mw_tYebhgE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 249,
+      "video_id": "lIAab0UlnWw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 252,
+      "video_id": "95U50W_ylD0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 253,
+      "video_id": "hmMIxlduTIA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 254,
+      "video_id": "z0QspaHvSK8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 255,
+      "video_id": "3053P8UeYg4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 256,
+      "video_id": "3YXX5Ud0Cr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 260,
+      "video_id": "Yy5dQfx1yo4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 353,
+      "video_id": "I1gtLJgA3vs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 430,
+      "video_id": "ZiGtH21rUp0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 452,
+      "video_id": "c-cDIhNqKr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 454,
+      "video_id": "31coDkYU0DM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 458,
+      "video_id": "j1FxSgNaW-0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 459,
+      "video_id": "MstdMnIORuY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 478,
+      "video_id": "PxaFOIGdGA4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 481,
+      "video_id": "qAspRsfTfN8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 540,
+      "video_id": "pNqdK4mSNqM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 598,
+      "video_id": "73nh6LRnZ84",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 600,
+      "video_id": "AA0cCP97BXc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 607,
+      "video_id": "tpubQGo-X50",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 620,
+      "video_id": "KsjET0a8DGU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 635,
+      "video_id": "uYcLmccI7ng",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 636,
+      "video_id": "Fzpy8jeQ4Aw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 640,
+      "video_id": "JsjQiu7Uegw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 641,
+      "video_id": "0RYVhbxoxPs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 63,
+      "video_id": "ZzZVEe3HSFw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 137,
+      "video_id": "nBXZ7Zp4eLs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 142,
+      "video_id": "Q3Kn97onmsE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 161,
+      "video_id": "R2f728gdMgU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 162,
+      "video_id": "NYZajb6zx_w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 163,
+      "video_id": "M0e8bp8ByNg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 164,
+      "video_id": "ZWpeaenjWYc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 166,
+      "video_id": "_jQ5Bq-rBLY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 167,
+      "video_id": "rfnEMTaA9sQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 168,
+      "video_id": "t9V8b3bVSuk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 169,
+      "video_id": "9SqMS_xPTFo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 170,
+      "video_id": "3Vl5Xd_V8zQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 171,
+      "video_id": "9eo7Zg549Cs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 172,
+      "video_id": "tm60ET2GrbA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 173,
+      "video_id": "TPPCW3tqrzM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 174,
+      "video_id": "rZwAETX9bwo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 200,
+      "video_id": "HcDu6baQSyw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 202,
+      "video_id": "f5VGBI-pnXs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 203,
+      "video_id": "B3mDC5owIPk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 204,
+      "video_id": "KY02jdDIuZE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 205,
+      "video_id": "GKuOjZKZWig",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 206,
+      "video_id": "H26Y3ShqUko",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 207,
+      "video_id": "aO--0oOFjII",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 209,
+      "video_id": "nxu5FUpAPMY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 210,
+      "video_id": "8PyuHXhq8PI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 211,
+      "video_id": "LUaVfI5NDGk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 213,
+      "video_id": "3_VYYzgQ3J4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 214,
+      "video_id": "_9U5wyV86YM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 216,
+      "video_id": "ea0WIZr-Yro",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 217,
+      "video_id": "ip_a7vTAuVM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 218,
+      "video_id": "1qwGs5-yrDI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 219,
+      "video_id": "9rYOz78ak24",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 220,
+      "video_id": "3goZtqxqQDU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 221,
+      "video_id": "3FoTCki8OqE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 222,
+      "video_id": "VAbN3R3YzYY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 223,
+      "video_id": "echkehru2x4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 225,
+      "video_id": "SWeRzFmqk3I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 227,
+      "video_id": "-i8b_nsT09k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 231,
+      "video_id": "9eSdtAFxIbM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 232,
+      "video_id": "Ra1NJYBTd0k",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 233,
+      "video_id": "pTWtyVlKjLg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 234,
+      "video_id": "LgAgyX-KGe0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 236,
+      "video_id": "gN7PApbEr4w",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 237,
+      "video_id": "OmdA9kLQv4U",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 238,
+      "video_id": "8cN602J0OsM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 239,
+      "video_id": "9osEIBTEo0I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 240,
+      "video_id": "9bpuIE8SHVs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 241,
+      "video_id": "7hsb_JumapA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 242,
+      "video_id": "3pHWdAYmJKc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 243,
+      "video_id": "9adUMgVtIRw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 245,
+      "video_id": "Ti2dIJoP4js",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 246,
+      "video_id": "nypkVFbXf_g",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 247,
+      "video_id": "2mw_tYebhgE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 249,
+      "video_id": "lIAab0UlnWw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 252,
+      "video_id": "95U50W_ylD0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 253,
+      "video_id": "hmMIxlduTIA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 254,
+      "video_id": "z0QspaHvSK8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 255,
+      "video_id": "3053P8UeYg4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 256,
+      "video_id": "3YXX5Ud0Cr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 260,
+      "video_id": "Yy5dQfx1yo4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 430,
+      "video_id": "ZiGtH21rUp0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 452,
+      "video_id": "c-cDIhNqKr0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 454,
+      "video_id": "31coDkYU0DM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 458,
+      "video_id": "j1FxSgNaW-0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 459,
+      "video_id": "MstdMnIORuY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 478,
+      "video_id": "PxaFOIGdGA4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 481,
+      "video_id": "qAspRsfTfN8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 540,
+      "video_id": "pNqdK4mSNqM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 598,
+      "video_id": "73nh6LRnZ84",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 620,
+      "video_id": "KsjET0a8DGU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 685,
+      "video_id": "m6Wt7cJRDr8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 686,
+      "video_id": "YBUDJ8s3MmE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 690,
+      "video_id": "gAOkOh8-6cE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 708,
+      "video_id": "rdLlxLWCKNk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 716,
+      "video_id": "zEI0tAScvEw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 718,
+      "video_id": "AsFdr8wfuNw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 816,
+      "video_id": "zEse1--GcVY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 839,
+      "video_id": "smJospHDYoE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 983,
+      "video_id": "UokOFB-3A0g",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 992,
+      "video_id": "qLvA10eFWYs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 997,
+      "video_id": "9kTAueOe5Fs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1003,
+      "video_id": "t-kK9a7wuUg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1016,
+      "video_id": "iTPdNOAHoYk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1017,
+      "video_id": "Hq_rYaIwwCM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1133,
+      "video_id": "6HmnLwJMLqE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1138,
+      "video_id": "ggQx-XqwcDw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1146,
+      "video_id": "o1zQXYiautw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1158,
+      "video_id": "KoPvPtXQtlU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1161,
+      "video_id": "HAPawNoqEy0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1162,
+      "video_id": "Qub94FhJ5hA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1163,
+      "video_id": "IQX5ZCfOje0",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1164,
+      "video_id": "gD9i47BQgMI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1165,
+      "video_id": "dXayhPTpwEE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1166,
+      "video_id": "vKRH_ZRnxMw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1169,
+      "video_id": "SsXeD6K6Gbs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1170,
+      "video_id": "nrsybm7Idn8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1171,
+      "video_id": "j_9dkHdAqho",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1172,
+      "video_id": "eGlqGwUhcXE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1174,
+      "video_id": "awaVPdg3rgQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1175,
+      "video_id": "xfyMksKNHeE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1176,
+      "video_id": "co6t8w29-nk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1177,
+      "video_id": "LdQ-97A-fv4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1179,
+      "video_id": "qPmH_xurwHc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1206,
+      "video_id": "XcR4b17125o",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1215,
+      "video_id": "A_EEoi1YkvQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1220,
+      "video_id": "YVC_o_4amCg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1225,
+      "video_id": "NTR7oni1_XE",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1232,
+      "video_id": "vpCunY5YEyk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1245,
+      "video_id": "Nc6E4tcUNok",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1251,
+      "video_id": "mVJunPmV2Ug",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1252,
+      "video_id": "txdB9kddkX4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1254,
+      "video_id": "0QJV9T1EGSY",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1255,
+      "video_id": "FTBAkNj9Y3o",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1256,
+      "video_id": "o0NyH8LC9JQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1257,
+      "video_id": "4R9epRB9zqM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1259,
+      "video_id": "EhW24Kff798",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1260,
+      "video_id": "wRgFHMb7Ems",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1261,
+      "video_id": "ZEjqei_RLpQ",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1262,
+      "video_id": "grWpcJAmFPo",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1263,
+      "video_id": "tQFPNeWQPpA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1264,
+      "video_id": "8e_3gKgbE_I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1265,
+      "video_id": "eDrv5BLWWHs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1271,
+      "video_id": "cG0BAeaYnHM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1272,
+      "video_id": "2ECXzjSmb9c",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1273,
+      "video_id": "5dCY9095kdk",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1274,
+      "video_id": "pCYrwqDdFNM",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1276,
+      "video_id": "UCu5-S79Xeg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1278,
+      "video_id": "z456nhJyDCs",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1279,
+      "video_id": "wyGB0smT8ec",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1280,
+      "video_id": "b6twoBmgSj4",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1282,
+      "video_id": "wWTpKKzdJXI",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1283,
+      "video_id": "1r-_YgyyOOw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1284,
+      "video_id": "pZrILPdRUPg",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1285,
+      "video_id": "j8T6wHwJAgU",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1286,
+      "video_id": "ca--QMOhlKc",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1287,
+      "video_id": "I7fof7bRWRw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1288,
+      "video_id": "ZgNZVCpfdu8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1289,
+      "video_id": "FPZSnKjp3n8",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1290,
+      "video_id": "kzUMxG3RvOw",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1291,
+      "video_id": "7gb-l3Q_AAA",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1292,
+      "video_id": "yMTmqkjHm_I",
+      "reason": "not healthcare-related"
+    },
+    {
+      "index": 1293,
+      "video_id": "ISwRTVs3rOM",
+      "reason": "not healthcare-related"
+    }
+  ]
+}

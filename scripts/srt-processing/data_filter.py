@@ -9,11 +9,27 @@ import argparse
 import os
 from pathlib import Path
 from typing import Dict, List, Any
-from ollama import chat
 from pydantic import BaseModel
 
-class Response(BaseModel):
-  res: bool
+from llm import get_response
+
+
+class HealthcareResponse(BaseModel):
+    """Structured response for healthcare classification."""
+    healthcare: bool
+
+
+# Load prompts from files
+PROMPTS_DIR = Path(__file__).parent / "prompts" / "healthcare-classification"
+
+def load_prompt_file(filename: str) -> str:
+    """Load a prompt file from the healthcare-classification prompts directory."""
+    filepath = PROMPTS_DIR / filename
+    with open(filepath, "r", encoding="utf-8") as f:
+        return f.read()
+
+SYSTEM_PROMPT = load_prompt_file("system.md")
+HEADER_PROMPT = load_prompt_file("header.md")
 
 def load_results(results_path: str) -> List[Dict[str, Any]]:
     """Load results.json file."""
@@ -68,6 +84,20 @@ def save_filtered_results(filtered_path: str, results: List[Dict[str, Any]]) -> 
         json.dump(results, f, indent=2, ensure_ascii=False)
 
 
+def load_rejected_results(rejected_path: str) -> List[Dict[str, Any]]:
+    """Load rejected (non-healthcare) results if they exist."""
+    if os.path.exists(rejected_path):
+        with open(rejected_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return []
+
+
+def save_rejected_results(rejected_path: str, results: List[Dict[str, Any]]) -> None:
+    """Save rejected (non-healthcare) results."""
+    with open(rejected_path, 'w', encoding='utf-8') as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+
+
 def add_failure(metadata: Dict[str, Any], index: int, video_id: str, reason: str) -> None:
     """Add a failure entry to metadata."""
     metadata['failures'].append({
@@ -77,36 +107,73 @@ def add_failure(metadata: Dict[str, Any], index: int, video_id: str, reason: str
     })
 
 
-def is_healthcare_video(model: str, title: str, description: str) -> bool:
+program_names = [
+    "স্বাস্থ্য জিজ্ঞাসা",
+    "স্বাস্থ্য বার্তা",
+    "সুস্থ থাকুন",
+    "স্বাস্থ্য প্রতিদিন",
+    "সুস্থ থাকুন",
+    "Sustho Thakun",
+    "RTV Health Program",
+    "My Health",
+    "Doctor’s Chamber",
+    "স্বাস্থ্যকথা",
+    "সুরক্ষায় প্রতিদিন",
+    "সুস্থ মেরুদণ্ড",
+    "Doctors On Call",
+    "Doctor’s Chamber",
+    "সুস্থ জীবন",
+    "স্বাস্থ্য কথা",
+    "Boishakhi Health",
+    "Health Tips"
+]
+
+
+def is_healthcare_video(model: str, title: str, description: str, max_retries: int = 5) -> bool:
     """
-    Query Ollama to determine if a video is healthcare-related.
+    Query LLM to determine if a video is healthcare-related.
+    Uses prompts loaded from markdown files.
+    Retries up to max_retries times if JSON parsing fails.
     Returns True if healthcare-related, False otherwise.
     """
-    prompt = f"""You are a healthcare content classifier. Analyze the following video metadata and determine if it is related to healthcare, medicine, health tips, or medical discussions.
 
+    # if any of the program names found in title, return true
+    for pname in program_names:
+        if pname.lower() in title.lower():
+            return True
+
+    # Build prompt from file-based templates
+    prompt = HEADER_PROMPT + f"""
 Title: {title}
 Description: {description}
+"""
 
-Respond with a JSON object with a single field "healthcare" set to true or false."""
-
-    try:
-        response = chat(
-            model=model,
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that classifies healthcare content."},
-                {"role": "user", "content": prompt}
-            ],
-            format=Response.model_json_schema()
-        )
-        
-        # Parse JSON response
-        res = Response.model_validate_json(response.message.content)
-        return res.res
+    last_error = None
     
-    except json.JSONDecodeError as e:
-        raise Exception(f"Failed to parse JSON response from Ollama: {str(e)}")
-    except Exception as e:
-        raise Exception(f"Error querying Ollama: {str(e)}")
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = get_response(
+                prompt=prompt,
+                model=model,
+                system_prompt=SYSTEM_PROMPT,
+                format_schema=HealthcareResponse.model_json_schema(),
+            )
+            
+            # Parse JSON response
+            result = HealthcareResponse.model_validate_json(response.content)
+            return result.healthcare
+        
+        except (json.JSONDecodeError, ValueError) as e:
+            last_error = e
+            if attempt < max_retries:
+                print(f"      Retry {attempt}/{max_retries}: JSON parse error - {str(e)}")
+            continue
+        except Exception as e:
+            # Non-retryable errors (network, API, etc.)
+            raise Exception(f"Error during LLM inference: {str(e)}")
+    
+    # All retries exhausted
+    raise Exception(f"Failed to parse JSON response after {max_retries} attempts: {str(last_error)}")
 
 
 def process_batch(
@@ -115,6 +182,7 @@ def process_batch(
     start_idx: int,
     batch_size: int,
     filtered_results: List[Dict[str, Any]],
+    rejected_results: List[Dict[str, Any]],
     metadata: Dict[str, Any]
 ) -> tuple[int, int]:
     """
@@ -124,8 +192,6 @@ def process_batch(
     end_idx = min(start_idx + batch_size, len(results))
     failed_count = 0
     
-    print(f"\nProcessing batch: {start_idx} to {end_idx - 1}")
-    
     for i in range(start_idx, end_idx):
         result = results[i]
         title = result.get('title', '')
@@ -133,7 +199,7 @@ def process_batch(
         video_id = result.get('videoId', 'unknown')
         
         try:
-            print(f"  [{i}] Processing: {title[:50]}...", end=' ')
+            print(f"  [{i}] {title[:60]}...", end=' ')
             
             is_healthcare = is_healthcare_video(model, title, normalized_desc)
             
@@ -144,6 +210,10 @@ def process_batch(
                 filtered_results.append(filtered_entry)
                 print("✓ Healthcare")
             else:
+                # Add to rejected results with original index
+                rejected_entry = result.copy()
+                rejected_entry['idx'] = i
+                rejected_results.append(rejected_entry)
                 print("✗ Not healthcare")
                 add_failure(metadata, i, video_id, "not healthcare-related")
                 failed_count += 1
@@ -204,6 +274,7 @@ def main():
     state_path = folder_path / 'filter-state.json'
     metadata_path = folder_path / 'filter-metadata.json'
     filtered_path = folder_path / 'filtered-results.json'
+    rejected_path = folder_path / 'rejected-non-healthcare-results.json'
     
     # Validate results.json exists
     if not results_path.exists():
@@ -225,6 +296,7 @@ def main():
         batch_size = existing_state['batch_size']
         model = existing_state['model']
         filtered_results = load_filtered_results(str(filtered_path))
+        rejected_results = load_rejected_results(str(rejected_path))
         metadata = load_metadata(str(metadata_path), args.folder, args.file, args.model)
         
         if model != args.model:
@@ -240,13 +312,19 @@ def main():
         batch_size = args.batch_size
         model = args.model
         filtered_results = []
+        rejected_results = []
         metadata = load_metadata(str(metadata_path), args.folder, args.file, args.model)
     
     # Process batches
     current_idx = start_idx
+    total_items = len(results)
     
     try:
         while current_idx < len(results):
+            # Print batch header
+            end_idx = min(current_idx + batch_size, len(results))
+            print(f"\n--- Batch {current_idx}-{end_idx - 1} ---")
+            
             # Process batch
             next_idx, batch_failed = process_batch(
                 model,
@@ -254,8 +332,13 @@ def main():
                 current_idx,
                 batch_size,
                 filtered_results,
+                rejected_results,
                 metadata
             )
+            
+            # Print progress
+            pct = (next_idx / total_items) * 100
+            print(f"\n>>> {next_idx}/{total_items} ({pct:.1f}%) processed | healthcare: {len(filtered_results)}, rejected: {len(rejected_results)}")
             
             # Save state after each batch
             state = {
@@ -273,7 +356,8 @@ def main():
             # Save filtered results
             save_filtered_results(str(filtered_path), filtered_results)
             
-            print(f"  Saved: {len(filtered_results)} healthcare videos, {len(metadata['failures'])} non-healthcare")
+            # Save rejected results
+            save_rejected_results(str(rejected_path), rejected_results)
             
             current_idx = next_idx
     
@@ -289,7 +373,7 @@ def main():
         print(f"\n✓ Processing complete!")
         print(f"  Total videos processed: {len(results)}")
         print(f"  Healthcare videos found: {len(filtered_results)}")
-        print(f"  Non-healthcare videos: {len(metadata['failures'])}")
+        print(f"  Non-healthcare videos: {len(rejected_results)}")
         
         if metadata['failures']:
             print(f"\n  See filter-metadata.json for details on {len(metadata['failures'])} failures")
@@ -299,8 +383,10 @@ def main():
             state_path.unlink()
             print(f"\n✓ Removed filter-state.json (processing complete)")
         
-        print(f"\nResults saved to: {filtered_path}")
-        print(f"Metadata saved to: {metadata_path}")
+        print(f"\nResults saved to:")
+        print(f"  Healthcare: {filtered_path}")
+        print(f"  Non-healthcare: {rejected_path}")
+        print(f"  Metadata: {metadata_path}")
     
     return 0
 

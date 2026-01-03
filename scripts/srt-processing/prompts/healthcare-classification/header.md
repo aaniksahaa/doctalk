@@ -15,6 +15,65 @@ Non-healthcare content includes:
 - Technology, travel, or general news unrelated to health
 - Purely motivational content without medical context
 
+A useful knowledge for you is that, we have some names of television programs and channels which we particularly target. So if the metadata contains these channels or program names in the title and description, it is very likely a desired content.
+
+List of Program and Channel Names:
+
+**BTV**
+স্বাস্থ্য জিজ্ঞাসা – Bangladesh Television
+
+**ATN Bangla**
+সুস্থ থাকুন – ATN Bangla
+
+**NTV**
+স্বাস্থ্য প্রতিদিন – NTV Health Show
+
+**RTV**
+সুস্থ থাকুন – RTV Health
+RTV Health Program
+
+**MyTV**
+My Health – MyTV
+
+**GTV**
+Doctor’s Chamber – GTV
+
+**DBC News**
+স্বাস্থ্যকথা – DBC News
+
+**Channel 24**
+সুরক্ষায় প্রতিদিন – Channel 24
+সুস্থ মেরুদণ্ড – Channel 24
+
+**Jamuna TV**
+Doctors On Call – Jamuna TV
+
+**Maasranga TV**
+Doctor’s Chamber – Maasranga TV Program
+
+**Deepto TV**
+সুস্থ জীবন – Deepto Health Show
+
+**Banglavision**
+স্বাস্থ্য কথা – Banglavision
+
+**Boishakhi TV**
+Boishakhi Health – Boishakhi TV
+
+**News24**
+Health Tips – News24
+
+However, note that, these same channels can contain non-healthcare programs like news etc.
+
+Sometimes, due to channel authority's mistakes, it may happen that the title is news but the description says healthcare content, For instance, 
+
+Title:
+দুপুর ২টার সংবাদ
+Description:
+টেলিফোনে দর্শকদের অংশগ্রহণে স্বাস্থ্য বিষয়ক \nসরাসরি অনুষ্ঠান - “স্বাস্থ্য জিজ্ঞাসা” \nআজকের বিষয়: হৃদরোগের চিকিৎসা এবং করোনা সংক্রান্ত যে কোন সমস্যায় করণীয়।\nগ্রন্থনা ও উপস্থাপনা: ডা ফাহিম আহমেদ রুপম, কনসালটেন্ট, মেডিসিন ও ডায়ামেটিস।\n\nআলোচক: \nহেল্পডেস্ক: ডা: তামান্না মাহ্‌মুদ ঊর্মি, এমবিবিএস, এম.ফিল \nপ্রচার: ২৮ সেপ্টেম্বর  ২০২২\n\n[ আমাদের ফেসবুক পেজটিকে Like ও Follow করুন এবং \nইউটিউব চ্যানেলটি সাবস্ক্রাইব করে সাথে থাকুন ]\n\nSubscribe to us on YouTube:\nhttps://www.youtube.com/c/BangladeshTelevision-BTV?sub_confirmation=1\nLike, Follow us on Facebook: \nhttps://www.facebook.com/btv.gov.bd\nVisit us: http://www.btv.gov.bd\n_________________________________________________\nAll Rights Reserved © Bangladesh Television 2022\n#BangladeshTelevision
+
+In such case, classify it as healthcare content.
+
 [OUTPUT FORMAT]
 Respond ONLY with a valid JSON object:
 {
