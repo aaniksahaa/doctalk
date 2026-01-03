@@ -291,7 +291,7 @@ def main():
         if idx < start_index:
             continue
         
-        success, was_skipped = process_video_with_retry(video_data, idx, dataset_path, args.lang, metadata, max_retries=5, force_rewrite=args.force_rewrite)
+        success, was_skipped = process_video_with_retry(video_data, idx, dataset_path, args.lang, metadata, max_retries=2, force_rewrite=args.force_rewrite)
         
         # Update state after each video (success or failure)
         state["last_processed_index"] = idx
