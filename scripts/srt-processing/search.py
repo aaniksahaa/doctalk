@@ -391,8 +391,8 @@ def main():
     # Optional arguments with defaults
     parser.add_argument(
         "-q", "--query",
-        default="স্বাস্থ্য জিজ্ঞাসা",
-        help="Search query (default: স্বাস্থ্য জিজ্ঞাসা)"
+        default="স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television",
+        help="Search query (default: স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television)"
     )
     parser.add_argument(
         "-c", "--channel",
@@ -407,8 +407,8 @@ def main():
     parser.add_argument(
         "-l", "--limit",
         type=int,
-        default=12,
-        help="Limit in months (default: 12)"
+        default=36,
+        help="Limit in months (default: 36)"
     )
     parser.add_argument(
         "-d", "--data-dir",

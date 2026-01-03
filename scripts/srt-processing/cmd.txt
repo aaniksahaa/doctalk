@@ -1,1 +1,19 @@
+
+python search.py \
+  --query "স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television" \
+  --channel UClzwimpLoZu9us9MwalLbtA \
+  --data-dir saved-data
+  --file results-btv.json
+
+python search.py \
+  --query "Shastho Protidin - NTV Health Show" \
+  --channel UCDnuvgyEX7Qd0EaEEN1cBaQ \
+  --data-dir saved-data
+
+python search.py \
+  --query "My Health - Mytv" \
+  --channel UC9zgYOQB6zkleAQjW53DLeQ \
+  --data-dir saved-data
+
 python save.py --folder test --file filtered-results.json --lang bn
+
