@@ -146,5 +146,10 @@ MEDICAL_TAGS = [
     "tag": "alternative-medicine",
     "description_en": "Traditional, herbal, or alternative medical practices and remedies.",
     "description_bn": "ঐতিহ্যবাহী, ভেষজ বা বিকল্প চিকিৎসা পদ্ধতি।"
+  },
+  {
+    "tag": "dentistry",
+    "description_en": "Diseases and conditions related to teeth, gums, and oral health, including tooth decay and gum disease.",
+    "description_bn": "দাঁত, মাড়ি ও মুখগহ্বরের রোগ, যেমন দাঁতের ক্ষয় ও মাড়ির সমস্যা।"
   }
 ]
