@@ -1,0 +1,383 @@
+{
+  "summary": "This video features a discussion on bronchial asthma between two speakers. Speaker 1, the interviewer, asks about different types of asthma, its causes, symptoms, risk factors, and treatment methods. Speaker 2, a doctor, explains the differences between bronchial and cardiac asthma, detailing the environmental factors, viral infections, and allergens that trigger bronchial asthma, especially in Bangladesh. He also demonstrates different types of inhalers (MDI and DPI) and their proper usage, emphasizing that inhalers are the primary and most effective treatment for asthma, contrary to common misconceptions.",
+  "segments": [
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "00:00",
+      "content": "স্যার ব্রঙ্কিয়াল বা অ্যাজমা নিয়ে আমরা আলোচনা করব। ব্রঙ্কিয়ালটা আমি শুরুতেই না বলি। কারণ আমরা জানি যে অ্যাজমারও কিছু প্রকারভেদ রয়েছে। তো এই অ্যাজমা আসলে কি এবং কি কি ধরনের অ্যাজমা রয়েছে শুরুতেই জানতে চাচ্ছি।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Sir, we will discuss bronchial asthma. I won't say bronchial at first. Because we know that asthma also has some types. So, what is asthma and what types of asthma are there? I want to know at the beginning.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "00:13",
+      "content": "অ্যাজমা সাধারণত দু'রকম আছে। একটা হলো ব্রঙ্কিয়াল অ্যাজমা আরেকটা হলো কার্ডিয়াক অ্যাজমা। আমরা আজকে ব্রঙ্কিয়াল অ্যাজমা নিয়ে আলোচনা করতে চাই।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "There are generally two types of asthma. One is bronchial asthma and the other is cardiac asthma. Today we want to discuss bronchial asthma.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "00:20",
+      "content": "আচ্ছা তাহলে স্যার এই ব্রঙ্কিয়াল অ্যাজমা এবং কার্ডিয়াক অ্যাজমা দুটোর মধ্যে পার্থক্যটা কি এবং ব্রঙ্কিয়াল অ্যাজমার কি কি ধরনের লক্ষণ প্রকাশ রয়েছে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, sir, what is the difference between bronchial asthma and cardiac asthma, and what kind of symptoms does bronchial asthma manifest?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "00:29",
+      "content": "আপনি ব্রঙ্কিয়াল মানে হলো ব্রঙ্কিয়াল অ্যাজমা হলো শ্বাসনালীর প্রদাহ এবং এই কারণে যে শ্বাসকষ্টটা হয় সেটা ব্রঙ্কিয়াল অ্যাজমা। আর কার্ডিয়াক অ্যাজমা হলো অ্যাকিউট লেফট ভেন্ট্রিকুলার ফেলুর হার্টের কারণে হয়। দুটা দুটা সিস্টেমের জন্য হয়। হার্টের জন্য কার্ডিয়াক অ্যাজমা আর ব্রঙ্কাসের জন্য ব্রঙ্কিয়াল অ্যাজমা। শ্বাসনালীর জন্য ব্রঙ্কিয়াল অ্যাজমা।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Bronchial asthma means inflammation of the airways, and the shortness of breath caused by this is bronchial asthma. Cardiac asthma is caused by acute left ventricular failure of the heart. Two different systems cause it. Cardiac asthma is for the heart, and bronchial asthma is for the bronchi. Bronchial asthma is for the airways.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "00:47",
+      "content": "আচ্ছা লক্ষণগুলো কিভাবে প্রকাশ পাবে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, how will the symptoms manifest?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "00:50",
+      "content": "আচ্ছা এখন ব্রঙ্কিয়াল অ্যাজমা যেটা নিয়ে আজকে আমাদের মুখ্য উদ্দেশ্য বলা সেটা হলো প্রথমেই রোগীর হবে যে শ্বাসকষ্ট থাকে। শ্বাসকষ্ট এটা দু'রকম আছে। একটা হতে পারে হঠাৎ করে বেশি শ্বাসকষ্ট হতে পারে কিছু কিছু শ্বাসকষ্ট সবসময় তার সাথে শুকনো কাশি থাকে এবং এটা সাধারণত পরিবেশের কারণে এবং আবহাওয়ার পরিবর্তনের কারণে ভাইরাল ইনফেকশনের কারণে কিছু কিছু খাবার কারণে এই অ্যাজমাটা সাধারণত হয়।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, now, the main objective today is to discuss bronchial asthma, which primarily involves shortness of breath in patients. This shortness of breath can be of two types: it can occur suddenly and intensely, or it can be a persistent shortness of breath always accompanied by a dry cough. This asthma is usually caused by environmental factors, changes in weather, viral infections, and certain foods.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "01:16",
+      "content": "আচ্ছা। আমরা জানি যে ঢাকা শহরে বা আমাদের বাংলাদেশে যে আবহাওয়া সেই আবহাওয়ায় অ্যাজমার প্রিভ্যালেন্সটা অনেক বেশি। আচ্ছা কারণ কি রয়েছে? কোনো ফ্যাক্টর?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay. We know that in Dhaka city or in Bangladesh, the prevalence of asthma is very high due to the climate. Okay, what are the causes? Any factors?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "01:27",
+      "content": "হ্যাঁ অনেক ফ্যাক্টর যেমন বললাম আমি অনেক রিস্ক ফ্যাক্টর আছে যেমন এটা হলো এনভায়রনমেন্টাল ফ্যাক্টরস। ধুলা, বালি, কুয়াশা এবং এখন যে বসন্তকাল বসন্তকালে যে এখন যে ফুল পরাগের রেণু ফুলের রেণু এগুলো খুব এফেক্ট করে শ্বাসনালীতে যায় এবং শ্বাসনালীর প্রদাহ তৈরি হয়।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Yes, there are many factors, as I said, many risk factors, such as environmental factors. Dust, sand, fog, and now in spring, the pollen grains of flowers, these affect the airways and cause inflammation.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "01:42",
+      "content": "ঝুঁকির মধ্যে আছেন কি কারা মানে রোগ ফ্যামিলি বা সেরকম কোনো হিস্টরি কি এক্ষেত্রে কোনো ফ্যাক্টর হিসেবে কাজ করছে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Who are at risk, meaning, does family or similar history act as a factor in this case?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "01:50",
+      "content": "ফ্যামিলি হিস্টরি ওখানে একটা রোল প্লে করে। জেনেটিকও অনেক অনেক ক্ষেত্রে হতে পারে। কিন্তু তার চেয়ে এনভায়রনমেন্টাল ফ্যাক্টর সবচেয়ে বেশি কাজ করে আমাদের দেশে অন্তত।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Family history plays a role there. Genetic factors can also contribute in many cases. But environmental factors are more dominant in our country, at least.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "01:57",
+      "content": "আচ্ছা আচ্ছা। তো যখন রোগীরা আপনাদের কাছে আসছে প্রথম কমপ্লেইনটা কি এটাই থাকে যে আমার শ্বাস নিতে কষ্ট হচ্ছে নাকি আরো অন্য কোনো সমস্যা নিয়ে আসে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, so when patients come to you, is the first complaint always difficulty breathing, or do they present with other problems?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "02:06",
+      "content": "হ্যাঁ, বিভিন্ন রকম আসতে পারে যেমন এক ধরনের রোগী বাচ্চা যারা সাধারণত বাচ্চারা শ্বাসকষ্টের রোগীতে ভোগে, অ্যাজমায় ভোগে তারা কাশি নিয়ে আসে তার সঙ্গে শ্বাসকষ্ট নিয়ে আসে সাধারণত। এবং এই কাশিটা হয় সাধারণত কাশিতে কফ নিঃসরণ খুব কম হয়, শুধু শুকনা কাশি থাকে তার সাথে বুকটা ভারি হয়ে আসে এবং শ্বাসকষ্ট শুরু হয়ে যায়। এরকম আসতে পারে। আর বাচ্চাগুলো সাধারণত ভাইরাল অ্যাটাক নিয়ে আসে জ্বর, জ্বরের সাথে আপনার কাশি কাশির সাথে শ্বাসকষ্টও আছে। এভাবে নিয়ে আসে সাধারণত।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Yes, it can manifest in various ways. For instance, children who usually suffer from respiratory distress, from asthma, they come with a cough and shortness of breath, generally. And this cough usually involves very little phlegm, it's just a dry cough accompanied by a heavy chest and the onset of shortness of breath. It can come like this. And children usually come with a viral attack, fever, along with a cough and shortness of breath. That's how they usually come.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "02:32",
+      "content": "আচ্ছা আচ্ছা। তো এইসব কারণে যখন ব্রঙ্কিয়াল অ্যাজমা বা শ্বাসকষ্ট জনিত সমস্যাগুলো যখন হবে তখন আপনাদের ম্যানেজমেন্ট বা ট্রিটমেন্ট আপনারা কিভাবে দিয়ে থাকেন প্রাথমিক পর্যায় থেকে শুরু করে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, okay. So, when bronchial asthma or respiratory problems occur due to these reasons, how do you manage or treat them, starting from the primary stage?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "02:42",
+      "content": "প্রথমেই আমাদের রোগীর ইতিহাস নিতে হবে। রোগীর কাছ থেকে ইতিহাস নিয়ে আমরা হিস্টরি নিলেই বুঝতে পারবো যে এটা কোন কি কারণে হয়েছে। এটা কি এনভায়রনমেন্টাল না নিউট্রেশনাল নাকি কোন অন্য কোন ভাইরাল ইনফেকশনের কারণে হয়েছে। সেটা আমরা ইতিহাস নিয়ে প্রথম বুঝতে পারবো। তো ইতিহাস অনুযায়ী আমরা সাধারণত ট্রিগার ফ্যাক্টর যেগুলো আছে যদি এনভায়রনমেন্টাল কারণে হয় সিজনাল অ্যাজমা একটা জিনিস আছে। শীতের থেকে গরম এই যে চেঞ্জ সকালে শীত দুপুর বেলা গরম এই যে চেঞ্জটা যাদের শ্বাসনালীর প্রদাহ থাকে। ফ্ল্যাকচুয়েশনের জন্য ভেরিয়েশনের জন্য অনেক বেশি বেশি রোগীরা শ্বাসকষ্টে ভোগে শ্বাসনালীর প্রদাহে ভোগে। এবং এ ছাড়া কিছু কিছু বাচ্চার রোগী আসে ওরা ভাইরাল ইনফেকশনের কারণে ভোগে। শ্বাসনালীর যত রোগী আমরা পাই ম্যাক্সিমামই ভাইরাল ইনফেকশন। যাদের রোগের ইমিউনিটি কম বডি ইমিউনিটি কম ওরা সাধারণত ভাইরাল ইনফেকশন নিয়ে একুইট একজারভেশন নিয়ে আমাদের কাছে আসে সাধারণত।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "First, we need to take the patient's history. By taking the patient's history, we can understand what caused it. Is it environmental, nutritional, or due to some other viral infection? We can first understand that from the history. So, according to the history, we usually address the trigger factors. If it's due to environmental causes, there's something called seasonal asthma. The change from winter to summer, the change from cold mornings to hot afternoons, causes many patients with airway inflammation to suffer from more and more shortness of breath, from airway inflammation. And besides this, some child patients come suffering from viral infections. The majority of airway patients we see have viral infections. Those with low immunity, low body immunity, usually come to us with acute exacerbation due to viral infections.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "03:32",
+      "content": "আচ্ছা। আমরা দেখতে পাচ্ছি আপনি কিছু ডিভাইস নিয়ে এসেছেন। এটির সাথে কি এই ট্রিটমেন্ট প্রসিডিউর বা ম্যানেজমেন্টের কোনো সম্পৃক্ততা রয়েছে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay. We see you've brought some devices. Is there any connection between these and the treatment procedure or management?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "03:38",
+      "content": "হ্যাঁ আমি কিছু ডিভাইস নিয়ে এসেছি। অ্যাজমা ডিভাইস একটা নতুন জিনিস। সো সেটা আমরা প্রথমেই আমি যে জিনিসটা দেখাবো সেটা হলো এটা হলো একটা পিক ফ্লো মিটার। এই পিক ফ্লো মিটারটা হলো যে আমরা অ্যাজমা রোগ আছে কিনা এটা বুঝতে পারি।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Yes, I have brought some devices. Asthma device is a new thing. So, first of all, I will show you a peak flow meter. This peak flow meter helps us to understand if there is asthma.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "03:52",
+      "content": "এটা ডায়াগনোসিসের ক্ষেত্রে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "This is for diagnosis.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "03:53",
+      "content": "ডায়াগনোসিসের ক্ষেত্রে। আমরা জানেন যে শ্বাস আমাদের ফুসফুসের মধ্যে শ্বাসটা এর প্রদাহটা কি জন্যই অ্যাজমা হয়। তো শ্বাসনালীর যে আপনার যে ডায়ামিটার সে ডায়ামিটারটার সংকোচন প্রসারণের কারণেই হয়। যদি সংকুচিত হয় কতটুক সংকুচিত আছে কত সিভিয়ার অ্যাজমা আমরা এই পিক ফ্লো মিটার দিয়ে আমরা নিরূপণ করতে পারি। আমরা রোগীকে বলি এখান থেকে ফুঁ দেওয়ার জন্য ফুঁ দেওয়ার পরেই এটা তার ওরা এই কাটাটা এদিকে সামনে আসে এবং একেকজন রোগীর জন্য একেকটা নির্ধারিত থাকে আমরা তখন বুঝতে পারি তার শ্বাসকষ্টের মাত্রা কত। এটা দিয়ে আমরা ইনিশিয়ালি আমরা আমাদের ডাক্তারদের চেম্বারে এটা দিয়ে শ্বাসকষ্ট নিরূপণ করতে পারি।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "For diagnosis. You know that asthma is caused by inflammation of the airway in our lungs. The narrowing and widening of the airway's diameter cause it. If it narrows, how much it has narrowed, how severe the asthma is, we can determine with this peak flow meter. We ask the patient to blow from here, and after blowing, the pointer moves forward, and for each patient, a different range is determined. Then we can understand the severity of their shortness of breath. We can initially diagnose shortness of breath with this in our doctors' chambers.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "04:27",
+      "content": "করতে পারেন ইনিশিয়ালি। আচ্ছা।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "You can do it initially. Okay.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "04:30",
+      "content": "ইনিশিয়ালি। এটা হলো রোগ নির্ণয়ের জন্য। তার সাথে সাথে যখন রোগ নির্ণয় হয়ে গেলো তখন আমরা কি করি আমরা পেশেন্টের ম্যানেজমেন্টের দিকে যাই। তো ম্যানেজমেন্টের জন্য বিভিন্ন ভাগ আছে। যেমন আপনারা জানেন যে শ্বাসনালীর যেহেতু সংকুচিত হয়ে যায় সেখানে শ্বাসনালীকে প্রসারণ করাই আমাদের উদ্দেশ্য। সেজন্য আমরা এখন বর্তমান সারা বিশ্বের চিকিৎসার বিজ্ঞানীদের রিসার্চের কারণে এখন শ্বাসের রোগীরা আর ভোগে না, কষ্ট পায় না। কারণ কষ্ট পায় না এই কারণে যে এখন নতুন নতুন ওষুধ তৈরি হয়েছে। যেমন একটা আছে রিলিভার ড্রাগ কিছু ওষুধ আছে। খেলে শ্বাসকষ্ট সাথে সাথে কমে যায়। আরেকটা আছে প্রিভেন্টর ড্রাগ শ্বাসকষ্ট কখনো হবে না। প্রোটেক্টর শ্বাসকষ্ট না বাড়া দানকারী ওষুধ। তো এরকম বিভিন্ন রকমে আছে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Initially. This is for diagnosis. Along with diagnosis, what we do is we move towards patient management. So there are various divisions for management. For example, you know that since the airways become constricted, our aim is to dilate them. That's why, due to the research of medical scientists worldwide, respiratory patients no longer suffer, they don't experience discomfort. They don't suffer because new medicines have been developed now. For example, there's a reliever drug, some medicines that immediately reduce shortness of breath when taken. And there's a preventer drug, which prevents shortness of breath from ever occurring. It's a protector, a medicine that prevents shortness of breath from worsening. So there are various types like this.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "05:11",
+      "content": "এবং আমরা দেখতে মানে দেখতে পাই কিন্তু রোগীদের মধ্যে যে যখন বিশেষজ্ঞ চিকিৎসকরা ইনহেলার ব্যবহার করতে বলেন তাদের মধ্যে আগ্রহটা কিন্তু কম দেখতে পাই। সেটির আসলে কারণটা কি এবং তখন আপনার রোগীদের আশ্বস্ত করেন কিভাবে বা কাউন্সিলিং করেন কিভাবে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "And we see, but we notice among patients that when specialist doctors recommend using inhalers, their interest is low. What is the actual reason for that, and how do you reassure or counsel your patients then?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "05:27",
+      "content": "খুব খুব সুন্দর প্রশ্ন করেছেন আপনি। আসলে ইনহেলারই সবার একটা মনের মধ্যে ভয় থাকে যে ইনহেলার বোধহয় শেষ শেষ চিকিৎসা অ্যাজমার চিকিৎসা আসলে তা নয় ইনহেলার হলো ফার্স্ট চিকিৎসা ইনহেলার দিয়েই চিকিৎসা শুরু করতে হয়। তার কারণ সবচেয়ে কার্যকরী ইনহেলারটা যে ভেতরে যে ওষুধটা থাকে সে ওষুধটা তো খুব মাইক্রোডোজে থাকে। আপনি দেখেছেন যে আপনি 250 মাইক্রোগ্রাম অথবা 500 মাইক্রোগ্রাম অথবা 125 মাইক্রোগ্রাম মাইক্রোগ্রাম মানে ছোট। আর যখন আমরা ট্যাবলেট বড়ি খাই সেগুলো মিলিগ্রামে খাই আমরা। তো সেগুলো অনেক পাওয়ার বেশি। সেগুলো খাওয়ার পরে আমাদের পাকস্থলী থেকে রক্তে অ্যাবসর্ব হয় তারপর শ্বাসনালীতে কাজ করে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "You have asked a very good question. Actually, everyone has a fear about inhalers, thinking that inhalers are the last treatment for asthma. That's not true. Inhalers are the first treatment; treatment should start with inhalers. The reason is that the medicine inside the inhaler is in a very microdose. You have seen that it's 250 micrograms or 500 micrograms or 125 micrograms, microgram means small. And when we take tablets, we take them in milligrams. So those have much higher power. After consuming them, they are absorbed into the blood from our stomach and then work in the respiratory tract.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "06:04",
+      "content": "অবশ্যই কিছু পার্শ্ব প্রতিক্রিয়া ওটাতে রয়েছে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Of course, there are some side effects to that.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "06:07",
+      "content": "পার্শ্ব প্রতিক্রিয়া অনেক বেশি। যার কারণে আমরা ইনহেলার দিলে সরাসরি আমরা ডিভাইসের মাধ্যমে ইনহেলারগুলো শ্বাসনালীতে ঢুকিয়ে দেই। সেজন্য বিভিন্ন ডিভাইসেস আমি আপনাকে দেখাচ্ছি। এই ডিভাইসগুলোর মাধ্যমে সরাসরি কার্যকর হয় এবং খুব মাইক্রোডোজে খুব বেশি কাজ করে। সুতরাং ইনহেলারই হলো প্রথম চিকিৎসা, শেষ চিকিৎসা নয়। সুতরাং এটাই আমাদের কাউন্সিলিং করতে হবে আজকে থেকে। যে ইনহেলারের মাধ্যমেই চিকিৎসাটাই সঠিক চিকিৎসা পদ্ধতি শ্বাসকষ্টের জন্য অবশ্যই অ্যাজমার জন্য। আচ্ছা তো কিভাবে সেটি ব্যবহার করতে হয় সেটিকে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Side effects are much higher. That's why when we give inhalers, we directly insert the inhalers into the respiratory tract through devices. That's why I'm showing you various devices. These devices are directly effective and work very well in microdoses. Therefore, inhalers are the first treatment, not the last. So this is what we need to counsel from today. That treatment through inhalers is the correct treatment method for shortness of breath, definitely for asthma. Okay, so how should it be used?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "06:36",
+      "content": "আচ্ছা এখন কথা হলো যে কার জন্য কি ইনহেলার আছে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Now the question is, what kind of inhaler is for whom?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "06:39",
+      "content": "তারও আবার পার্থক্য রয়েছে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "There is also a difference for him.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "06:42",
+      "content": "পার্থক্য আছে অবশ্যই যে ইনহেলার এর মধ্যে দুটো ইনহেলার আমাদের কাছে আছে একটা হলো এমডিআই আরেকটা হলো ডিপিআই। দুরকম ইনহেলার আমাদের কাছে পাওয়া যায়। এটা হলো এমডিআই। আর এটা হলো ডিপিআই। এটা ডিপিআই। এখন কার জন্য কোনটা এটা আমাদের বুঝতে হবে যে এমডিআই তাদের জন্যই যারা এই চাপ দেওয়ার পরে এটার নাম হলো এমডিআই মিটারডোজ ইনহেলার এটা নাম হলো স্পেসার। এটা হলো মাস্ক। এটা যদি মুখে লাগিয়ে দিয়ে তারপর আমরা এখানে চাপ দিলে ওষুধটা এখানে আসবে এখান থেকে আমরা তুলে নিয়ে যাব আস্তে আস্তে তুলে নিয়ে যাব ভিতর থেকে নিয়ে যাব।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "There are differences, of course. Among inhalers, we have two types: one is MDI, and the other is DPI. Two types of inhalers are available with us. This is MDI. And this is DPI. This is DPI. Now, for whom is which one, we need to understand. MDI is for those who, after pressing this, this is called MDI (Metered-Dose Inhaler), and this is called a spacer. This is a mask. If we put this on the mouth and then press here, the medicine will come here, and from here, we will slowly take it in from inside.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "07:14",
+      "content": "আমরা কিন্তু বেশিরভাগই দেখি যে ছোট একটা ডিভাইস সবসময় যারা যাদের সমস্যা হয় তারা নিয়ে নেন। মানে এত বড় জিনিসটা এটা কি আসলে? এটা রোগের মধ্যে কি প্রশ্ন থাকতে পারে?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "But we mostly see that people with problems always take a small device. What is this big thing actually? What questions can arise about this disease?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "07:22",
+      "content": "এটাকে বলা হয় স্পেসার এটাকে বলা হয় মিটারডোজ ইনহেলার। সবাই এটাই নিয়েই যায়। কিন্তু এটার অসুবিধা হলো এটা এটা হলো যে যখন আমি চাপ দিয়ে মুখের ভিতর ভিতর নিয়ে যাই তখন একটা চাপ দর সাথে দমটা নিয়ে ভিতরে নিয়ে একটা সুন্দর ধরে ধরে রাখতে হবে 10 সেকেন্ডের মতো। কিন্তু অনেকে সেটা পারে না। শ্বাসকষ্ট রোগীরা সাধারণত পারে না। মানে এসিঙ্ক্রোনাইজেশন হয়ে যায়। তো সিঙ্ক্রোনাইজড করতে হলে সবসময় এটা স্পেসার ইউজ করলে তাহলে এই ওষুধটা আপনার এখানে যাবে এখান থেকে আমরা আস্তে আস্তে শ্বাসনালীর সাথে টেনে নিব।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "This is called a spacer, and this is called a metered-dose inhaler. Everyone takes this. But its disadvantage is that when I press and take it inside my mouth, I have to hold my breath with the pressure for about 10 seconds. But many people can't do that. Asthma patients usually can't. It becomes desynchronized. So, to synchronize, if you always use this spacer, then the medicine will go here, and from here, we will slowly inhale it along with the breath.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "07:56",
+      "content": "মানে হচ্ছে পুরোপুরি কার্যকর করা যায় স্পেসারের মাধ্যমে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "It means it can be fully effective through the spacer.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "07:58",
+      "content": "পুরোপুরি কার্যকর করা যায়। আপনারা জানেন যে একটা এমডিআইয়ের দাম বাংলাদেশের প্রেক্ষাপটে অনেক বেশি প্রায় সাত আটশো টাকা। যদি আমরা প্রপারলি ওষুধটা ইউজ করতে পারি এটার স্পেসারের মাধ্যমে তাহলেই কিন্তু আসলে কার্যকরী ফলাফলটা পাওয়া যাবে। তাহলে প্রথমেই আমাকে মনে রাখতে হবে যে ইনহেলার চিকিৎসার প্রথম ধাপ এবং স্পেসারেশনের মাধ্যমে ইনহেলার ইউজ করাই ভালো।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "It can be fully effective. You know that an MDI costs a lot in Bangladesh, around seven to eight hundred Taka. If we can use the medicine properly through its spacer, then we will actually get effective results. So, first of all, I have to remember that an inhaler is the first step of treatment, and it is better to use an inhaler through a spacer.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "08:20",
+      "content": "আচ্ছা তাহলে আপনি কি পরামর্শ দিবেন যে সবসময় যারা ইনহেলার নিচ্ছে তাদের ক্ষেত্রে অবশ্যই যাতে স্পেসারটা সহ তারা নেয় যদি পুরোপুরি তার ফলটা পেতে পারে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay, so what advice would you give that those who are taking inhalers should always take them with a spacer if they want to get the full effect?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "08:31",
+      "content": "ইনহেলারের মাধ্যমেই আপনার ইনহেলারটাকে স্পেসারের মাধ্যমে নিলেই পুরোপুরি এফেক্টটা পাওয়া সম্ভব। আরেকটা ডিভাইস আমার কাছে আছে যেটা হলো এটাকে বলা হয় ডিপিআই। ড্রাই পাউডার ইনহেলার। এটা মধ্যে ক্যাপসুল ঢুকিয়ে দেওয়া হয়। এখানে ক্যাপসুল ঢুকিয়ে এটা এখানে ক্যাপসুলটা আটকে এখানে ছিদ্র করা হয়। তারপর শ্বাসটা টেনে নিতে হয় ভিতরে। টেনে টেনে মুখের মধ্যে ওষুধটা নিতে হয়।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Through the inhaler, it is possible to get the full effect if you take your inhaler through a spacer. I have another device that is called a DPI, Dry Powder Inhaler. Capsules are inserted into it. Here, the capsule is inserted and held in place, then a hole is made. After that, the breath has to be taken in. The medicine has to be taken into the mouth by inhaling.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "08:53",
+      "content": "আচ্ছা। এটা কার জন্য এটা কার জন্য?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay. Who is this for and who is that for?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "08:55",
+      "content": "এই ডিপিআইটা হলো যাদের পিক ইনস্পিরেটরি ফ্লো 30 লিটার থেকে 120 লিটারের মধ্যে থাকে। তাদের জন্য ডিপিআইটা কার্যকরী। আপনারা জানেন যে এই ক্যাপসুলের ভিতরে দানা থাকে। গ্র্যানুলস থাকে। যে গ্র্যানুলসটা আপনার শ্বাসনালীতে ঢুকে ওখানে লোকালি ব্লাডে অ্যাবজর্ব হয়ে আপনার কার্যকর ব্রঙ্কো ডায়লেটেশন করে। তো যিনি নিতে পারবেন ওনার জন্যই এটা ভালো। এখানে কোন সিন্ক্রোনাইজেশনের দরকার হয় না। হ্যাঁ, কিন্তু কথা আছে এই যে পাউডারটা এই পাউডারটা ফাইভ মাইক্রনের নিচের সাইজ পার্টিকেল সাইজ হতে হবে। সেজন্য যারা ওষুধ তৈরি করেন ওনারা ফাইভ মাইক্রনের নিচে পার্টিকেল সাইজ করলেই তাহলে সেন্ট্রাল এয়ারওয়েতে থেকে পেরিফেরাল এয়ারওয়েতে যাবে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "This DPI is for those whose peak inspiratory flow is between 30 liters and 120 liters. For them, DPI is effective. You know that there are granules inside this capsule. The granules enter your respiratory tract, get absorbed locally in the blood, and effectively cause bronchodilation. So, it's good for whoever can take it. No synchronization is needed here. Yes, but there's a catch. This powder, its particle size must be below five microns. That's why those who make these medicines ensure that if the particle size is below five microns, then it will go from the central airway to the peripheral airway.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "09:39",
+      "content": "কিন্তু এটা কারা মানে আপনারা কাদেরকে প্রেসক্রাইব করেন এটা?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "But who, I mean, who do you prescribe this to?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "09:42",
+      "content": "যাদের পিক ইনস্পিরেটরি ফ্লো ভালো। যেমন আমরা ইয়াং অ্যাডাল্টস। বিশেষ করে অনেকে মেয়েরা যারা ইয়াং যারা অ্যাজমায় ভোগে মেয়েরা ইনহেলার ইউজ করতে চায় না। ওরা ওয়ালেটের মধ্যে পার্স এর মধ্যে ছোটটা রাখে ইউজ করতে পারে। পোর্টেবল। সুতরাং এটাও ওদের জন্য খুব কনভিনিয়েন্ট। আর যারা ওল্ড এজ পারসন তারাও সিঙ্ক্রোনাইজেশন পারে না। এজন্য ওদের জন্য এটা ইনহেলার।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Those with good peak inspiratory flow. For example, young adults. Especially many young women who suffer from asthma don't want to use inhalers. They keep the small one in their wallet or purse and can use it. Portable. So this is also very convenient for them. And old age persons also can't synchronize. That's why this inhaler is for them.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "10:05",
+      "content": "আচ্ছা। এটা কি কস্ট ইফেক্টিভ কিরকম বা অন্যান্য দেশের তুলনায় বা সে",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay. How cost-effective is it compared to other countries or what?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "10:08",
+      "content": "ন্যাচারালি ন্যাচারালি এই ডিপিআই যেটা আছে ডিপিআইটা একটু লেস কস্টলি কম কম কস্টের। কিন্তু যারা এমডিআই ইউজ করে ওদের একটু দাম বেশি। সুতরাং যারা একটু অর্থনৈতিক সারা বছর ইউজ করতে হয় সবসময় ইউজ করতে হয়। সেজন্য যারা টাকা পয়সার সমস্যা আমরা ওদের জন্য আমরা ডিপিআই প্রেফার করি ইউজুয়ালি ইউজুয়ালি ইকোনমিক রেজিমেন্ট বলে এটাকে তাদের কিন্তু সত্যি কথা বলতে কি যে ডিপিআই ইউজ করার পর সবসময় কুলি করে যে জেমেনেন থাকে ওরফেরিং সে সেটাকে বের করে দিতে হবে।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Naturally, the DPI, which is available, is a bit less costly. But those who use MDI, their price is a bit higher. So, for those who have to use it all year round, always, those who have financial problems, we usually prefer DPI for them, usually. It's called an economic regimen. But truthfully, after using DPI, you should always gargle to remove any remnants from the oropharynx.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "10:44",
+      "content": "আচ্ছা। এটি আপনারা কি রোগীদেরকে বলে দেন আগে থেকেই? বলে দেই আমরা বলে দেই লিখে দেই। আচ্ছা আচ্ছা। তো এই এই ধরনের ডিভাইসগুলো ব্যবহারের ক্ষেত্রে যখন আপনারা রোগীদের পরামর্শ দিয়ে থাকেন তো পরবর্তীতে ফলোআপের জন্য কি আবার তাদেরকে আসতে বলেন কিনা যে এবং তারা ঠিকভাবে সেগুলো ব্যবহার করতে পারছে কিনা সেগুলো কি আপনারা দেখেন?",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Okay. Do you tell the patients about this beforehand? We tell them, we write it down. Okay, okay. So, when you advise patients on using these types of devices, do you ask them to come back for follow-up to check if they are using them correctly, do you monitor that?",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 2",
+      "timestamp": "10:58",
+      "content": "খুব দুঃখজনক হলেও সত্যি আপনি খুব সুন্দর প্রশ্ন করেছেন। আসলে আমাদের ডাক্তারদের ব্যস্ততার কারণে আমরা রোগীদের সাথে আমরা এটা ভালোভাবে রিমুনট্রেট করতে অনেক সময় পারি না। কিন্তু অনেকের অ্যাসিস্ট্যান্ট আছে যারা বলে দেয়। এবং রোগীরা এটা আসলে ট্রেনিং না দিলে এটা পারা যায় না আসলে। সেক্ষেত্রে আমাদের উচিত হবে ডাক্তারদের আমরা যারা চেস্ট ফিজিশিয়ানস আমরা যেন রোগীকে ভালো করে ইন্সট্রাকশন দিয়ে বলে দেই এবং ফলোআপ করার জন্য বলি।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "Unfortunately, it's true, you've asked a very good question. Actually, due to the busy schedule of our doctors, we often cannot properly remunerate this with patients. But many have assistants who explain it. And patients actually cannot do this without training. In that case, it would be appropriate for us doctors, those of us who are chest physicians, to give clear instructions to the patient and ask them to follow up.",
+      "emotion": "neutral"
+    },
+    {
+      "speaker": "Speaker 1",
+      "timestamp": "11:22",
+      "content": "এই দায়িত্বটা অবশ্যই আপনাদের উপরই বর্তায়। আশা করছি আমরা এই সেবাটা বা আমাদের সাধারণ রোগী যারা আছেন তারা পাবেন। আপনাকে অনেক অনেক ধন্যবাদ অনেক গুরুত্বপূর্ণ তথ্য আপনার কাছ থেকে জানলাম।",
+      "language": "Bengali",
+      "language_code": "bn",
+      "translation": "This responsibility certainly falls upon you. I hope that this service, or our general patients, will receive it. Thank you very much, I learned a lot of important information from you.",
+      "emotion": "happy"
+    }
+  ]
+}

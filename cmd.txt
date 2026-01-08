@@ -35,9 +35,6 @@ yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "FNpaf
 yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "iQGd-XYFfoc"
 
 
-yt-dlp --write-auto-subs --sub-lang bn --convert-subs srt --skip-download "gLOuDuoYjHs"
-
-
 
 
 maybe we can use whisper / wav2vec2 finetuned based solutions and then polish with an LLM like TigerLLM
