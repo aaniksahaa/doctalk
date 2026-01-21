@@ -1,0 +1,7 @@
+pyannote.audio>=4.0.0
+python-dotenv
+torch
+torchvision
+torchaudio
+transformers
+soundfile

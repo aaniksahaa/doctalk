@@ -1,0 +1,3 @@
+model,num_files,avg_wer,avg_inference_time_s,total_inference_time_s
+titu,1,0,6.393,6.393358163
+tugstugi,1,.739972,58.907,58.907087900

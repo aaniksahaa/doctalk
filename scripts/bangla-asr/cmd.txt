@@ -1,0 +1,139 @@
+# Setup Commands for Pyannote Audio Speaker Diarization & Whisper ASR
+
+# 1. Install FFmpeg (required for audio conversion)
+conda install -y ffmpeg -c conda-forge
+
+# 2. Install Python dependencies
+pip install -r requirements.txt
+
+pip install -U "nemo_toolkit[asr]"
+
+# ============================================================
+# USAGE
+# ============================================================
+
+# --- Audio Conversion ---
+
+# Convert single file (output in same directory):
+python convert.py --input-filepath input.webm --output-format wav
+
+# Convert single file to specific path:
+python convert.py --input-filepath input.webm --output-filepath output.wav
+
+# Convert all files in a directory:
+python convert.py --input-dir ./videos --output-dir ./audio --output-format wav
+
+# --- Speaker Diarization (pyannote) ---
+
+# Run diarization on a WAV file:
+python diarize.py --input audio.wav --output diarization.csv
+
+# --- Speech Recognition (Whisper/Tugstugi) ---
+
+# Run Bengali ASR on a WAV file:
+python tugstugi.py --input-filepath audio.wav --output-filepath transcript.txt
+
+# With options:
+python tugstugi.py --input-filepath audio.wav --output-filepath transcript.txt --cpu
+
+# ============================================================
+# EXAMPLE WORKFLOW
+# ============================================================
+
+# Step 1: Convert to wav
+python convert.py --input-filepath test_1.mp3 --output-format wav
+
+# Step 2: Run diarization
+python diarize.py --input test_1.wav --output test_1_diarization.csv
+
+# Step 3: Run speech recognition
+python tugstugi.py --input-filepath test_1.wav --output-filepath test_1_transcript_tugstugi.txt
+
+# ============================================================
+# NOTES
+# ============================================================
+
+# pyannote-audio 4.x API: Use output.speaker_diarization to get Annotation
+
+# tugstugi.py: Uses framework="pt" to force PyTorch (avoids TensorFlow/Keras issues)
+
+
+
+draft:
+
+pip install -U "nemo_toolkit[asr]"
+
+python titu.py --input-filepath test_1.wav --output-filepath test_1_transcript_titu.txt
+
+python bs2t.py --input-filepath test_1.wav --output-filepath test_1_transcript_bs2t.txt
+
+
+python titu.py --input-filepath data/test/test_001/audio/test_001.wav --output-filepath test_1_transcript_titu.txt
+
+
+# ============================================================
+# DATA PROCESSING (Convert raw data to batch format)
+# ============================================================
+
+# Raw data format (long_asr):
+#   {split}/audio/{name}.webm
+#   {split}/text/{name}.txt
+
+# Output format:
+#   {split}/{id}/audio/{name}.webm
+#   {split}/{id}/gt/{name}.txt
+
+# Process raw data (copy files):
+python process.py --raw-data-dir ./long_asr --output-dir ./data
+
+# Process raw data (use symlinks - faster, saves space):
+python process.py --raw-data-dir ./long_asr --output-dir ./data --symlink
+
+# ============================================================
+# BATCH INFERENCE (Bulk Data Processing)
+# ============================================================
+
+# Data structure expected:
+# data/
+# └── test/
+#     └── 1/
+#         ├── audio/          # Audio files (mp3, wav, etc.)
+#         │   └── test_1.mp3
+#         ├── gt/             # Ground truth transcriptions
+#         │   └── test_1.txt
+#         └── pred/           # Created by script with predictions
+#             └── tugstugi/
+#                 ├── test_1.txt
+#                 └── stats.csv
+
+# --- Run Batch Inference ---
+
+# Run with tugstugi model:
+./batch_infer.sh --data-dir ./data/test --model tugstugi
+
+# Run with titu model:
+./batch_infer.sh --data-dir ./data/test --model titu
+
+# Run on entire data directory:
+./batch_infer.sh --data-dir ./data --model tugstugi
+
+# --- Aggregate Results ---
+
+# Combine all results and generate summary CSVs:
+./aggregate_results.sh --data-dir ./data/test
+
+# Output files:
+# - combined_results.csv: All individual file results (datapoint, model, filename, wer, inference_time)
+# - model_summary.csv: Averages per model (model, num_files, avg_wer, avg_inference_time)
+
+# --- WER Calculation (standalone) ---
+
+# Calculate WER between two files:
+python wer.py --gt-file gt.txt --pred-file pred.txt
+
+# Calculate WER from text directly:
+python wer.py --gt-text "ground truth text" --pred-text "predicted text"
+
+# Export 
+
+./export.sh --data-dir ./data/test --output-dir ./benchmark-results
