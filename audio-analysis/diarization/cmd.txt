@@ -28,3 +28,152 @@ python dianemo.py \
   --audio test_1.wav \
   --out_dir diar_out \
   --device cuda:0
+
+
+
+
+
+
+
+
+
+
+
+conda create -n s3d python=3.10 -y
+conda activate s3d
+
+
+conda install -y pytorch==2.1.2 torchaudio==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+
+git clone https://github.com/modelscope/3D-Speaker.git
+cd 3D-Speaker
+
+
+pip install --upgrade pip
+pip install -r requirements.txt
+
+
+
+pip install modelscope
+
+
+pip install "pyannote.audio==2.1.1"
+
+
+pip install --force-reinstall "numpy<1.24"
+
+
+python -c "import numpy, torch; print('numpy', numpy.__version__, 'torch', torch.__version__, 'cuda', torch.cuda.is_available())"
+python -c "from pyannote.audio import Model; print('pyannote ok')"
+
+
+pip install addict
+
+pip install addict datasets soundfile scipy tqdm pyyaml requests
+
+pip install oss2
+
+pip uninstall -y datasets
+pip install "datasets==2.14.7"
+
+
+python speakerlab/bin/infer_diarization.py \
+  --wav /path/to/test_1.wav \
+  --out_dir diar_out \
+  --out_type rttm
+
+
+
+conda activate 3D-Speaker
+
+pip uninstall -y modelscope datasets huggingface_hub
+
+
+pip install --no-cache-dir --force-reinstall \
+  "numpy<2" \
+  "packaging<25" \
+  "datasets==2.14.7" \
+  "huggingface_hub==0.19.4" \
+  "modelscope==1.28.2" \
+  "addict" \
+  "oss2"
+
+
+
+
+
+
+# safest: install via conda
+conda install -y setuptools
+
+# (optional) also ensure pip itself is healthy
+python -m pip install -U pip
+
+python -c "import pkg_resources; print('pkg_resources OK')"
+
+
+pip install tqdm 
+
+pip install scikit-learn
+
+pip install torchaudio 
+
+
+
+
+
+====================================================================================
+Working setup
+====================================================================================
+
+conda create -y -n s3d_clean python=3.10
+conda activate s3d_clean
+
+# GPU (CUDA 11.8)
+conda install -y -c pytorch -c nvidia pytorch torchvision torchaudio pytorch-cuda=11.8
+
+# Fix the iJIT_NotifyEvent issue by pinning MKL below 2024.1 (and ensure OpenMP runtime)
+conda install -y -c conda-forge "mkl<2024.1" intel-openmp
+
+
+
+
+
+
+python -m pip install -U pip setuptools wheel
+
+# 3D-Speaker base requirements (keeps numpy <1.24 as the repo expects)
+python -m pip install -r requirements.txt
+
+# diarization example requirements (pins numpy==1.23.5 and datasets==3.1.0)
+python -m pip install -r egs/3dspeaker/speaker-diarization/requirements.txt
+
+# modelscope extras that the diarization script tends to need
+python -m pip install addict oss2
+
+
+
+
+
+python -c "import torch; print('torch', torch.__version__); print('cuda?', torch.cuda.is_available())"
+python -c "import numpy, datasets; print('numpy', numpy.__version__, 'datasets', datasets.__version__)"
+python -c "import modelscope; print('modelscope', modelscope.__version__)"
+
+
+
+
+
+# dummy template
+python speakerlab/bin/infer_diarization.py \
+  --wav /path/to/test_1.wav \
+  --out_dir diar_out \
+  --out_type rttm
+
+# your local example
+python speakerlab/bin/infer_diarization.py \
+  --wav ./test_1.wav \
+  --out_dir diar_out \
+  --out_type rttm
+
+
+
