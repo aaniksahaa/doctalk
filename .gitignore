@@ -17,4 +17,8 @@ ap/*
 
 **/search-metadata.json 
 
+extraction-metadata.json
+save-metadata.json
+search-metadata.json
+
 
