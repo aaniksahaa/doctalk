@@ -18,6 +18,27 @@ python -c "from nemo.collections.asr.models import ClusteringDiarizer; print('OK
 
 ===========================================================================
 
+
+
+
+conda activate nemo
+
+# safest via conda
+conda install -y -c conda-forge platformdirs pooch
+
+# (optional but often good) ensure librosa deps are consistent
+conda install -y -c conda-forge librosa numba soundfile
+
+conda activate nemo
+
+# safest via conda
+conda install -y -c conda-forge platformdirs pooch
+
+# (optional but often good) ensure librosa deps are consistent
+conda install -y -c conda-forge librosa numba soundfile
+
+
+
 python nemo.py \
   --audio /absolute/or/relative/path/to/audio.wav \
   --out_dir diar_out \
