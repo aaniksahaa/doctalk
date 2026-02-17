@@ -1,0 +1,10 @@
+python nemo.py \
+  --audio /absolute/or/relative/path/to/audio.wav \
+  --out_dir diar_out \
+  --device cuda:0
+
+
+python dianemo.py \
+  --audio test_1.wav \
+  --out_dir diar_out \
+  --device cuda:0
