@@ -1,3 +1,23 @@
+pip install -U nemo_toolkit[asr] omegaconf soundfile
+
+
+===========================================================================
+for separate conda env 
+===========================================================================
+
+conda create -n nemo python=3.10 -y
+conda activate nemo
+
+pip install "numpy<2" "packaging<25"
+pip install -U "nemo_toolkit[asr]"
+pip install "matplotlib<3.9"
+
+
+python -c "import numpy, packaging; print('numpy', numpy.__version__, 'packaging', packaging.__version__)"
+python -c "from nemo.collections.asr.models import ClusteringDiarizer; print('OK')"
+
+===========================================================================
+
 python nemo.py \
   --audio /absolute/or/relative/path/to/audio.wav \
   --out_dir diar_out \
