@@ -21,6 +21,29 @@ PROGRAM_NAMES = [
     "Health Tips"
 ]
 
+
+PROGRAM_NAMES = [
+    "স্বাস্থ্য জিজ্ঞাসা",
+    "স্বাস্থ্য বার্তা",
+    "সুস্থ থাকুন",
+    "স্বাস্থ্য প্রতিদিন",
+    "সুস্থ থাকুন",
+    "Sustho Thakun",
+    "RTV Health Program",
+    "My Health",
+    "Doctor’s Chamber",
+    "স্বাস্থ্যকথা",
+    "সুরক্ষায় প্রতিদিন",
+    "সুস্থ মেরুদণ্ড",
+    "Shastha Katha",
+    "Doctors On Call",
+    "Doctor’s Chamber",
+    "সুস্থ জীবন",
+    "স্বাস্থ্য কথা",
+    "Boishakhi Health",
+    "Health Tips"
+]
+
 MEDICAL_TAGS = [
   {
     "tag": "cardiology",

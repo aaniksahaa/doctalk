@@ -323,7 +323,7 @@ def main():
     
     # Load results
     print(f"Loading results from {results_path}...")
-    results = load_results(str(results_path))[:12]
+    results = load_results(str(results_path))[:]
     print(f"Found {len(results)} videos to process")
     print(f"Dataset path: {dataset_path}")
     

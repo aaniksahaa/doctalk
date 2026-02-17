@@ -100,7 +100,7 @@ def add_failure(metadata: Dict, idx: int, video_id: str, reason: str):
     })
 
 
-def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 5, force_rewrite: bool = False) -> tuple[bool, bool]:
+def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 2, force_rewrite: bool = False) -> tuple[bool, bool]:
     """
     Process a video with retry logic and exponential backoff.
     Returns (success: bool, was_skipped: bool) - was_skipped is True if lock file was found and video was skipped.
