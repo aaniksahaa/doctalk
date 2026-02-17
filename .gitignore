@@ -11,10 +11,10 @@ ap/
 
 ap/*
 
-**extraction-metadata.json 
+**/extraction-metadata.json 
 
-**save-metadata.json 
+**/save-metadata.json 
 
-**search-metadata.json 
+**/search-metadata.json 
 
 
