@@ -2,7 +2,7 @@ pip install -U nemo_toolkit[asr] omegaconf soundfile
 
 
 ===========================================================================
-for separate conda env 
+Nemo Setup for separate conda env 
 ===========================================================================
 
 conda create -n nemo python=3.10 -y
@@ -16,26 +16,16 @@ pip install "matplotlib<3.9"
 python -c "import numpy, packaging; print('numpy', numpy.__version__, 'packaging', packaging.__version__)"
 python -c "from nemo.collections.asr.models import ClusteringDiarizer; print('OK')"
 
+conda activate nemo
+
+# safest via conda
+conda install -y -c conda-forge platformdirs pooch
+
+# (optional but often good) ensure librosa deps are consistent
+conda install -y -c conda-forge librosa numba soundfile
+
 ===========================================================================
 
-
-
-
-conda activate nemo
-
-# safest via conda
-conda install -y -c conda-forge platformdirs pooch
-
-# (optional but often good) ensure librosa deps are consistent
-conda install -y -c conda-forge librosa numba soundfile
-
-conda activate nemo
-
-# safest via conda
-conda install -y -c conda-forge platformdirs pooch
-
-# (optional but often good) ensure librosa deps are consistent
-conda install -y -c conda-forge librosa numba soundfile
 
 
 
@@ -50,57 +40,59 @@ python dianemo.py \
   --out_dir diar_out \
   --device cuda:0
 
+python dianemo.py \
+  --audio test_010.wav \
+  --out_dir diar_out \
+  --device cuda:0
 
 
 
+python dianemo.py \
+  --audio test_010.wav \
+  --out_dir diar_out \
+  --device cuda:0 \
+  -o dataset/diarization/test/prediction_nemo/test_010.csv
 
 
 
-
-
-# pyan 
-
-
-conda create -n pyan python=3.10 -y
-conda activate pyan
-
-pip install --upgrade pip
-pip install "pyannote.audio==3.1.1" torch torchaudio
-
-
-export HF_TOKEN="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"
-
-
-
-python diapyan.py test_1.wav
-
-python diapyan.py test_1.wav --device cuda 
-
-python diapyan.py dataset/diarization/test/audio/test_010.wav --device cuda 
-
-python diapyan.py -i dataset/diarization/test/audio/test_010.wav -o output.csv
-
-# or GPU explicitly:
-python diarize.py input.wav --device cuda
-
-
-
-python der.py \
+python der_pyannote.py \
   --reference_csv dataset/diarization/test/annotation/test_010.csv \
-  --hypothesis_csv output.csv
+  --hypothesis_csv dataset/diarization/test/prediction_nemo/test_010.csv
+
+
+python der_pyannote.py \
+  --reference_csv dataset/diarization/test/annotation/test_010.csv \
+  --hypothesis_csv dataset/diarization/test/prediction_pyan/test_010.csv
 
 
 
+====================================================================================
+DER script setup (portable/minimal)
+====================================================================================
 
+# 1) Create clean env
+conda create -y -n der_eval python=3.10
+conda activate der_eval
 
+# 2) Install only what der_pyannote.py needs
+python -m pip install -U pip
+python -m pip install pyannote.core pyannote.metrics
 
+# 3) Quick verification
+python -c "from pyannote.core import Annotation, Segment; from pyannote.metrics.diarization import DiarizationErrorRate; print('pyannote metrics OK')"
 
+# 4) Run DER on your files
+python der_pyannote.py \
+  --reference_csv dataset/diarization/test/annotation/test_010.csv \
+  --hypothesis_csv dataset/diarization/test/prediction_nemo/test_010.csv
 
+# Expected stdout format (for pipeline parsing):
+# DER=0.xxxxxx
 
-
-
-
-
+# Optional flags:
+# --collar 0.25
+# --skip_overlap
+# --show_warnings
 
 
 
@@ -192,7 +184,7 @@ pip install torchaudio
 
 
 ====================================================================================
-Working setup
+Working setup for Speaker-3D
 ====================================================================================
 
 conda create -y -n s3d_clean python=3.10
@@ -243,6 +235,55 @@ python speakerlab/bin/infer_diarization.py \
   --wav ./test_1.wav \
   --out_dir diar_out \
   --out_type rttm
+
+
+==================================================================================================================
+Working setup for pyannote 
+==================================================================================================================
+
+
+
+conda create -n pyan python=3.10 -y
+conda activate pyan
+
+python -m pip install -U pip setuptools wheel
+
+pip install "numpy<2"
+
+pip install torch==2.1.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
+
+
+pip install pyannote.audio==3.1.1
+
+pip install "huggingface_hub<1.0" --force-reinstall
+
+
+pip install python-dotenv
+
+
+python -c "import numpy as np; import torch, torchaudio; import huggingface_hub; print('numpy', np.__version__); print('torch', torch.__version__); print('torchaudio', torchaudio.__version__); print('hub', huggingface_hub.__version__); print('cuda?', torch.cuda.is_available())"
+
+
+python diapyan.py -i dataset/diarization/test/audio/test_010.wav -o output.csv
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
