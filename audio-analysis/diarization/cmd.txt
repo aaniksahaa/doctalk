@@ -302,11 +302,11 @@ Working inference commands
 ============================================================================================================
 
 conda activate nemo 
-python dianemo.py -i test_1.wav -o out_nemo.csv
+python dianemo.py -i examples/test_1.wav -o examples/out_nemo.csv
 
 conda activate pyan 
-python diapyan.py -i test_1.wav -o out_pyan.csv
+python diapyan.py -i examples/test_1.wav -o examples/out_pyan.csv
 
 conda activate s3d_clean
-python dia3ds.py -i test_1.wav -o out_3ds.csv
+python dia3ds.py -i examples/test_1.wav -o examples/out_3ds.csv
 
