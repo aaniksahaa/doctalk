@@ -58,6 +58,54 @@ python dianemo.py \
 
 
 
+# pyan 
+
+
+conda create -n pyan python=3.10 -y
+conda activate pyan
+
+pip install --upgrade pip
+pip install "pyannote.audio==3.1.1" torch torchaudio
+
+
+export HF_TOKEN="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"
+
+
+
+python diapyan.py test_1.wav
+
+python diapyan.py test_1.wav --device cuda 
+
+python diapyan.py dataset/diarization/test/audio/test_010.wav --device cuda 
+
+python diapyan.py -i dataset/diarization/test/audio/test_010.wav -o output.csv
+
+# or GPU explicitly:
+python diarize.py input.wav --device cuda
+
+
+
+python der.py \
+  --reference_csv dataset/diarization/test/annotation/test_010.csv \
+  --hypothesis_csv output.csv
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 conda create -n s3d python=3.10 -y
