@@ -1,4 +1,5 @@
 import argparse
+import csv
 import json
 import os
 from pathlib import Path
@@ -41,6 +42,33 @@ def parse_rttm(rttm_path: str):
             segments.append((start, start + dur, spk))
     segments.sort(key=lambda x: x[0])
     return segments
+
+
+def seconds_to_hhmmss(seconds: float) -> str:
+    whole = max(0, int(seconds))
+    hours = whole // 3600
+    minutes = (whole % 3600) // 60
+    secs = whole % 60
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+
+def normalize_speaker_id(label: str) -> str:
+    if label.startswith("speaker_"):
+        return label.split("_", 1)[1]
+    return label
+
+
+def write_segments_csv(csv_path: str, segments):
+    os.makedirs(os.path.dirname(os.path.abspath(csv_path)), exist_ok=True)
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["start_time", "end_time", "speaker_id"])
+        for start, end, speaker in segments:
+            writer.writerow([
+                seconds_to_hhmmss(start),
+                seconds_to_hhmmss(end),
+                normalize_speaker_id(speaker),
+            ])
 
 
 def build_config(manifest_path: str, out_dir: str, device: str | None,
@@ -127,13 +155,22 @@ def build_config(manifest_path: str, out_dir: str, device: str | None,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--audio", required=True, help="Path to input audio (wav/flac/etc.)")
+    ap.add_argument("-i", "--input", required=True, help="Path to input audio (wav/flac/etc.)")
     ap.add_argument("--out_dir", default="diar_out", help="Output directory")
+    ap.add_argument(
+        "-o",
+        "--output",
+        default=None,
+        help=(
+            "Path to output CSV in format: start_time,end_time,speaker_id. "
+            "Default: <out_dir>/<audio_basename>.csv"
+        ),
+    )
     ap.add_argument("--num_speakers", type=int, default=None, help="Optional oracle speaker count")
-    ap.add_argument("--device", default=None, help='e.g. "cuda", "cuda:0", "cpu", or omit for auto')
+    ap.add_argument("--cpu", action="store_true", help="Force CPU inference (default: use CUDA if available)")
     args = ap.parse_args()
 
-    audio_path = args.audio
+    audio_path = args.input
     out_dir = os.path.abspath(args.out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
@@ -147,6 +184,17 @@ def main():
     SPK_MODEL = "titanet_large"
     MSDD_MODEL = "diar_msdd_telephonic"   # or None to disable
 
+    # Device selection: CUDA by default, CPU fallback or if --cpu flag
+    import torch
+    if args.cpu:
+        device = "cpu"
+        print("Using CPU for inference.")
+    elif torch.cuda.is_available():
+        device = "cuda"
+        print("Using CUDA for inference.")
+    else:
+        device = "cpu"
+        print("CUDA not available, falling back to CPU.")
 
     manifest_path = os.path.join(out_dir, "manifest.json")
     write_manifest(manifest_path, audio_path, num_speakers=args.num_speakers)
@@ -154,7 +202,7 @@ def main():
     cfg = build_config(
         manifest_path=manifest_path,
         out_dir=out_dir,
-        device=args.device,
+        device=device,
         vad_model=VAD_MODEL,
         speaker_model=SPK_MODEL,
         msdd_model=MSDD_MODEL,
@@ -176,10 +224,14 @@ def main():
         )
 
     segments = parse_rttm(rttm_path)
+    output_csv = args.output or os.path.join(out_dir, f"{base}.csv")
+    write_segments_csv(output_csv, segments)
+
     print(f"\nRTTM: {rttm_path}")
     print("Speaker turns:")
     for (st, et, spk) in segments:
         print(f"{st:8.2f} - {et:8.2f}   {spk}")
+    print(f"\nCSV: {os.path.abspath(output_csv)}")
 
 
 if __name__ == "__main__":

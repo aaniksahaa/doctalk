@@ -45,7 +45,11 @@ python dianemo.py \
   --out_dir diar_out \
   --device cuda:0
 
-
+python dianemo.py \
+  --audio test_1.wav \
+  --out_dir diar_out \
+  --device cuda:0 \
+  -o out.csv
 
 python dianemo.py \
   --audio test_010.wav \
@@ -54,13 +58,21 @@ python dianemo.py \
   -o dataset/diarization/test/prediction_nemo/test_010.csv
 
 
+python dianemo.py \
+  --audio test_010.wav \
+  --out_dir diar_out \
+  --device cuda:0 \
+  -o dataset/diarization/test/prediction_nemo/test_010.csv
 
-python der_pyannote.py \
+python dianemo.py -i test_1.wav -o out_nemo.csv
+
+
+python der.py \
   --reference_csv dataset/diarization/test/annotation/test_010.csv \
   --hypothesis_csv dataset/diarization/test/prediction_nemo/test_010.csv
 
 
-python der_pyannote.py \
+python der.py \
   --reference_csv dataset/diarization/test/annotation/test_010.csv \
   --hypothesis_csv dataset/diarization/test/prediction_pyan/test_010.csv
 
@@ -231,8 +243,19 @@ python speakerlab/bin/infer_diarization.py \
   --out_type rttm
 
 # your local example
+cd Speaker-3D
 python speakerlab/bin/infer_diarization.py \
   --wav ./test_1.wav \
+  --out_dir diar_out \
+  --out_type rttm
+
+python 3D-Speaker/speakerlab/bin/infer_diarization.py \
+  --wav ./test_1.wav \
+  --out_dir diar_out \
+  --out_type rttm
+
+python 3D-Speaker/speakerlab/bin/infer_diarization.py \
+  --wav dataset/diarization/test/audio/test_010.wav \
   --out_dir diar_out \
   --out_type rttm
 
@@ -266,6 +289,7 @@ python -c "import numpy as np; import torch, torchaudio; import huggingface_hub;
 
 python diapyan.py -i dataset/diarization/test/audio/test_010.wav -o output.csv
 
+python diapyan.py -i test_1.wav -o output.csv
 
 
 
@@ -273,12 +297,16 @@ python diapyan.py -i dataset/diarization/test/audio/test_010.wav -o output.csv
 
 
 
+============================================================================================================
+Working inference commands 
+============================================================================================================
+
+conda activate nemo 
+python dianemo.py -i test_1.wav -o out_nemo.csv
 
 
-
-
-
-
+conda activate pyan 
+python diapyan.py -i test_1.wav -o out_pyan.csv
 
 
 
