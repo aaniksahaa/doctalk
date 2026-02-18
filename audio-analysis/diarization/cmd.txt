@@ -310,3 +310,7 @@ python diapyan.py -i examples/test_1.wav -o examples/out_pyan.csv
 conda activate s3d_clean
 python dia3ds.py -i examples/test_1.wav -o examples/out_3ds.csv
 
+# this is just for example, in practice we will have a true reference csv 
+python der.py \
+  --reference_csv examples/out_pyan.csv \
+  --hypothesis_csv examples/out_nemo.csv
