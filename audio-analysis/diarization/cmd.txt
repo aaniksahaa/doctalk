@@ -314,3 +314,40 @@ python dia3ds.py -i examples/test_1.wav -o examples/out_3ds.csv
 python der.py \
   --reference_csv examples/out_pyan.csv \
   --hypothesis_csv examples/out_nemo.csv
+
+
+
+============================================================================================================
+Batch runner commands
+============================================================================================================
+
+# Dry run - preview what will be processed (no actual inference)
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds" --dry_run
+
+# Run all 3 models on the dataset (skips files that already have predictions)
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds"
+
+# Force re-inference even if output exists
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds" --fresh
+
+# Run specific models only
+python run_diarization.py --data_root dataset --models "pyan;nemo"
+python run_diarization.py --data_root dataset --models "pyan"
+python run_diarization.py --data_root dataset --models "nemo"
+python run_diarization.py --data_root dataset --models "3ds"
+
+python run_diarization.py --data_root examples/dummy --models "pyan;nemo;3ds" --fresh
+
+============================================================================================================
+Collect and aggregate metrics
+============================================================================================================
+
+# Collect all metrics from prediction directories, output to data_root
+python collect_metrics.py --data_root dataset
+
+# Specify custom output directory
+python collect_metrics.py --data_root dataset --output_dir results
+
+# Output files:
+#   all_metrics.csv  - All individual results (header + all rows)
+#   summary.csv      - Model-wise averages (DER, inference time)

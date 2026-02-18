@@ -1,0 +1,73 @@
+Traceback (most recent call last):
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/3D-Speaker/speakerlab/bin/infer_diarization.py", line 485, in <module>
+    main()
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/3D-Speaker/speakerlab/bin/infer_diarization.py", line 447, in main
+    get_speaker_embedding_model()
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/3D-Speaker/speakerlab/bin/infer_diarization.py", line 75, in get_speaker_embedding_model
+    cache_dir = download_model_from_modelscope(conf['model_id'], conf['revision'], cache_dir)
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/3D-Speaker/speakerlab/bin/../../speakerlab/utils/utils.py", line 216, in download_model_from_modelscope
+    cache_dir = snapshot_download(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/modelscope/hub/snapshot_download.py", line 137, in snapshot_download
+    return _snapshot_download(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/modelscope/hub/snapshot_download.py", line 310, in _snapshot_download
+    endpoint = _api.get_endpoint_for_read(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/modelscope/hub/api.py", line 541, in get_endpoint_for_read
+    if not self.repo_exists(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/modelscope/hub/api.py", line 698, in repo_exists
+    r = self.session.get(path, cookies=cookies,
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/connection.py", line 796, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/connection.py", line 975, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/util/ssl_.py", line 483, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/site-packages/urllib3/util/ssl_.py", line 527, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/ssl.py", line 513, in wrap_socket
+    return self.sslsocket_class._create(
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/ssl.py", line 1104, in _create
+    self.do_handshake()
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/ssl.py", line 1375, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+Running 3D-Speaker diarization...
+Input: /media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/examples/dummy/audio/test_1.wav
+Traceback (most recent call last):
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1209, in wait
+    return self._wait(timeout=timeout)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1959, in _wait
+    (pid, sts) = self._try_wait(0)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1917, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/dia3ds.py", line 168, in <module>
+    main()
+  File "/media/rifat/2TB1/others/aniksaha/doctalk/audio-analysis/diarization/dia3ds.py", line 136, in main
+    result = subprocess.run(cmd, check=True)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1146, in communicate
+    self.wait()
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1222, in wait
+    self._wait(timeout=sigint_timeout)
+  File "/home/rifat/anaconda3/envs/s3d_clean/lib/python3.10/subprocess.py", line 1953, in _wait
+    time.sleep(delay)
+KeyboardInterrupt

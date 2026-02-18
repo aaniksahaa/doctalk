@@ -60,6 +60,74 @@ conda activate s3d_clean
 python dia3ds.py -i test_1.wav -o out_3ds.csv
 ```
 
+## Batch Processing
+
+For processing multiple files with evaluation, use the batch runner:
+
+### Dataset Structure
+
+The runner expects this directory structure:
+```
+data_root/
+├── some_split/
+│   ├── audio/
+│   │   ├── file1.wav
+│   │   └── file2.wav
+│   └── annotation/
+│       ├── file1.csv    # Ground truth
+│       └── file2.csv
+└── another_split/
+    ├── audio/
+    └── annotation/
+```
+
+After running, predictions are saved to:
+```
+data_root/
+├── some_split/
+│   ├── audio/
+│   ├── annotation/
+│   └── prediction/
+│       ├── nemo/
+│       │   ├── annotation/
+│       │   │   └── file1.csv    # Predicted diarization
+│       │   └── metrics/
+│       │       └── file1.csv    # DER and inference time
+│       ├── pyan/
+│       └── 3ds/
+```
+
+### Run Batch Diarization
+
+```bash
+# Dry run - see what would be processed
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds" --dry_run
+
+# Run all models (skips files that already have predictions)
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds"
+
+# Force re-inference even if output exists
+python run_diarization.py --data_root dataset --models "nemo;pyan;3ds" --fresh
+
+# Run specific models only
+python run_diarization.py --data_root dataset --models "pyan;nemo"
+python run_diarization.py --data_root dataset --models "pyan"
+```
+
+### Collect and Aggregate Metrics
+
+After inference completes:
+```bash
+python collect_metrics.py --data_root dataset
+
+# Or specify output directory
+python collect_metrics.py --data_root dataset --output_dir results
+```
+
+This produces:
+- `all_metrics.csv` - All individual results (one row per file per model)
+- `summary.csv` - Model-wise averages (DER, inference time)
+
 ## Usage
 
 All scripts use a unified interface:
