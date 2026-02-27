@@ -3,16 +3,25 @@
 LLM Service Abstraction Layer
 
 Provides a clean interface for LLM inference across different providers.
-Currently supports: Ollama
+Currently supports: Ollama, Google Gemini
 Future: OpenAI, Anthropic, etc.
 """
 
+import os
 import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 from enum import Enum
+from pathlib import Path
 
+from dotenv import load_dotenv
 from ollama import chat as ollama_chat
+from google import genai
+from google.genai import types as genai_types
+
+# Load .env from project root (one level up from src/)
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+load_dotenv(_env_path)
 
 
 class Provider(str, Enum):
@@ -92,7 +101,7 @@ DEFAULT_KEEP_ALIVE = "5m"
 def get_response(
     prompt: str,
     model: str,
-    provider: Union[Provider, str] = Provider.OLLAMA,
+    provider: Union[Provider, str] = None,
     system_prompt: Optional[str] = None,
     options: Optional[LLMOptions] = None,
     keep_alive: str = DEFAULT_KEEP_ALIVE,
@@ -103,12 +112,12 @@ def get_response(
     
     Args:
         prompt: The user prompt/query
-        model: Model name (e.g., "qwen2.5:3b-instruct")
-        provider: LLM provider (default: ollama)
+        model: Model name (e.g., "qwen2.5:3b-instruct" or "gemini-3-flash-preview")
+        provider: LLM provider (auto-detected from model name if not specified)
         system_prompt: Optional system prompt
         options: LLM options (uses defaults if not provided)
-        keep_alive: How long to keep model loaded (default: "5m")
-        format_schema: Optional JSON schema for structured output (Pydantic model_json_schema())
+        keep_alive: How long to keep model loaded (default: "5m", Ollama only)
+        format_schema: Optional JSON schema for structured output (Ollama only)
     
     Returns:
         LLMResponse containing content and metadata
@@ -121,6 +130,13 @@ def get_response(
         >>> print(response.content)
         >>> print(response.metadata.inference_time_seconds)
     """
+    # Auto-detect provider from model name if not specified
+    if provider is None:
+        if model.lower().startswith("gemini"):
+            provider = Provider.GOOGLE
+        else:
+            provider = Provider.OLLAMA
+    
     # Normalize provider to enum
     if isinstance(provider, str):
         provider = Provider(provider.lower())
@@ -137,6 +153,13 @@ def get_response(
             options=options,
             keep_alive=keep_alive,
             format_schema=format_schema,
+        )
+    elif provider == Provider.GOOGLE:
+        return _gemini_inference(
+            prompt=prompt,
+            model=model,
+            system_prompt=system_prompt,
+            options=options,
         )
     elif provider == Provider.OPENAI:
         raise NotImplementedError("OpenAI provider not yet implemented")
@@ -209,6 +232,93 @@ def _ollama_inference(
         content=content,
         metadata=metadata,
         raw_response=response,
+    )
+
+
+def _gemini_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+) -> LLMResponse:
+    """Internal function for Google Gemini inference."""
+    
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError(
+            "GEMINI_API_KEY not found. Set it in .env or as an environment variable."
+        )
+    
+    client = genai.Client(api_key=api_key)
+    
+    # Build contents
+    contents = [
+        genai_types.Content(
+            role="user",
+            parts=[genai_types.Part.from_text(text=prompt)],
+        ),
+    ]
+    
+    # Build config
+    config_kwargs = {
+        "temperature": options.temperature,
+        "top_p": options.top_p,
+        "max_output_tokens": options.num_predict,
+    }
+    
+    # Add thinking config for supported models
+    config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
+        thinking_level="HIGH",
+    )
+    
+    # Add system instruction if provided
+    if system_prompt:
+        config_kwargs["system_instruction"] = system_prompt
+    
+    generate_content_config = genai_types.GenerateContentConfig(**config_kwargs)
+    
+    # Time the inference
+    start_time = time.perf_counter()
+    
+    # Collect streaming response
+    full_text = ""
+    raw_response = None
+    for chunk in client.models.generate_content_stream(
+        model=model,
+        contents=contents,
+        config=generate_content_config,
+    ):
+        if chunk.text:
+            full_text += chunk.text
+        raw_response = chunk  # Keep last chunk for metadata
+    
+    end_time = time.perf_counter()
+    inference_time = end_time - start_time
+    
+    # Extract token counts from usage_metadata if available
+    input_tokens = 0
+    output_tokens = 0
+    if raw_response and hasattr(raw_response, 'usage_metadata') and raw_response.usage_metadata:
+        usage = raw_response.usage_metadata
+        input_tokens = getattr(usage, 'prompt_token_count', 0) or 0
+        output_tokens = getattr(usage, 'candidates_token_count', 0) or 0
+    total_tokens = input_tokens + output_tokens
+    
+    # Build metadata
+    metadata = InferenceMetadata(
+        provider="google",
+        model=model,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        inference_time_seconds=inference_time,
+        cost_usd=0.0,  # TODO: Calculate based on model pricing
+    )
+    
+    return LLMResponse(
+        content=full_text,
+        metadata=metadata,
+        raw_response=None,  # Gemini response objects aren't easily serializable
     )
 
 

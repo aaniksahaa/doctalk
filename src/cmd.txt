@@ -28,3 +28,19 @@ python extract_tag_and_derived_metadata.py \
   --model qwen3:30b-instruct \
   --force-rewrite
 
+python parse_transcriptions.py \
+  --folder saved-data \
+  --file filtered-results.json \
+  --model gemini-3-flash-preview
+
+python3 parse_transcriptions.py \
+  --folder saved-data \
+  --file filtered-results.json \
+  --model gemini-3-flash-preview \
+  --test-video-id 0-0fpRkyOsU
+
+python3 parse_transcriptions.py \
+  --folder saved-data \
+  --file filtered-results.json \
+  --model gemini-3-flash-preview \
+  --test-video-id RkWh5fOOx9s
