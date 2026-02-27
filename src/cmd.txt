@@ -1,28 +1,28 @@
 python3 -m pip install -U yt-dlp
 yt-dlp --version
 
-python search.py \
+python search_yt_videos_single_query.py \
   --query "স্বাস্থ্য জিজ্ঞাসা - Bangladesh Television" \
   --channel UClzwimpLoZu9us9MwalLbtA \
   --data-dir saved-data
   --file results-btv.json
 
-python search_bulk.py \
+python search_yt_videos_bulk.py \
   --queries-json search_queries.json \
   --data-dir saved-data
 
-python data_filter.py \
+python filter_healthcare_data.py \
   --folder saved-data \
   --file results.json \
   --model qwen3:30b-instruct \
   --force-restart
 
-python save.py --folder saved-data \
+python fetch_metadata_and_process_transcriptions.py --folder saved-data \
   --file filtered-results.json \
   --lang bn \
   --force-rewrite
 
-python extract_metadata.py \
+python extract_tag_and_derived_metadata.py \
   --folder saved-data \
   --file filtered-results.json \
   --model qwen3:30b-instruct \
