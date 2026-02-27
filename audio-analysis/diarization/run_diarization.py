@@ -3,7 +3,7 @@
 Runner script for batch speaker diarization inference and evaluation.
 
 Recursively searches for paired audio/annotation directories, runs diarization
-with specified models, and computes DER metrics.
+with specified models, and computes detailed metrics.
 
 Usage:
     python run_diarization.py --data_root dataset --models "nemo;pyan;3ds"
@@ -17,6 +17,13 @@ import sys
 import time
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+from metrics import (
+    compute_detailed_metrics,
+    compute_rtf,
+    get_audio_duration,
+    write_metrics_csv,
+)
 
 # Model configurations: model_name -> (conda_env, script_name)
 MODEL_CONFIG = {
@@ -48,20 +55,25 @@ def send_notification(title: str, message: str, priority: str = "default"):
         pass  # Silently ignore notification failures
 
 
-def notify_metrics(model: str, file_path: str, der: float, inference_time: float, success: bool = True):
+def notify_metrics(model: str, file_path: str, metrics_dict: dict,
+                   inference_time: float, rtf: float, success: bool = True):
     """Send notification about completed metrics."""
     if success:
         title = f"✅ {model.upper()} completed"
+        der_pct = metrics_dict['der'] * 100
+        fa_pct = metrics_dict['false_alarm'] * 100
+        miss_pct = metrics_dict['missed_detection'] * 100
+        conf_pct = metrics_dict['confusion'] * 100
         message = (
             f"File: {file_path}\n"
             f"─────────────────\n"
-            f"model,der,inference_time,filepath\n"
-            f"{model},{der:.6f},{inference_time:.2f},{file_path}"
+            f"DER={der_pct:.1f}%  FA={fa_pct:.1f}%  Miss={miss_pct:.1f}%  Conf={conf_pct:.1f}%\n"
+            f"RTF={rtf:.4f}  Time={inference_time:.1f}s"
         )
         priority = "default"
     else:
         title = f"❌ {model.upper()} failed"
-        message = f"File: {file_path}\nInference or DER computation failed."
+        message = f"File: {file_path}\nInference or metrics computation failed."
         priority = "high"
     
     send_notification(title, message, priority)
@@ -175,55 +187,25 @@ def run_inference(model: str, audio_path: Path, output_csv: Path,
         return False, time.time() - start_time
 
 
-def compute_der(reference_csv: Path, hypothesis_csv: Path, 
-                script_dir: Path) -> Tuple[bool, float]:
+def compute_metrics_for_pair(
+    reference_csv: Path, hypothesis_csv: Path, audio_path: Path,
+    inference_time: float,
+) -> Tuple[bool, dict, float]:
     """
-    Compute DER between reference and hypothesis.
-    
-    Returns: (success, der_value)
+    Compute detailed metrics between reference and hypothesis.
+
+    Returns: (success, metrics_dict, rtf)
     """
-    der_script = script_dir / "der.py"
-    
-    if not der_script.exists():
-        eprint(f"DER script not found: {der_script}")
-        return False, -1.0
-    
-    # DER script uses pyannote.metrics which is available in der_eval or pyan env
-    # Try with pyan first, fallback to der_eval
-    for env in ["pyan", "der_eval"]:
-        cmd = [
-            "conda", "run", "-n", env, "--no-capture-output",
-            "python", str(der_script),
-            "--reference_csv", str(reference_csv),
-            "--hypothesis_csv", str(hypothesis_csv),
-        ]
-        
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=300,
-            )
-            
-            if result.returncode == 0:
-                # Parse DER from output: "DER=0.123456"
-                match = re.search(r"DER=(\d+\.?\d*)", result.stdout)
-                if match:
-                    return True, float(match.group(1))
-        except Exception:
-            continue
-    
-    return False, -1.0
-
-
-def write_metrics_csv(metrics_path: Path, model: str, der: float, 
-                      inference_time: float, audio_path: Path):
-    """Write single-row metrics CSV."""
-    with open(metrics_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["model", "der", "inference_time", "filepath"])
-        writer.writerow([model, f"{der:.6f}", f"{inference_time:.2f}", str(audio_path)])
+    try:
+        metrics_dict = compute_detailed_metrics(
+            str(reference_csv), str(hypothesis_csv)
+        )
+        audio_duration = get_audio_duration(str(audio_path))
+        rtf = inference_time / audio_duration if audio_duration > 0 else -1.0
+        return True, metrics_dict, rtf
+    except Exception as ex:
+        eprint(f"  Metrics computation failed: {ex}")
+        return False, {}, -1.0
 
 
 def main():
@@ -343,32 +325,54 @@ def main():
                 model, audio_path, pred_csv, script_dir, log_file
             )
             
+            error_metrics = {
+                "der": -1.0, "false_alarm": -1.0,
+                "missed_detection": -1.0, "confusion": -1.0, "correct": -1.0,
+            }
+            
             if not success:
                 eprint(f"  [{model}] Inference FAILED (see {log_file})")
                 errors.append((file_stem, model, "inference"))
-                # Write error metrics
-                write_metrics_csv(metrics_csv, model, -1.0, inf_time, rel_audio_path)
-                notify_metrics(model, str(rel_audio_path), -1.0, inf_time, success=False)
+                write_metrics_csv(
+                    str(metrics_csv), model, error_metrics,
+                    rtf=-1.0, inference_time=inf_time,
+                    audio_duration=-1.0, filepath=str(rel_audio_path),
+                )
+                notify_metrics(model, str(rel_audio_path), error_metrics, inf_time, -1.0, success=False)
                 continue
             
             print(f"  [{model}] Inference OK ({inf_time:.1f}s)")
             
-            # Compute DER
-            print(f"  [{model}] Computing DER...")
-            der_ok, der_val = compute_der(annot_path, pred_csv, script_dir)
+            # Compute detailed metrics
+            print(f"  [{model}] Computing metrics...")
+            met_ok, met_dict, rtf = compute_metrics_for_pair(
+                annot_path, pred_csv, audio_path, inf_time
+            )
             
-            if not der_ok:
-                eprint(f"  [{model}] DER computation FAILED")
-                errors.append((file_stem, model, "der"))
-                write_metrics_csv(metrics_csv, model, -1.0, inf_time, rel_audio_path)
-                notify_metrics(model, str(rel_audio_path), -1.0, inf_time, success=False)
+            if not met_ok:
+                eprint(f"  [{model}] Metrics computation FAILED")
+                errors.append((file_stem, model, "metrics"))
+                write_metrics_csv(
+                    str(metrics_csv), model, error_metrics,
+                    rtf=-1.0, inference_time=inf_time,
+                    audio_duration=-1.0, filepath=str(rel_audio_path),
+                )
+                notify_metrics(model, str(rel_audio_path), error_metrics, inf_time, -1.0, success=False)
                 continue
             
-            print(f"  [{model}] DER={der_val:.4f}")
+            der_pct = met_dict['der'] * 100
+            print(f"  [{model}] DER={der_pct:.1f}%")
             
-            # Write metrics
-            write_metrics_csv(metrics_csv, model, der_val, inf_time, rel_audio_path)
-            notify_metrics(model, str(rel_audio_path), der_val, inf_time, success=True)
+            # Get audio duration for the CSV
+            audio_dur = get_audio_duration(str(audio_path))
+            
+            # Write extended metrics
+            write_metrics_csv(
+                str(metrics_csv), model, met_dict,
+                rtf=rtf, inference_time=inf_time,
+                audio_duration=audio_dur, filepath=str(rel_audio_path),
+            )
+            notify_metrics(model, str(rel_audio_path), met_dict, inf_time, rtf, success=True)
             print(f"  [{model}] Metrics saved to {metrics_csv.relative_to(data_root)}")
     
     # Summary
@@ -388,6 +392,7 @@ def main():
     
     print()
     print("Run 'python collect_metrics.py --data_root <path>' to aggregate results.")
+    print("Run 'python recalc_metrics.py --data_root <path>' to recalculate metrics from saved predictions.")
 
 
 if __name__ == "__main__":

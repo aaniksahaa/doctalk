@@ -1,6 +1,19 @@
 pip install -U nemo_toolkit[asr] omegaconf soundfile
 
 
+python run_diarization.py --data_root examples/dummy --models "pyan;nemo;3ds"
+
+conda run -n pyan python recalc_metrics.py --data_root dataset
+
+python collect_metrics.py --data_root dataset
+
+
+python run_diarization.py --data_root dataset/hidden --models "pyan;nemo;3ds"
+conda run -n pyan python recalc_metrics.py --data_root dataset
+python collect_metrics.py --data_root dataset/hidden
+
+
+
 ===========================================================================
 Nemo Setup for separate conda env 
 ===========================================================================
