@@ -4,7 +4,7 @@ Script to parse healthcare video transcriptions into structured JSON conversatio
 Sends transcriptions to an LLM (Gemini or Ollama) which parses them into
 host-doctor QA and patient-call conversation objects.
 
-Output: dataset/<video_id>/transcribed/yt-auto/parsed/<model_name>/conversation.json
+Output: dataset/<video_id>/transcribed/yt-auto/parsed/<model_name>/<video_id>_conversation.json
 """
 
 import json
@@ -18,7 +18,7 @@ from llm import get_response, LLMOptions
 
 
 # Load prompts from files
-PROMPTS_DIR = Path(__file__).parent / "prompts" / "parsing"
+PROMPTS_DIR = Path(__file__).parent / "prompts" / "transcription-parsing"
 
 
 def load_prompt_file(filename: str) -> str:
@@ -182,10 +182,10 @@ def create_lock_file(output_dir: Path) -> None:
     lock_file.touch()
 
 
-def save_conversation(output_dir: Path, data: List[Dict[str, Any]]) -> Path:
+def save_conversation(output_dir: Path, video_id: str, data: List[Dict[str, Any]]) -> Path:
     """Save parsed conversation JSON to the output directory."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / "conversation.json"
+    output_file = output_dir / f"{video_id}_conversation.json"
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     return output_file
@@ -229,7 +229,7 @@ def process_video(
         conversations = parse_transcript(model, transcript)
 
         # Save results
-        output_file = save_conversation(output_dir, conversations)
+        output_file = save_conversation(output_dir, video_id, conversations)
         create_lock_file(output_dir)
 
         num_convos = len(conversations)
@@ -396,7 +396,7 @@ def main():
     results = load_results(str(results_path))
     print(f"Found {len(results)} videos to process")
     print(f"Model: {args.model}")
-    print(f"Output: dataset/<video_id>/transcribed/yt-auto/parsed/{normalize_model_name(args.model)}/conversation.json")
+    print(f"Output: dataset/<video_id>/transcribed/yt-auto/parsed/{normalize_model_name(args.model)}/<video_id>_conversation.json")
 
     # Load run metadata
     metadata = load_run_metadata(str(metadata_path), args.folder, args.file, args.model)
@@ -461,7 +461,7 @@ def main():
         print(f"\n  See parsing-metadata.json for details on {len(metadata['failures'])} failures")
 
     model_dir = normalize_model_name(args.model)
-    print(f"\nParsed conversations saved to: dataset/<VIDEO_ID>/transcribed/yt-auto/parsed/{model_dir}/conversation.json")
+    print(f"\nParsed conversations saved to: dataset/<VIDEO_ID>/transcribed/yt-auto/parsed/{model_dir}/<VIDEO_ID>_conversation.json")
     print(f"Run metadata saved to: {metadata_path}")
 
     return 0

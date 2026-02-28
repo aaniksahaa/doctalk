@@ -117,6 +117,34 @@ Examples of clarification questions that MUST be preserved:
 * রক্তচাপ নিয়ন্ত্রণে আছে কি?
 * ধূমপান করেন কি?
 * টেনশন বা দুশ্চিন্তায় থাকেন কি?
+* আপনার বয়স কত?
+* এই সমস্যা কতদিন ধরে হচ্ছে?
+* কোনো ওষুধ খাচ্ছেন কি?
+* মাথার একদিকে ব্যথা করে?
+* রক্তচাপ নিয়ন্ত্রণে আছে কি?
+* ধূমপান করেন কি?
+* টেনশন বা দুশ্চিন্তায় থাকেন কি?
+* পূর্বে এ ধরনের সমস্যা হয়েছে কি?
+* পরিবারে কেউ এই সমস্যায় ভুগছেন কি?
+* আপনার অন্য কোনো রোগ আছে কি?
+* লিভার/কিডনি/হৃদরোগ আছে কি?
+* ব্যথা কোথায় হয়?
+* ব্যথা কি ছড়িয়ে যায়?
+* কতো তীব্র ব্যথা হয়?
+* কখন বেশি খারাপ হয়?
+* জ্বর বা ঠান্ডা লাগছে কি?
+* বমি বা জ্বালা হয় কি?
+* হঠাৎ সমস্যা শুরু হয়েছে কি?
+* আগে কোনো চিকিৎসা নিয়েছেন কি?
+* ওষুধ সঠিকভাবে খাচ্ছেন কি?
+* খাদ্যাভ্যাস কেমন?
+* ব্যায়াম বা চলাফেরা কতটা?
+* অ্যালকোহল পান করেন কি?
+* ত্বক/চুল/নখে কোনো সমস্যা আছে কি?
+* ঘুমের সমস্যা আছে কি?
+* মানসিক চাপ বেশি কি?
+* ক্লান্তি বা দুর্বলতা অনুভব করছেন কি?
+
 
 Ensure patient calls capture:
 
@@ -140,8 +168,10 @@ Create a new conversation object when:
 
 * Stay faithful to the transcript
 * Do not add new medical information
+* Carefully handle medical terminologies...
 * Do not include TV-show framing
 * Strictly follow the JSON schema
+* It is best to keep the original flavor of the conversation, like if originally, the conversation went like, patient 1 q, then doctor 1, then patient as such 8/10 times as much, even then, this full depth should be captured, rather than merging conversation elements... like we want to retain the natural conversation nicely and correctly
 
 ---
 
