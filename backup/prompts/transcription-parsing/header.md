@@ -1,0 +1,179 @@
+[TASK]
+You are given a raw Bengali transcript from Bangladeshi public TV health programs.
+Parse it into a clean, structured medical conversation dataset suitable for medical dialogue analysis.
+
+The transcript may include:
+- Host–doctor health-related discussions
+- Real patient call-ins with symptoms and medical advice
+- Doctor follow-up and clarification questions
+- Subtitle timestamps (e.g., 00:05:23.830 >>)
+- Subtitle noise, repetitions, broken lines, and artifacts
+
+Preserve medical meaning only.
+Do NOT preserve TV-show format, greetings, or introductions.
+
+---
+
+[CONTEXT]
+In these programs:
+- A host asks general, community-oriented health questions to a doctor
+- Sometimes patients call in and describe medical problems
+- Doctors often ask supplementary questions before giving advice
+- The host may paraphrase or clarify patient statements
+- The symbol ">>" often indicates a conversational shift, but it is NOT fully reliable
+
+Use linguistic context and medical logic to infer structure.
+Do not blindly rely on symbols.
+
+---
+
+[OUTPUT FORMAT — STRICT]
+Return ONLY a valid JSON array, wrapped exactly as shown below:
+
+```json
+[
+  {
+    "type": "host_doctor_qa",
+    "timestamp": "00:00:41.590",
+    "turns": [
+      { "speaker": "host", "text": "..." },
+      { "speaker": "doctor", "text": "..." }
+    ]
+  },
+  {
+    "type": "patient_call",
+    "timestamp": "00:07:51.690",
+    "turns": [
+      { "speaker": "patient", "text": "..." },
+      { "speaker": "doctor", "text": "..." }
+    ]
+  }
+]
+```
+
+Rules:
+
+* Output ONLY JSON (no text before or after)
+* JSON must be parsable by Python `json.loads()`
+* No trailing commas
+* Use UTF-8 Bengali text inside `"text"`
+* JSON keys and speaker labels must remain in English
+
+---
+
+[GENERAL RULES]
+
+* Remove timestamps, subtitle markers, [মিউজিক], and transcription artifacts
+* Merge broken subtitle lines into complete Bengali sentences
+* Correct obvious transcription errors conservatively
+* Do NOT invent symptoms, diagnoses, or advice
+* Preserve the natural tone of host, patient, and doctor speech
+
+Infer the starting timestamp of each conversation:
+
+* Each ">>" is preceded by an exact timestamp
+* Infer where the conversation actually begins and use that timestamp
+
+If a host question is too short to be self-contained (e.g., “প্রতিরোধের উপায় কী?”),
+add minimal natural context in Bengali so the QA stands alone.
+
+---
+
+[HOST–DOCTOR QA RULES]
+
+* Prefer single-turn conversations:
+
+  * One clear host question
+  * One complete doctor answer
+* Merge closely related sub-questions into one coherent question
+* Allow multi-turn only if strictly necessary and information-rich
+
+---
+
+[PATIENT CALL RULES — CRITICAL]
+
+* Conversations MUST be multi-turn
+* Only use `"patient"` and `"doctor"` as speakers
+* DO NOT include the host as a speaker
+
+Doctor clarification questions are extremely valuable and must be preserved as turns.
+
+---
+
+[MERGING RULES FOR PATIENT CALLS]
+
+* If the host paraphrases or clarifies a patient’s statement:
+  → Merge that clarification into the patient’s turn to avoid repetition
+* Do NOT remove multi-turn structure
+* Any genuine clarification question (age, duration, medication, symptoms, history, lifestyle, etc.)
+  MUST remain as a separate turn
+
+Examples of clarification questions that MUST be preserved:
+
+* আপনার বয়স কত?
+* এই সমস্যা কতদিন ধরে হচ্ছে?
+* কোনো ওষুধ খাচ্ছেন কি?
+* মাথার একদিকে ব্যথা করে?
+* রক্তচাপ নিয়ন্ত্রণে আছে কি?
+* ধূমপান করেন কি?
+* টেনশন বা দুশ্চিন্তায় থাকেন কি?
+* আপনার বয়স কত?
+* এই সমস্যা কতদিন ধরে হচ্ছে?
+* কোনো ওষুধ খাচ্ছেন কি?
+* মাথার একদিকে ব্যথা করে?
+* রক্তচাপ নিয়ন্ত্রণে আছে কি?
+* ধূমপান করেন কি?
+* টেনশন বা দুশ্চিন্তায় থাকেন কি?
+* পূর্বে এ ধরনের সমস্যা হয়েছে কি?
+* পরিবারে কেউ এই সমস্যায় ভুগছেন কি?
+* আপনার অন্য কোনো রোগ আছে কি?
+* লিভার/কিডনি/হৃদরোগ আছে কি?
+* ব্যথা কোথায় হয়?
+* ব্যথা কি ছড়িয়ে যায়?
+* কতো তীব্র ব্যথা হয়?
+* কখন বেশি খারাপ হয়?
+* জ্বর বা ঠান্ডা লাগছে কি?
+* বমি বা জ্বালা হয় কি?
+* হঠাৎ সমস্যা শুরু হয়েছে কি?
+* আগে কোনো চিকিৎসা নিয়েছেন কি?
+* ওষুধ সঠিকভাবে খাচ্ছেন কি?
+* খাদ্যাভ্যাস কেমন?
+* ব্যায়াম বা চলাফেরা কতটা?
+* অ্যালকোহল পান করেন কি?
+* ত্বক/চুল/নখে কোনো সমস্যা আছে কি?
+* ঘুমের সমস্যা আছে কি?
+* মানসিক চাপ বেশি কি?
+* ক্লান্তি বা দুর্বলতা অনুভব করছেন কি?
+
+
+Ensure patient calls capture:
+
+* symptom description
+* clarification questions
+* patient responses
+* medical advice or guidance
+
+---
+
+[SEGMENTATION RULES]
+Create a new conversation object when:
+
+* The host introduces a new topic or question
+* A patient call begins or ends
+* A new patient starts speaking
+
+---
+
+[FINAL CONSTRAINTS]
+
+* Stay faithful to the transcript
+* Do not add new medical information
+* Carefully handle medical terminologies...
+* Do not include TV-show framing
+* Strictly follow the JSON schema
+* It is best to keep the original flavor of the conversation, like if originally, the conversation went like, patient 1 q, then doctor 1, then patient as such 8/10 times as much, even then, this full depth should be captured, rather than merging conversation elements... like we want to retain the natural conversation nicely and correctly
+
+---
+
+[INPUT]
+The raw Bengali transcript begins below.
