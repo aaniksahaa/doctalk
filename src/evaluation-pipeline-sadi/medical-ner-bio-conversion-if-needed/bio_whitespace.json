@@ -1,0 +1,2341 @@
+[
+  {
+    "text": "কোলোরেক্টাল ক্যান্সারের ক্ষেত্রে কি কি লক্ষণগুলো প্রকাশ পেলে একজন রোগী বুঝতে পারবেন তিনি এই রোগে ভুগছেন? কোলোরেক্টাল ক্যান্সারের শুরুতে সাধারণত কোনো লক্ষণ থাকে না। এই সময়টি আমাদের জন্য খুবই গুরুত্বপূর্ণ কারণ এটি আর্লি স্টেজ এবং এই সময়ে রোগ ধরতে পারলে রোগীকে সম্পূর্ণ ক্যান্সার মুক্ত করা যায়। রোগটি যখন কিছুটা বিস্তৃত হয় তখন কিছু লক্ষণ দেখা দেয়। যেমন: বাথরুমের সাথে রক্ত যাওয়া, পেটে ব্যথা হওয়া এবং বাথরুমের অভ্যাসে পরিবর্তন আসা। যেমন আগে হয়তো সমস্যা ছিল না কিন্তু এখন কয়েকদিন পর পর বাথরুম হচ্ছে। অনেক সময় বাথরুমের আকার চিকন হয়ে যায়। আবার সকালে বাথরুমের সাথে রক্ত ও আম নির্গত হতে পারে। এছাড়া রোগীর স্বাস্থ্য অনেক শুকিয়ে যেতে পারে।",
+    "tokenization": "whitespace",
+    "resolved_entities": [
+      {
+        "text": "কোলোরেক্টাল ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "text": "কোলোরেক্টাল ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 105,
+        "end": 126
+      },
+      {
+        "text": "ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 269,
+        "end": 278
+      },
+      {
+        "text": "বাথরুমের সাথে রক্ত যাওয়া",
+        "label": "SYMPTOM_SIGN",
+        "start": 356,
+        "end": 381
+      },
+      {
+        "text": "পেটে ব্যথা",
+        "label": "SYMPTOM_SIGN",
+        "start": 383,
+        "end": 393
+      },
+      {
+        "text": "বাথরুমের অভ্যাসে পরিবর্তন",
+        "label": "SYMPTOM_SIGN",
+        "start": 404,
+        "end": 429
+      },
+      {
+        "text": "বাথরুমের সাথে রক্ত",
+        "label": "SYMPTOM_SIGN",
+        "start": 555,
+        "end": 573
+      },
+      {
+        "text": "আম",
+        "label": "SYMPTOM_SIGN",
+        "start": 576,
+        "end": 578
+      },
+      {
+        "text": "শুকিয়ে যেতে পারে",
+        "label": "SYMPTOM_SIGN",
+        "start": 624,
+        "end": 641
+      }
+    ],
+    "tokens": [
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 0,
+        "end": 11,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 12,
+        "end": 23,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্ষেত্রে",
+        "start": 24,
+        "end": 32,
+        "tag": "O"
+      },
+      {
+        "token": "কি",
+        "start": 33,
+        "end": 35,
+        "tag": "O"
+      },
+      {
+        "token": "কি",
+        "start": 36,
+        "end": 38,
+        "tag": "O"
+      },
+      {
+        "token": "লক্ষণগুলো",
+        "start": 39,
+        "end": 48,
+        "tag": "O"
+      },
+      {
+        "token": "প্রকাশ",
+        "start": 49,
+        "end": 55,
+        "tag": "O"
+      },
+      {
+        "token": "পেলে",
+        "start": 56,
+        "end": 60,
+        "tag": "O"
+      },
+      {
+        "token": "একজন",
+        "start": 61,
+        "end": 65,
+        "tag": "O"
+      },
+      {
+        "token": "রোগী",
+        "start": 66,
+        "end": 70,
+        "tag": "O"
+      },
+      {
+        "token": "বুঝতে",
+        "start": 71,
+        "end": 76,
+        "tag": "O"
+      },
+      {
+        "token": "পারবেন",
+        "start": 77,
+        "end": 83,
+        "tag": "O"
+      },
+      {
+        "token": "তিনি",
+        "start": 84,
+        "end": 88,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 89,
+        "end": 91,
+        "tag": "O"
+      },
+      {
+        "token": "রোগে",
+        "start": 92,
+        "end": 96,
+        "tag": "O"
+      },
+      {
+        "token": "ভুগছেন?",
+        "start": 97,
+        "end": 104,
+        "tag": "O"
+      },
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 105,
+        "end": 116,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 117,
+        "end": 128,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "শুরুতে",
+        "start": 129,
+        "end": 135,
+        "tag": "O"
+      },
+      {
+        "token": "সাধারণত",
+        "start": 136,
+        "end": 143,
+        "tag": "O"
+      },
+      {
+        "token": "কোনো",
+        "start": 144,
+        "end": 148,
+        "tag": "O"
+      },
+      {
+        "token": "লক্ষণ",
+        "start": 149,
+        "end": 154,
+        "tag": "O"
+      },
+      {
+        "token": "থাকে",
+        "start": 155,
+        "end": 159,
+        "tag": "O"
+      },
+      {
+        "token": "না।",
+        "start": 160,
+        "end": 163,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 164,
+        "end": 166,
+        "tag": "O"
+      },
+      {
+        "token": "সময়টি",
+        "start": 167,
+        "end": 173,
+        "tag": "O"
+      },
+      {
+        "token": "আমাদের",
+        "start": 174,
+        "end": 180,
+        "tag": "O"
+      },
+      {
+        "token": "জন্য",
+        "start": 181,
+        "end": 185,
+        "tag": "O"
+      },
+      {
+        "token": "খুবই",
+        "start": 186,
+        "end": 190,
+        "tag": "O"
+      },
+      {
+        "token": "গুরুত্বপূর্ণ",
+        "start": 191,
+        "end": 203,
+        "tag": "O"
+      },
+      {
+        "token": "কারণ",
+        "start": 204,
+        "end": 208,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 209,
+        "end": 212,
+        "tag": "O"
+      },
+      {
+        "token": "আর্লি",
+        "start": 213,
+        "end": 218,
+        "tag": "O"
+      },
+      {
+        "token": "স্টেজ",
+        "start": 219,
+        "end": 224,
+        "tag": "O"
+      },
+      {
+        "token": "এবং",
+        "start": 225,
+        "end": 228,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 229,
+        "end": 231,
+        "tag": "O"
+      },
+      {
+        "token": "সময়ে",
+        "start": 232,
+        "end": 237,
+        "tag": "O"
+      },
+      {
+        "token": "রোগ",
+        "start": 238,
+        "end": 241,
+        "tag": "O"
+      },
+      {
+        "token": "ধরতে",
+        "start": 242,
+        "end": 246,
+        "tag": "O"
+      },
+      {
+        "token": "পারলে",
+        "start": 247,
+        "end": 252,
+        "tag": "O"
+      },
+      {
+        "token": "রোগীকে",
+        "start": 253,
+        "end": 259,
+        "tag": "O"
+      },
+      {
+        "token": "সম্পূর্ণ",
+        "start": 260,
+        "end": 268,
+        "tag": "O"
+      },
+      {
+        "token": "ক্যান্সার",
+        "start": 269,
+        "end": 278,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "মুক্ত",
+        "start": 279,
+        "end": 284,
+        "tag": "O"
+      },
+      {
+        "token": "করা",
+        "start": 285,
+        "end": 288,
+        "tag": "O"
+      },
+      {
+        "token": "যায়।",
+        "start": 289,
+        "end": 294,
+        "tag": "O"
+      },
+      {
+        "token": "রোগটি",
+        "start": 295,
+        "end": 300,
+        "tag": "O"
+      },
+      {
+        "token": "যখন",
+        "start": 301,
+        "end": 304,
+        "tag": "O"
+      },
+      {
+        "token": "কিছুটা",
+        "start": 305,
+        "end": 311,
+        "tag": "O"
+      },
+      {
+        "token": "বিস্তৃত",
+        "start": 312,
+        "end": 319,
+        "tag": "O"
+      },
+      {
+        "token": "হয়",
+        "start": 320,
+        "end": 323,
+        "tag": "O"
+      },
+      {
+        "token": "তখন",
+        "start": 324,
+        "end": 327,
+        "tag": "O"
+      },
+      {
+        "token": "কিছু",
+        "start": 328,
+        "end": 332,
+        "tag": "O"
+      },
+      {
+        "token": "লক্ষণ",
+        "start": 333,
+        "end": 338,
+        "tag": "O"
+      },
+      {
+        "token": "দেখা",
+        "start": 339,
+        "end": 343,
+        "tag": "O"
+      },
+      {
+        "token": "দেয়।",
+        "start": 344,
+        "end": 349,
+        "tag": "O"
+      },
+      {
+        "token": "যেমন:",
+        "start": 350,
+        "end": 355,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুমের",
+        "start": 356,
+        "end": 364,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "সাথে",
+        "start": 365,
+        "end": 369,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "রক্ত",
+        "start": 370,
+        "end": 374,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "যাওয়া,",
+        "start": 375,
+        "end": 382,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "পেটে",
+        "start": 383,
+        "end": 387,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "ব্যথা",
+        "start": 388,
+        "end": 393,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "হওয়া",
+        "start": 394,
+        "end": 399,
+        "tag": "O"
+      },
+      {
+        "token": "এবং",
+        "start": 400,
+        "end": 403,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুমের",
+        "start": 404,
+        "end": 412,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "অভ্যাসে",
+        "start": 413,
+        "end": 420,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "পরিবর্তন",
+        "start": 421,
+        "end": 429,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "আসা।",
+        "start": 430,
+        "end": 434,
+        "tag": "O"
+      },
+      {
+        "token": "যেমন",
+        "start": 435,
+        "end": 439,
+        "tag": "O"
+      },
+      {
+        "token": "আগে",
+        "start": 440,
+        "end": 443,
+        "tag": "O"
+      },
+      {
+        "token": "হয়তো",
+        "start": 444,
+        "end": 449,
+        "tag": "O"
+      },
+      {
+        "token": "সমস্যা",
+        "start": 450,
+        "end": 456,
+        "tag": "O"
+      },
+      {
+        "token": "ছিল",
+        "start": 457,
+        "end": 460,
+        "tag": "O"
+      },
+      {
+        "token": "না",
+        "start": 461,
+        "end": 463,
+        "tag": "O"
+      },
+      {
+        "token": "কিন্তু",
+        "start": 464,
+        "end": 470,
+        "tag": "O"
+      },
+      {
+        "token": "এখন",
+        "start": 471,
+        "end": 474,
+        "tag": "O"
+      },
+      {
+        "token": "কয়েকদিন",
+        "start": 475,
+        "end": 483,
+        "tag": "O"
+      },
+      {
+        "token": "পর",
+        "start": 484,
+        "end": 486,
+        "tag": "O"
+      },
+      {
+        "token": "পর",
+        "start": 487,
+        "end": 489,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুম",
+        "start": 490,
+        "end": 496,
+        "tag": "O"
+      },
+      {
+        "token": "হচ্ছে।",
+        "start": 497,
+        "end": 503,
+        "tag": "O"
+      },
+      {
+        "token": "অনেক",
+        "start": 504,
+        "end": 508,
+        "tag": "O"
+      },
+      {
+        "token": "সময়",
+        "start": 509,
+        "end": 513,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুমের",
+        "start": 514,
+        "end": 522,
+        "tag": "O"
+      },
+      {
+        "token": "আকার",
+        "start": 523,
+        "end": 527,
+        "tag": "O"
+      },
+      {
+        "token": "চিকন",
+        "start": 528,
+        "end": 532,
+        "tag": "O"
+      },
+      {
+        "token": "হয়ে",
+        "start": 533,
+        "end": 537,
+        "tag": "O"
+      },
+      {
+        "token": "যায়।",
+        "start": 538,
+        "end": 543,
+        "tag": "O"
+      },
+      {
+        "token": "আবার",
+        "start": 544,
+        "end": 548,
+        "tag": "O"
+      },
+      {
+        "token": "সকালে",
+        "start": 549,
+        "end": 554,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুমের",
+        "start": 555,
+        "end": 563,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "সাথে",
+        "start": 564,
+        "end": 568,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "রক্ত",
+        "start": 569,
+        "end": 573,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "ও",
+        "start": 574,
+        "end": 575,
+        "tag": "O"
+      },
+      {
+        "token": "আম",
+        "start": 576,
+        "end": 578,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "নির্গত",
+        "start": 579,
+        "end": 585,
+        "tag": "O"
+      },
+      {
+        "token": "হতে",
+        "start": 586,
+        "end": 589,
+        "tag": "O"
+      },
+      {
+        "token": "পারে।",
+        "start": 590,
+        "end": 595,
+        "tag": "O"
+      },
+      {
+        "token": "এছাড়া",
+        "start": 596,
+        "end": 602,
+        "tag": "O"
+      },
+      {
+        "token": "রোগীর",
+        "start": 603,
+        "end": 608,
+        "tag": "O"
+      },
+      {
+        "token": "স্বাস্থ্য",
+        "start": 609,
+        "end": 618,
+        "tag": "O"
+      },
+      {
+        "token": "অনেক",
+        "start": 619,
+        "end": 623,
+        "tag": "O"
+      },
+      {
+        "token": "শুকিয়ে",
+        "start": 624,
+        "end": 631,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "যেতে",
+        "start": 632,
+        "end": 636,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "পারে।",
+        "start": 637,
+        "end": 642,
+        "tag": "I-SYMPTOM_SIGN"
+      }
+    ],
+    "sample_index": 0
+  },
+  {
+    "text": "পাইলস বা হেমোরয়েড এবং কোলোরেক্টাল ক্যান্সারের রক্তপাতের মধ্যে পার্থক্য কী? একজন রোগী রক্তপাতের ধরণ দেখে কীভাবে এটি বুঝতে পারবেন? পাইলসের রক্তক্ষরণ সাধারণত বাথরুমের শুরুতে বা শেষে হয় এবং এটি টাটকা লাল রক্ত হয়। কিন্তু ক্যান্সারের ক্ষেত্রে রক্ত জমাট বাঁধা অথবা কালচে ধরনের হতে পারে। পাইলসের ক্ষেত্রে সাধারণত রক্তস্বল্পতা হয় না, কিন্তু ক্যান্সার রোগী রক্তস্বল্পতা নিয়ে আসতে পারে। তবে সাধারণ মানুষ অনেক সময় এটি বুঝতে পারে না এবং ফার্মেসি থেকে পাইলসের ওষুধ খেয়ে রক্তক্ষরণ সাময়িকভাবে কমিয়ে রাখে, যার ফলে রোগ নির্ণয়ে দেরি হয়ে যায়।",
+    "tokenization": "whitespace",
+    "resolved_entities": [
+      {
+        "text": "পাইলস",
+        "label": "DISEASE_CONDITION",
+        "start": 0,
+        "end": 5
+      },
+      {
+        "text": "হেমোরয়েড",
+        "label": "DISEASE_CONDITION",
+        "start": 9,
+        "end": 18
+      },
+      {
+        "text": "কোলোরেক্টাল ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 23,
+        "end": 44
+      },
+      {
+        "text": "রক্তপাতের",
+        "label": "SYMPTOM_SIGN",
+        "start": 47,
+        "end": 56
+      },
+      {
+        "text": "রক্তপাতের",
+        "label": "SYMPTOM_SIGN",
+        "start": 86,
+        "end": 95
+      },
+      {
+        "text": "পাইলসের রক্তক্ষরণ",
+        "label": "SYMPTOM_SIGN",
+        "start": 130,
+        "end": 147
+      },
+      {
+        "text": "রক্ত",
+        "label": "SYMPTOM_SIGN",
+        "start": 202,
+        "end": 206
+      },
+      {
+        "text": "ক্যান্সারের",
+        "label": "DISEASE_CONDITION",
+        "start": 219,
+        "end": 230
+      },
+      {
+        "text": "রক্ত জমাট বাঁধা",
+        "label": "SYMPTOM_SIGN",
+        "start": 240,
+        "end": 255
+      },
+      {
+        "text": "কালচে ধরনের",
+        "label": "SYMPTOM_SIGN",
+        "start": 261,
+        "end": 272
+      },
+      {
+        "text": "পাইলসের",
+        "label": "DISEASE_CONDITION",
+        "start": 283,
+        "end": 290
+      },
+      {
+        "text": "রক্তস্বল্পতা",
+        "label": "DISEASE_CONDITION",
+        "start": 308,
+        "end": 320
+      },
+      {
+        "text": "ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 336,
+        "end": 345
+      },
+      {
+        "text": "রক্তস্বল্পতা",
+        "label": "DISEASE_CONDITION",
+        "start": 351,
+        "end": 363
+      },
+      {
+        "text": "পাইলসের ওষুধ",
+        "label": "DRUG_MEDICATION",
+        "start": 444,
+        "end": 456
+      },
+      {
+        "text": "রক্তক্ষরণ",
+        "label": "SYMPTOM_SIGN",
+        "start": 463,
+        "end": 472
+      }
+    ],
+    "tokens": [
+      {
+        "token": "পাইলস",
+        "start": 0,
+        "end": 5,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "বা",
+        "start": 6,
+        "end": 8,
+        "tag": "O"
+      },
+      {
+        "token": "হেমোরয়েড",
+        "start": 9,
+        "end": 18,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "এবং",
+        "start": 19,
+        "end": 22,
+        "tag": "O"
+      },
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 23,
+        "end": 34,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 35,
+        "end": 46,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "রক্তপাতের",
+        "start": 47,
+        "end": 56,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "মধ্যে",
+        "start": 57,
+        "end": 62,
+        "tag": "O"
+      },
+      {
+        "token": "পার্থক্য",
+        "start": 63,
+        "end": 71,
+        "tag": "O"
+      },
+      {
+        "token": "কী?",
+        "start": 72,
+        "end": 75,
+        "tag": "O"
+      },
+      {
+        "token": "একজন",
+        "start": 76,
+        "end": 80,
+        "tag": "O"
+      },
+      {
+        "token": "রোগী",
+        "start": 81,
+        "end": 85,
+        "tag": "O"
+      },
+      {
+        "token": "রক্তপাতের",
+        "start": 86,
+        "end": 95,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "ধরণ",
+        "start": 96,
+        "end": 99,
+        "tag": "O"
+      },
+      {
+        "token": "দেখে",
+        "start": 100,
+        "end": 104,
+        "tag": "O"
+      },
+      {
+        "token": "কীভাবে",
+        "start": 105,
+        "end": 111,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 112,
+        "end": 115,
+        "tag": "O"
+      },
+      {
+        "token": "বুঝতে",
+        "start": 116,
+        "end": 121,
+        "tag": "O"
+      },
+      {
+        "token": "পারবেন?",
+        "start": 122,
+        "end": 129,
+        "tag": "O"
+      },
+      {
+        "token": "পাইলসের",
+        "start": 130,
+        "end": 137,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "রক্তক্ষরণ",
+        "start": 138,
+        "end": 147,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "সাধারণত",
+        "start": 148,
+        "end": 155,
+        "tag": "O"
+      },
+      {
+        "token": "বাথরুমের",
+        "start": 156,
+        "end": 164,
+        "tag": "O"
+      },
+      {
+        "token": "শুরুতে",
+        "start": 165,
+        "end": 171,
+        "tag": "O"
+      },
+      {
+        "token": "বা",
+        "start": 172,
+        "end": 174,
+        "tag": "O"
+      },
+      {
+        "token": "শেষে",
+        "start": 175,
+        "end": 179,
+        "tag": "O"
+      },
+      {
+        "token": "হয়",
+        "start": 180,
+        "end": 183,
+        "tag": "O"
+      },
+      {
+        "token": "এবং",
+        "start": 184,
+        "end": 187,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 188,
+        "end": 191,
+        "tag": "O"
+      },
+      {
+        "token": "টাটকা",
+        "start": 192,
+        "end": 197,
+        "tag": "O"
+      },
+      {
+        "token": "লাল",
+        "start": 198,
+        "end": 201,
+        "tag": "O"
+      },
+      {
+        "token": "রক্ত",
+        "start": 202,
+        "end": 206,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "হয়।",
+        "start": 207,
+        "end": 211,
+        "tag": "O"
+      },
+      {
+        "token": "কিন্তু",
+        "start": 212,
+        "end": 218,
+        "tag": "O"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 219,
+        "end": 230,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্ষেত্রে",
+        "start": 231,
+        "end": 239,
+        "tag": "O"
+      },
+      {
+        "token": "রক্ত",
+        "start": 240,
+        "end": 244,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "জমাট",
+        "start": 245,
+        "end": 249,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "বাঁধা",
+        "start": 250,
+        "end": 255,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "অথবা",
+        "start": 256,
+        "end": 260,
+        "tag": "O"
+      },
+      {
+        "token": "কালচে",
+        "start": 261,
+        "end": 266,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "ধরনের",
+        "start": 267,
+        "end": 272,
+        "tag": "I-SYMPTOM_SIGN"
+      },
+      {
+        "token": "হতে",
+        "start": 273,
+        "end": 276,
+        "tag": "O"
+      },
+      {
+        "token": "পারে।",
+        "start": 277,
+        "end": 282,
+        "tag": "O"
+      },
+      {
+        "token": "পাইলসের",
+        "start": 283,
+        "end": 290,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্ষেত্রে",
+        "start": 291,
+        "end": 299,
+        "tag": "O"
+      },
+      {
+        "token": "সাধারণত",
+        "start": 300,
+        "end": 307,
+        "tag": "O"
+      },
+      {
+        "token": "রক্তস্বল্পতা",
+        "start": 308,
+        "end": 320,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "হয়",
+        "start": 321,
+        "end": 324,
+        "tag": "O"
+      },
+      {
+        "token": "না,",
+        "start": 325,
+        "end": 328,
+        "tag": "O"
+      },
+      {
+        "token": "কিন্তু",
+        "start": 329,
+        "end": 335,
+        "tag": "O"
+      },
+      {
+        "token": "ক্যান্সার",
+        "start": 336,
+        "end": 345,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "রোগী",
+        "start": 346,
+        "end": 350,
+        "tag": "O"
+      },
+      {
+        "token": "রক্তস্বল্পতা",
+        "start": 351,
+        "end": 363,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "নিয়ে",
+        "start": 364,
+        "end": 369,
+        "tag": "O"
+      },
+      {
+        "token": "আসতে",
+        "start": 370,
+        "end": 374,
+        "tag": "O"
+      },
+      {
+        "token": "পারে।",
+        "start": 375,
+        "end": 380,
+        "tag": "O"
+      },
+      {
+        "token": "তবে",
+        "start": 381,
+        "end": 384,
+        "tag": "O"
+      },
+      {
+        "token": "সাধারণ",
+        "start": 385,
+        "end": 391,
+        "tag": "O"
+      },
+      {
+        "token": "মানুষ",
+        "start": 392,
+        "end": 397,
+        "tag": "O"
+      },
+      {
+        "token": "অনেক",
+        "start": 398,
+        "end": 402,
+        "tag": "O"
+      },
+      {
+        "token": "সময়",
+        "start": 403,
+        "end": 407,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 408,
+        "end": 411,
+        "tag": "O"
+      },
+      {
+        "token": "বুঝতে",
+        "start": 412,
+        "end": 417,
+        "tag": "O"
+      },
+      {
+        "token": "পারে",
+        "start": 418,
+        "end": 422,
+        "tag": "O"
+      },
+      {
+        "token": "না",
+        "start": 423,
+        "end": 425,
+        "tag": "O"
+      },
+      {
+        "token": "এবং",
+        "start": 426,
+        "end": 429,
+        "tag": "O"
+      },
+      {
+        "token": "ফার্মেসি",
+        "start": 430,
+        "end": 438,
+        "tag": "O"
+      },
+      {
+        "token": "থেকে",
+        "start": 439,
+        "end": 443,
+        "tag": "O"
+      },
+      {
+        "token": "পাইলসের",
+        "start": 444,
+        "end": 451,
+        "tag": "B-DRUG_MEDICATION"
+      },
+      {
+        "token": "ওষুধ",
+        "start": 452,
+        "end": 456,
+        "tag": "I-DRUG_MEDICATION"
+      },
+      {
+        "token": "খেয়ে",
+        "start": 457,
+        "end": 462,
+        "tag": "O"
+      },
+      {
+        "token": "রক্তক্ষরণ",
+        "start": 463,
+        "end": 472,
+        "tag": "B-SYMPTOM_SIGN"
+      },
+      {
+        "token": "সাময়িকভাবে",
+        "start": 473,
+        "end": 484,
+        "tag": "O"
+      },
+      {
+        "token": "কমিয়ে",
+        "start": 485,
+        "end": 491,
+        "tag": "O"
+      },
+      {
+        "token": "রাখে,",
+        "start": 492,
+        "end": 497,
+        "tag": "O"
+      },
+      {
+        "token": "যার",
+        "start": 498,
+        "end": 501,
+        "tag": "O"
+      },
+      {
+        "token": "ফলে",
+        "start": 502,
+        "end": 505,
+        "tag": "O"
+      },
+      {
+        "token": "রোগ",
+        "start": 506,
+        "end": 509,
+        "tag": "O"
+      },
+      {
+        "token": "নির্ণয়ে",
+        "start": 510,
+        "end": 518,
+        "tag": "O"
+      },
+      {
+        "token": "দেরি",
+        "start": 519,
+        "end": 523,
+        "tag": "O"
+      },
+      {
+        "token": "হয়ে",
+        "start": 524,
+        "end": 528,
+        "tag": "O"
+      },
+      {
+        "token": "যায়।",
+        "start": 529,
+        "end": 534,
+        "tag": "O"
+      }
+    ],
+    "sample_index": 1
+  },
+  {
+    "text": "কোলোরেক্টাল ক্যান্সার সঠিক সময়ে নির্ণয় না হলে বা দেরি হলে কী কী জটিলতার সম্মুখীন হতে পারে একজন রোগী? ক্যান্সার যখন চতুর্থ পর্যায়ে (Stage 4) চলে যায়, তখন এটি শরীরের অন্যান্য অংশে ছড়িয়ে পড়ে। বর্তমানে উন্নত চিকিৎসার মাধ্যমে এই পর্যায়েও উপশম সম্ভব, তবে চিকিৎসাটি অত্যন্ত ব্যয়বহুল ও জটিল হয়ে পড়ে। এতে ধাপে ধাপে অপারেশন, কেমোথেরাপি, রেডিওথেরাপি এবং ইমিউনোথেরাপির প্রয়োজন হয়। তাই বাংলাদেশে কোলোরেক্টাল ক্যান্সারের স্ক্রিনিং প্রোগ্রাম বা প্রাথমিক অবস্থায় রোগ শনাক্ত করার ব্যবস্থা থাকা খুব দরকার।",
+    "tokenization": "whitespace",
+    "resolved_entities": [
+      {
+        "text": "কোলোরেক্টাল ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "text": "ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 103,
+        "end": 112
+      },
+      {
+        "text": "শরীরের অন্যান্য অংশে ছড়িয়ে পড়ে",
+        "label": "DISEASE_CONDITION",
+        "start": 161,
+        "end": 194
+      },
+      {
+        "text": "অপারেশন",
+        "label": "TREATMENT_PROCEDURE",
+        "start": 317,
+        "end": 324
+      },
+      {
+        "text": "কেমোথেরাপি",
+        "label": "TREATMENT_PROCEDURE",
+        "start": 326,
+        "end": 336
+      },
+      {
+        "text": "রেডিওথেরাপি",
+        "label": "TREATMENT_PROCEDURE",
+        "start": 338,
+        "end": 349
+      },
+      {
+        "text": "ইমিউনোথেরাপি",
+        "label": "TREATMENT_PROCEDURE",
+        "start": 354,
+        "end": 366
+      },
+      {
+        "text": "কোলোরেক্টাল ক্যান্সারের",
+        "label": "DISEASE_CONDITION",
+        "start": 396,
+        "end": 419
+      },
+      {
+        "text": "স্ক্রিনিং প্রোগ্রাম",
+        "label": "TEST_INVESTIGATION",
+        "start": 420,
+        "end": 439
+      }
+    ],
+    "tokens": [
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 0,
+        "end": 11,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সার",
+        "start": 12,
+        "end": 21,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "সঠিক",
+        "start": 22,
+        "end": 26,
+        "tag": "O"
+      },
+      {
+        "token": "সময়ে",
+        "start": 27,
+        "end": 32,
+        "tag": "O"
+      },
+      {
+        "token": "নির্ণয়",
+        "start": 33,
+        "end": 40,
+        "tag": "O"
+      },
+      {
+        "token": "না",
+        "start": 41,
+        "end": 43,
+        "tag": "O"
+      },
+      {
+        "token": "হলে",
+        "start": 44,
+        "end": 47,
+        "tag": "O"
+      },
+      {
+        "token": "বা",
+        "start": 48,
+        "end": 50,
+        "tag": "O"
+      },
+      {
+        "token": "দেরি",
+        "start": 51,
+        "end": 55,
+        "tag": "O"
+      },
+      {
+        "token": "হলে",
+        "start": 56,
+        "end": 59,
+        "tag": "O"
+      },
+      {
+        "token": "কী",
+        "start": 60,
+        "end": 62,
+        "tag": "O"
+      },
+      {
+        "token": "কী",
+        "start": 63,
+        "end": 65,
+        "tag": "O"
+      },
+      {
+        "token": "জটিলতার",
+        "start": 66,
+        "end": 73,
+        "tag": "O"
+      },
+      {
+        "token": "সম্মুখীন",
+        "start": 74,
+        "end": 82,
+        "tag": "O"
+      },
+      {
+        "token": "হতে",
+        "start": 83,
+        "end": 86,
+        "tag": "O"
+      },
+      {
+        "token": "পারে",
+        "start": 87,
+        "end": 91,
+        "tag": "O"
+      },
+      {
+        "token": "একজন",
+        "start": 92,
+        "end": 96,
+        "tag": "O"
+      },
+      {
+        "token": "রোগী?",
+        "start": 97,
+        "end": 102,
+        "tag": "O"
+      },
+      {
+        "token": "ক্যান্সার",
+        "start": 103,
+        "end": 112,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "যখন",
+        "start": 113,
+        "end": 116,
+        "tag": "O"
+      },
+      {
+        "token": "চতুর্থ",
+        "start": 117,
+        "end": 123,
+        "tag": "O"
+      },
+      {
+        "token": "পর্যায়ে",
+        "start": 124,
+        "end": 132,
+        "tag": "O"
+      },
+      {
+        "token": "(Stage",
+        "start": 133,
+        "end": 139,
+        "tag": "O"
+      },
+      {
+        "token": "4)",
+        "start": 140,
+        "end": 142,
+        "tag": "O"
+      },
+      {
+        "token": "চলে",
+        "start": 143,
+        "end": 146,
+        "tag": "O"
+      },
+      {
+        "token": "যায়,",
+        "start": 147,
+        "end": 152,
+        "tag": "O"
+      },
+      {
+        "token": "তখন",
+        "start": 153,
+        "end": 156,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 157,
+        "end": 160,
+        "tag": "O"
+      },
+      {
+        "token": "শরীরের",
+        "start": 161,
+        "end": 167,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "অন্যান্য",
+        "start": 168,
+        "end": 176,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "অংশে",
+        "start": 177,
+        "end": 181,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "ছড়িয়ে",
+        "start": 182,
+        "end": 189,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "পড়ে।",
+        "start": 190,
+        "end": 195,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "বর্তমানে",
+        "start": 196,
+        "end": 204,
+        "tag": "O"
+      },
+      {
+        "token": "উন্নত",
+        "start": 205,
+        "end": 210,
+        "tag": "O"
+      },
+      {
+        "token": "চিকিৎসার",
+        "start": 211,
+        "end": 219,
+        "tag": "O"
+      },
+      {
+        "token": "মাধ্যমে",
+        "start": 220,
+        "end": 227,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 228,
+        "end": 230,
+        "tag": "O"
+      },
+      {
+        "token": "পর্যায়েও",
+        "start": 231,
+        "end": 240,
+        "tag": "O"
+      },
+      {
+        "token": "উপশম",
+        "start": 241,
+        "end": 245,
+        "tag": "O"
+      },
+      {
+        "token": "সম্ভব,",
+        "start": 246,
+        "end": 252,
+        "tag": "O"
+      },
+      {
+        "token": "তবে",
+        "start": 253,
+        "end": 256,
+        "tag": "O"
+      },
+      {
+        "token": "চিকিৎসাটি",
+        "start": 257,
+        "end": 266,
+        "tag": "O"
+      },
+      {
+        "token": "অত্যন্ত",
+        "start": 267,
+        "end": 274,
+        "tag": "O"
+      },
+      {
+        "token": "ব্যয়বহুল",
+        "start": 275,
+        "end": 284,
+        "tag": "O"
+      },
+      {
+        "token": "ও",
+        "start": 285,
+        "end": 286,
+        "tag": "O"
+      },
+      {
+        "token": "জটিল",
+        "start": 287,
+        "end": 291,
+        "tag": "O"
+      },
+      {
+        "token": "হয়ে",
+        "start": 292,
+        "end": 296,
+        "tag": "O"
+      },
+      {
+        "token": "পড়ে।",
+        "start": 297,
+        "end": 302,
+        "tag": "O"
+      },
+      {
+        "token": "এতে",
+        "start": 303,
+        "end": 306,
+        "tag": "O"
+      },
+      {
+        "token": "ধাপে",
+        "start": 307,
+        "end": 311,
+        "tag": "O"
+      },
+      {
+        "token": "ধাপে",
+        "start": 312,
+        "end": 316,
+        "tag": "O"
+      },
+      {
+        "token": "অপারেশন,",
+        "start": 317,
+        "end": 325,
+        "tag": "B-TREATMENT_PROCEDURE"
+      },
+      {
+        "token": "কেমোথেরাপি,",
+        "start": 326,
+        "end": 337,
+        "tag": "B-TREATMENT_PROCEDURE"
+      },
+      {
+        "token": "রেডিওথেরাপি",
+        "start": 338,
+        "end": 349,
+        "tag": "B-TREATMENT_PROCEDURE"
+      },
+      {
+        "token": "এবং",
+        "start": 350,
+        "end": 353,
+        "tag": "O"
+      },
+      {
+        "token": "ইমিউনোথেরাপির",
+        "start": 354,
+        "end": 367,
+        "tag": "B-TREATMENT_PROCEDURE"
+      },
+      {
+        "token": "প্রয়োজন",
+        "start": 368,
+        "end": 376,
+        "tag": "O"
+      },
+      {
+        "token": "হয়।",
+        "start": 377,
+        "end": 381,
+        "tag": "O"
+      },
+      {
+        "token": "তাই",
+        "start": 382,
+        "end": 385,
+        "tag": "O"
+      },
+      {
+        "token": "বাংলাদেশে",
+        "start": 386,
+        "end": 395,
+        "tag": "O"
+      },
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 396,
+        "end": 407,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 408,
+        "end": 419,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "স্ক্রিনিং",
+        "start": 420,
+        "end": 429,
+        "tag": "B-TEST_INVESTIGATION"
+      },
+      {
+        "token": "প্রোগ্রাম",
+        "start": 430,
+        "end": 439,
+        "tag": "I-TEST_INVESTIGATION"
+      },
+      {
+        "token": "বা",
+        "start": 440,
+        "end": 442,
+        "tag": "O"
+      },
+      {
+        "token": "প্রাথমিক",
+        "start": 443,
+        "end": 451,
+        "tag": "O"
+      },
+      {
+        "token": "অবস্থায়",
+        "start": 452,
+        "end": 460,
+        "tag": "O"
+      },
+      {
+        "token": "রোগ",
+        "start": 461,
+        "end": 464,
+        "tag": "O"
+      },
+      {
+        "token": "শনাক্ত",
+        "start": 465,
+        "end": 471,
+        "tag": "O"
+      },
+      {
+        "token": "করার",
+        "start": 472,
+        "end": 476,
+        "tag": "O"
+      },
+      {
+        "token": "ব্যবস্থা",
+        "start": 477,
+        "end": 485,
+        "tag": "O"
+      },
+      {
+        "token": "থাকা",
+        "start": 486,
+        "end": 490,
+        "tag": "O"
+      },
+      {
+        "token": "খুব",
+        "start": 491,
+        "end": 494,
+        "tag": "O"
+      },
+      {
+        "token": "দরকার।",
+        "start": 495,
+        "end": 501,
+        "tag": "O"
+      }
+    ],
+    "sample_index": 2
+  },
+  {
+    "sample_index": 3,
+    "text": "কোলোরেক্টাল ক্যান্সার রোগীদের ক্ষেত্রে আপনারা কীভাবে কাউন্সেলিং এবং চিকিৎসা প্রদান করেন? আমরা রোগীদের দীর্ঘ সময় নিয়ে কাউন্সেলিং করি। অনেক সময় অপারেশনের পর পেটে সাময়িক বা স্থায়ী ব্যাগ (স্টোমা) স্থাপন করতে হয়। বিশেষ করে যাদের মলাশয়ের নিচের দিকে ক্যান্সার হয়, তাদের মলদ্বার ফেলে দিতে হয়। আমরা রোগীদের বোঝাই যে আক্রান্ত অংশটি শরীরের জন্য শত্রুর মতো, যা না সরালে পচন শরীরে ছড়িয়ে পড়বে। বাংলাদেশে স্টোমা ব্যাগ নিয়ে সামাজিক ভীতি থাকলেও অনেকে এটি নিয়ে স্বাভাবিক জীবনযাপন ও চাকরি-বাকরি করছেন। আমরা চেষ্টা করছি এই রোগীদের নিয়ে একটি সোসাইটি তৈরি করতে যাতে তারা একে অপরের সাথে কথা বলে আশ্বস্ত হতে পারে।",
+    "error": "Could not resolve entity text 'পচন শরীরে ছড়িয়ে পড়বে' in sample text.\nSample text: কোলোরেক্টাল ক্যান্সার রোগীদের ক্ষেত্রে আপনারা কীভাবে কাউন্সেলিং এবং চিকিৎসা প্রদান করেন? আমরা রোগীদের দীর্ঘ সময় নিয়ে কাউন্সেলিং করি। অনেক সময় অপারেশনের পর পেটে সাময়িক বা স্থায়ী ব্যাগ (স্টোমা) স্থাপন করতে হয়। বিশেষ করে যাদের মলাশয়ের নিচের দিকে ক্যান্সার হয়, তাদের মলদ্বার ফেলে দিতে হয়। আমরা রোগীদের বোঝাই যে আক্রান্ত অংশটি শরীরের জন্য শত্রুর মতো, যা না সরালে পচন শরীরে ছড়িয়ে পড়বে। বাংলাদেশে স্টোমা ব্যাগ নিয়ে সামাজিক ভীতি থাকলেও অনেকে এটি নিয়ে স্বাভাবিক জীবনযাপন ও চাকরি-বাকরি করছেন। আমরা চেষ্টা করছি এই রোগীদের নিয়ে একটি সোসাইটি তৈরি করতে যাতে তারা একে অপরের সাথে কথা বলে আশ্বস্ত হতে পারে।"
+  },
+  {
+    "text": "কোলোরেক্টাল ক্যান্সার প্রতিরোধ বা প্রাথমিক অবস্থায় নিরাময়ের জন্য কী কী পদক্ষেপ নেওয়া প্রয়োজন? কোলোনোস্কপি পরীক্ষার মাধ্যমে এই রোগ নির্ণয় করা যায়। উন্নত দেশে নির্দিষ্ট বয়সের পর এটি স্ক্রিনিং হিসেবে বাধ্যতামূলক। বাংলাদেশে সবার জন্য এটি সম্ভব না হলেও যারা উচ্চ ঝুঁকিতে আছেন, তাদের স্ক্রিনিংয়ের আওতায় আনা উচিত। উচ্চ ঝুঁকিতে রয়েছেন তারা যাদের পরিবারে কোলোরেক্টাল ক্যান্সারের ইতিহাস আছে, যাদের পলিপ আছে, অথবা যারা আলসারেটিভ কোলাইটিস বা ক্রনস ডিজিজে ভুগছেন। এই রোগীদের স্ক্রিনিং বাধ্যতামূলক করলে প্রাথমিক অবস্থায় রোগ নির্ণয় ও নিরাময় সম্ভব।",
+    "tokenization": "whitespace",
+    "resolved_entities": [
+      {
+        "text": "কোলোরেক্টাল ক্যান্সার",
+        "label": "DISEASE_CONDITION",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "text": "কোলোনোস্কপি পরীক্ষার",
+        "label": "TEST_INVESTIGATION",
+        "start": 98,
+        "end": 118
+      },
+      {
+        "text": "কোলোরেক্টাল ক্যান্সারের",
+        "label": "DISEASE_CONDITION",
+        "start": 356,
+        "end": 379
+      },
+      {
+        "text": "পলিপ",
+        "label": "DISEASE_CONDITION",
+        "start": 398,
+        "end": 402
+      },
+      {
+        "text": "আলসারেটিভ কোলাইটিস",
+        "label": "DISEASE_CONDITION",
+        "start": 418,
+        "end": 436
+      },
+      {
+        "text": "ক্রনস ডিজিজে",
+        "label": "DISEASE_CONDITION",
+        "start": 440,
+        "end": 452
+      }
+    ],
+    "tokens": [
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 0,
+        "end": 11,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সার",
+        "start": 12,
+        "end": 21,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "প্রতিরোধ",
+        "start": 22,
+        "end": 30,
+        "tag": "O"
+      },
+      {
+        "token": "বা",
+        "start": 31,
+        "end": 33,
+        "tag": "O"
+      },
+      {
+        "token": "প্রাথমিক",
+        "start": 34,
+        "end": 42,
+        "tag": "O"
+      },
+      {
+        "token": "অবস্থায়",
+        "start": 43,
+        "end": 51,
+        "tag": "O"
+      },
+      {
+        "token": "নিরাময়ের",
+        "start": 52,
+        "end": 61,
+        "tag": "O"
+      },
+      {
+        "token": "জন্য",
+        "start": 62,
+        "end": 66,
+        "tag": "O"
+      },
+      {
+        "token": "কী",
+        "start": 67,
+        "end": 69,
+        "tag": "O"
+      },
+      {
+        "token": "কী",
+        "start": 70,
+        "end": 72,
+        "tag": "O"
+      },
+      {
+        "token": "পদক্ষেপ",
+        "start": 73,
+        "end": 80,
+        "tag": "O"
+      },
+      {
+        "token": "নেওয়া",
+        "start": 81,
+        "end": 87,
+        "tag": "O"
+      },
+      {
+        "token": "প্রয়োজন?",
+        "start": 88,
+        "end": 97,
+        "tag": "O"
+      },
+      {
+        "token": "কোলোনোস্কপি",
+        "start": 98,
+        "end": 109,
+        "tag": "B-TEST_INVESTIGATION"
+      },
+      {
+        "token": "পরীক্ষার",
+        "start": 110,
+        "end": 118,
+        "tag": "I-TEST_INVESTIGATION"
+      },
+      {
+        "token": "মাধ্যমে",
+        "start": 119,
+        "end": 126,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 127,
+        "end": 129,
+        "tag": "O"
+      },
+      {
+        "token": "রোগ",
+        "start": 130,
+        "end": 133,
+        "tag": "O"
+      },
+      {
+        "token": "নির্ণয়",
+        "start": 134,
+        "end": 141,
+        "tag": "O"
+      },
+      {
+        "token": "করা",
+        "start": 142,
+        "end": 145,
+        "tag": "O"
+      },
+      {
+        "token": "যায়।",
+        "start": 146,
+        "end": 151,
+        "tag": "O"
+      },
+      {
+        "token": "উন্নত",
+        "start": 152,
+        "end": 157,
+        "tag": "O"
+      },
+      {
+        "token": "দেশে",
+        "start": 158,
+        "end": 162,
+        "tag": "O"
+      },
+      {
+        "token": "নির্দিষ্ট",
+        "start": 163,
+        "end": 172,
+        "tag": "O"
+      },
+      {
+        "token": "বয়সের",
+        "start": 173,
+        "end": 179,
+        "tag": "O"
+      },
+      {
+        "token": "পর",
+        "start": 180,
+        "end": 182,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 183,
+        "end": 186,
+        "tag": "O"
+      },
+      {
+        "token": "স্ক্রিনিং",
+        "start": 187,
+        "end": 196,
+        "tag": "O"
+      },
+      {
+        "token": "হিসেবে",
+        "start": 197,
+        "end": 203,
+        "tag": "O"
+      },
+      {
+        "token": "বাধ্যতামূলক।",
+        "start": 204,
+        "end": 216,
+        "tag": "O"
+      },
+      {
+        "token": "বাংলাদেশে",
+        "start": 217,
+        "end": 226,
+        "tag": "O"
+      },
+      {
+        "token": "সবার",
+        "start": 227,
+        "end": 231,
+        "tag": "O"
+      },
+      {
+        "token": "জন্য",
+        "start": 232,
+        "end": 236,
+        "tag": "O"
+      },
+      {
+        "token": "এটি",
+        "start": 237,
+        "end": 240,
+        "tag": "O"
+      },
+      {
+        "token": "সম্ভব",
+        "start": 241,
+        "end": 246,
+        "tag": "O"
+      },
+      {
+        "token": "না",
+        "start": 247,
+        "end": 249,
+        "tag": "O"
+      },
+      {
+        "token": "হলেও",
+        "start": 250,
+        "end": 254,
+        "tag": "O"
+      },
+      {
+        "token": "যারা",
+        "start": 255,
+        "end": 259,
+        "tag": "O"
+      },
+      {
+        "token": "উচ্চ",
+        "start": 260,
+        "end": 264,
+        "tag": "O"
+      },
+      {
+        "token": "ঝুঁকিতে",
+        "start": 265,
+        "end": 272,
+        "tag": "O"
+      },
+      {
+        "token": "আছেন,",
+        "start": 273,
+        "end": 278,
+        "tag": "O"
+      },
+      {
+        "token": "তাদের",
+        "start": 279,
+        "end": 284,
+        "tag": "O"
+      },
+      {
+        "token": "স্ক্রিনিংয়ের",
+        "start": 285,
+        "end": 298,
+        "tag": "O"
+      },
+      {
+        "token": "আওতায়",
+        "start": 299,
+        "end": 305,
+        "tag": "O"
+      },
+      {
+        "token": "আনা",
+        "start": 306,
+        "end": 309,
+        "tag": "O"
+      },
+      {
+        "token": "উচিত।",
+        "start": 310,
+        "end": 315,
+        "tag": "O"
+      },
+      {
+        "token": "উচ্চ",
+        "start": 316,
+        "end": 320,
+        "tag": "O"
+      },
+      {
+        "token": "ঝুঁকিতে",
+        "start": 321,
+        "end": 328,
+        "tag": "O"
+      },
+      {
+        "token": "রয়েছেন",
+        "start": 329,
+        "end": 336,
+        "tag": "O"
+      },
+      {
+        "token": "তারা",
+        "start": 337,
+        "end": 341,
+        "tag": "O"
+      },
+      {
+        "token": "যাদের",
+        "start": 342,
+        "end": 347,
+        "tag": "O"
+      },
+      {
+        "token": "পরিবারে",
+        "start": 348,
+        "end": 355,
+        "tag": "O"
+      },
+      {
+        "token": "কোলোরেক্টাল",
+        "start": 356,
+        "end": 367,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ক্যান্সারের",
+        "start": 368,
+        "end": 379,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "ইতিহাস",
+        "start": 380,
+        "end": 386,
+        "tag": "O"
+      },
+      {
+        "token": "আছে,",
+        "start": 387,
+        "end": 391,
+        "tag": "O"
+      },
+      {
+        "token": "যাদের",
+        "start": 392,
+        "end": 397,
+        "tag": "O"
+      },
+      {
+        "token": "পলিপ",
+        "start": 398,
+        "end": 402,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "আছে,",
+        "start": 403,
+        "end": 407,
+        "tag": "O"
+      },
+      {
+        "token": "অথবা",
+        "start": 408,
+        "end": 412,
+        "tag": "O"
+      },
+      {
+        "token": "যারা",
+        "start": 413,
+        "end": 417,
+        "tag": "O"
+      },
+      {
+        "token": "আলসারেটিভ",
+        "start": 418,
+        "end": 427,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "কোলাইটিস",
+        "start": 428,
+        "end": 436,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "বা",
+        "start": 437,
+        "end": 439,
+        "tag": "O"
+      },
+      {
+        "token": "ক্রনস",
+        "start": 440,
+        "end": 445,
+        "tag": "B-DISEASE_CONDITION"
+      },
+      {
+        "token": "ডিজিজে",
+        "start": 446,
+        "end": 452,
+        "tag": "I-DISEASE_CONDITION"
+      },
+      {
+        "token": "ভুগছেন।",
+        "start": 453,
+        "end": 460,
+        "tag": "O"
+      },
+      {
+        "token": "এই",
+        "start": 461,
+        "end": 463,
+        "tag": "O"
+      },
+      {
+        "token": "রোগীদের",
+        "start": 464,
+        "end": 471,
+        "tag": "O"
+      },
+      {
+        "token": "স্ক্রিনিং",
+        "start": 472,
+        "end": 481,
+        "tag": "O"
+      },
+      {
+        "token": "বাধ্যতামূলক",
+        "start": 482,
+        "end": 493,
+        "tag": "O"
+      },
+      {
+        "token": "করলে",
+        "start": 494,
+        "end": 498,
+        "tag": "O"
+      },
+      {
+        "token": "প্রাথমিক",
+        "start": 499,
+        "end": 507,
+        "tag": "O"
+      },
+      {
+        "token": "অবস্থায়",
+        "start": 508,
+        "end": 516,
+        "tag": "O"
+      },
+      {
+        "token": "রোগ",
+        "start": 517,
+        "end": 520,
+        "tag": "O"
+      },
+      {
+        "token": "নির্ণয়",
+        "start": 521,
+        "end": 528,
+        "tag": "O"
+      },
+      {
+        "token": "ও",
+        "start": 529,
+        "end": 530,
+        "tag": "O"
+      },
+      {
+        "token": "নিরাময়",
+        "start": 531,
+        "end": 538,
+        "tag": "O"
+      },
+      {
+        "token": "সম্ভব।",
+        "start": 539,
+        "end": 545,
+        "tag": "O"
+      }
+    ],
+    "sample_index": 4
+  }
+]

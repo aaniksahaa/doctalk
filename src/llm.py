@@ -3,16 +3,19 @@
 LLM Service Abstraction Layer
 
 Provides a clean interface for LLM inference across different providers.
-Currently supports: Ollama, Google Gemini
+Currently supports: Ollama, Google Gemini, OpenRouter
 Future: OpenAI, Anthropic, etc.
 """
 
+import json
 import os
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 from enum import Enum
 from pathlib import Path
+from urllib import error as urllib_error
+from urllib import request as urllib_request
 
 from dotenv import load_dotenv
 from ollama import chat as ollama_chat
@@ -27,7 +30,8 @@ load_dotenv(_env_path)
 class Provider(str, Enum):
     """Supported LLM providers."""
     OLLAMA = "ollama"
-    OPENAI = "openai"  
+    OPENROUTER = "openrouter"
+    OPENAI = "openai"
     ANTHROPIC = "anthropic"
     GOOGLE = "google"
 
@@ -50,6 +54,27 @@ class LLMOptions:
             "top_p": self.top_p,
             "repeat_penalty": self.repeat_penalty,
         }
+
+    def to_openrouter_params(self) -> Dict[str, Any]:
+        """
+        Convert to OpenRouter/OpenAI-compatible params.
+
+        Notes:
+        - OpenRouter supports max_tokens, temperature, top_p, repetition_penalty, etc.
+        - num_ctx is not sent here because context window is model/provider specific.
+        """
+        params: Dict[str, Any] = {
+            "temperature": self.temperature,
+            "top_p": self.top_p,
+            "max_tokens": self.num_predict,
+        }
+
+        # OpenRouter supports repetition_penalty for compatible models.
+        # Unsupported params are generally ignored or rejected depending on model/provider.
+        if self.repeat_penalty is not None:
+            params["repetition_penalty"] = self.repeat_penalty
+
+        return params
 
 
 @dataclass
@@ -97,11 +122,15 @@ DEFAULT_OPTIONS = LLMOptions()
 # Default keep_alive duration
 DEFAULT_KEEP_ALIVE = "5m"
 
+# OpenRouter defaults
+OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+OPENROUTER_TIMEOUT_SECONDS = float(os.environ.get("OPENROUTER_TIMEOUT_SECONDS", "180"))
+
 
 def get_response(
     prompt: str,
     model: str,
-    provider: Union[Provider, str] = None,
+    provider: Union[Provider, str, None] = None,
     system_prompt: Optional[str] = None,
     options: Optional[LLMOptions] = None,
     keep_alive: str = DEFAULT_KEEP_ALIVE,
@@ -109,31 +138,35 @@ def get_response(
 ) -> LLMResponse:
     """
     Get a response from an LLM.
-    
+
     Args:
         prompt: The user prompt/query
-        model: Model name (e.g., "qwen2.5:3b-instruct" or "gemini-3-flash-preview")
+        model: Model name
+            Examples:
+                - Ollama: "qwen2.5:3b-instruct"
+                - Gemini direct: "gemini-2.5-flash"
+                - OpenRouter: "openai/gpt-4o-mini", "anthropic/claude-3.7-sonnet",
+                              "google/gemini-2.5-pro"
         provider: LLM provider (auto-detected from model name if not specified)
         system_prompt: Optional system prompt
         options: LLM options (uses defaults if not provided)
         keep_alive: How long to keep model loaded (default: "5m", Ollama only)
-        format_schema: Optional JSON schema for structured output (Ollama only)
-    
+        format_schema: Optional JSON schema for structured output
+            - Ollama: passed via "format"
+            - OpenRouter: converted to response_format json_schema
+            - Gemini direct: currently ignored in this implementation
+
     Returns:
         LLMResponse containing content and metadata
-    
-    Example:
-        >>> response = get_response(
-        ...     prompt="What is Python?",
-        ...     model="qwen2.5:3b-instruct"
-        ... )
-        >>> print(response.content)
-        >>> print(response.metadata.inference_time_seconds)
     """
     # Auto-detect provider from model name if not specified
     if provider is None:
-        if model.lower().startswith("gemini"):
+        lower_model = model.lower()
+        if lower_model.startswith("gemini"):
             provider = Provider.GOOGLE
+        elif "/" in model:
+            # Most OpenRouter models are namespaced, e.g. "openai/gpt-4o-mini"
+            provider = Provider.OPENROUTER
         else:
             provider = Provider.OLLAMA
     
@@ -160,6 +193,14 @@ def get_response(
             model=model,
             system_prompt=system_prompt,
             options=options,
+        )
+    elif provider == Provider.OPENROUTER:
+        return _openrouter_inference(
+            prompt=prompt,
+            model=model,
+            system_prompt=system_prompt,
+            options=options,
+            format_schema=format_schema,
         )
     elif provider == Provider.OPENAI:
         raise NotImplementedError("OpenAI provider not yet implemented")
@@ -326,6 +367,151 @@ def _gemini_inference(
         metadata=metadata,
         raw_response=None,  # Gemini response objects aren't easily serializable
     )
+
+
+def _openrouter_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+    format_schema: Optional[Dict[str, Any]] = None,
+) -> LLMResponse:
+    """Internal function for OpenRouter inference using the OpenAI-compatible Chat Completions API."""
+
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        raise ValueError(
+            "OPENROUTER_API_KEY not found. Set it in .env or as an environment variable."
+        )
+
+    messages: List[Dict[str, Any]] = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    payload: Dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "stream": False,
+    }
+    payload.update(options.to_openrouter_params())
+
+    # Structured output support:
+    # Convert your existing format_schema into OpenRouter/OpenAI-style response_format.
+    if format_schema is not None:
+        payload["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "structured_output",
+                "strict": True,
+                "schema": format_schema,
+            },
+        }
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # Optional OpenRouter attribution headers
+    referer = os.environ.get("OPENROUTER_SITE_URL") or os.environ.get("OPENROUTER_HTTP_REFERER")
+    title = os.environ.get("OPENROUTER_APP_NAME") or os.environ.get("OPENROUTER_TITLE")
+
+    if referer:
+        headers["HTTP-Referer"] = referer
+    if title:
+        headers["X-Title"] = title
+
+    url = f"{OPENROUTER_BASE_URL.rstrip('/')}/chat/completions"
+    body = json.dumps(payload).encode("utf-8")
+    request = urllib_request.Request(url=url, data=body, headers=headers, method="POST")
+
+    start_time = time.perf_counter()
+
+    try:
+        with urllib_request.urlopen(request, timeout=OPENROUTER_TIMEOUT_SECONDS) as response:
+            response_bytes = response.read()
+    except urllib_error.HTTPError as exc:
+        error_text = exc.read().decode("utf-8", errors="replace")
+        try:
+            error_json = json.loads(error_text)
+            message = error_json.get("error", {}).get("message", error_text)
+        except json.JSONDecodeError:
+            message = error_text or str(exc)
+        raise RuntimeError(f"OpenRouter HTTP {exc.code}: {message}") from exc
+    except urllib_error.URLError as exc:
+        raise RuntimeError(f"OpenRouter request failed: {exc}") from exc
+
+    end_time = time.perf_counter()
+    inference_time = end_time - start_time
+
+    try:
+        response_json = json.loads(response_bytes.decode("utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("OpenRouter returned non-JSON response") from exc
+
+    content = _extract_openrouter_content(response_json)
+
+    usage = response_json.get("usage") or {}
+    input_tokens = int(usage.get("prompt_tokens") or 0)
+    output_tokens = int(usage.get("completion_tokens") or 0)
+    total_tokens = int(usage.get("total_tokens") or (input_tokens + output_tokens))
+
+    # OpenRouter usage accounting includes cost in the usage object.
+    cost_value = usage.get("cost", 0.0)
+    try:
+        cost_usd = float(cost_value or 0.0)
+    except (TypeError, ValueError):
+        cost_usd = 0.0
+
+    metadata = InferenceMetadata(
+        provider="openrouter",
+        model=response_json.get("model", model),
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        inference_time_seconds=inference_time,
+        cost_usd=cost_usd,
+    )
+
+    return LLMResponse(
+        content=content,
+        metadata=metadata,
+        raw_response=response_json,
+    )
+
+
+def _extract_openrouter_content(response_json: Dict[str, Any]) -> str:
+    """
+    Extract assistant content from an OpenRouter chat completion response.
+
+    Handles:
+    - Standard string content
+    - Content blocks/lists from some providers
+    """
+    choices = response_json.get("choices") or []
+    if not choices:
+        return ""
+
+    message = (choices[0] or {}).get("message") or {}
+    content = message.get("content", "")
+
+    if isinstance(content, str):
+        return content
+
+    if isinstance(content, list):
+        parts: List[str] = []
+        for item in content:
+            if isinstance(item, str):
+                parts.append(item)
+            elif isinstance(item, dict):
+                if item.get("type") == "text" and isinstance(item.get("text"), str):
+                    parts.append(item["text"])
+                elif isinstance(item.get("content"), str):
+                    parts.append(item["content"])
+        return "".join(parts)
+
+    return str(content)
 
 
 # Convenience function with simpler signature
