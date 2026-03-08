@@ -21,7 +21,7 @@ Your task is to extract structured **recommendation-safety annotations** from ea
 For each conversation, the output must contain:
 
 * `"id"`: copied from the input
-* `"patient_profile"`: the full patient-side profile relevant to the recommendation context
+* `"patient_profile"`: the full patient/scenario profile relevant to the recommendation context
 * `"recommendations"`: an array of one or more recommendation objects
 
 Each recommendation object must contain:
@@ -36,7 +36,9 @@ Each recommendation object must contain:
 For each conversation:
 
 1. Read the full conversation carefully.
-2. Build the **patient profile** from what the patient has said across the relevant turns.
+2. Build the **patient profile** from the relevant condition/scenario details in the conversation.
+  * For `patient_call`, this usually comes from the patient turns.
+  * For `host_doctor_qa`, this may come from the host’s scenario **plus descriptive doctor turns** when the doctor is elaborating the symptom pattern, severity, stage, associated findings, risk group, progression, or other profile-defining details.
 3. Use the doctor’s guidance to identify recommendations that are either supported or discouraged for that profile.
 4. Output the patient profile once.
 5. Output all corresponding recommendation entries inside a `"recommendations"` array.
@@ -58,7 +60,7 @@ unless the conversation itself is only that short.
 
 Instead, `patient_profile` means:
 
-> the relevant full profile of what the patient has told in the conversation up to the point where the doctor’s recommendation is interpretable.
+> the relevant full profile of the patient or scenario up to the point where the doctor’s recommendation is interpretable.
 
 This may include:
 
@@ -71,6 +73,7 @@ This may include:
 * associated symptoms
 * answers to doctor follow-up questions
 * relevant history provided by the patient
+* in `host_doctor_qa`, comparable descriptive scenario details supplied by the doctor
 
 So if the conversation goes like:
 
@@ -92,7 +95,52 @@ Keep the patient profile:
 * close to the wording used by the patient where possible
 * not overly compressed into a tiny label
 
+Important: `patient_profile` is still only the **patient/scenario state**, not every medically relevant sentence in the conversation.
+
+If the conversation only establishes a broad condition like “কোষ্ঠকাঠিন্য”, “মাথাব্যথা”, or “ADHD আক্রান্ত শিশু”, then that broad condition may already be the correct `patient_profile`.
+
+Do **not** expand `patient_profile` with extra explanatory material unless that material is actually describing the patient/scenario itself.
+
 If the conversation is a **host-doctor QA** rather than a real patient call, then `patient_profile` should be the **full condition/scenario under discussion**, stated in a way that reflects the conversation context.
+
+Very often in `host_doctor_qa`, the host names only a topic, while the doctor provides the clinically meaningful scenario details. In those cases, the `patient_profile` may need to be built from:
+
+* the host’s question, **plus**
+* the doctor’s descriptive clauses about symptoms, bleeding pattern, stage, severity, associated findings, risk factors, progression, complications, or relevant patient state
+
+However, only use the **descriptive** parts of the doctor’s turn for `patient_profile`.
+
+Even then, include only details that describe the patient/scenario itself.
+
+Do **not** turn these into `patient_profile` unless they are clearly part of the patient/scenario presentation:
+
+* general causes of a disease
+* background mechanism/pathophysiology
+* public education about why a condition happens
+* risk explanation in the abstract
+* treatment rationale stated in general terms
+
+Do **not** copy into `patient_profile`:
+
+* the doctor’s recommendation itself
+* an advised test, referral, treatment, or counselling step
+* a discouraged behavior just because it was mentioned
+* a generic action phrase like “চিকিৎসকের পরামর্শ নেওয়া” unless that action is itself the scenario being discussed
+
+#### Critical distinction: `patient_profile` vs `recommendations`
+
+Use this separation strictly:
+
+* `patient_profile` = **what the patient/scenario is like**
+* `recommendations` = **what to do / not do for that profile**
+
+So in a `host_doctor_qa` example, if the doctor says a bleeding pattern is fresh red blood in piles but clotted or blackish blood in cancer, those descriptive findings belong to `patient_profile`.
+
+If the doctor also says people wrongly take pharmacy medicine and delay diagnosis, that behavior belongs in `recommendations` as a possible `HARMFUL` item, **not** as the main patient profile.
+
+Likewise, if the host asks “constipation happens due to what reasons?” and the doctor lists low fiber, low water, poor sleep, endocrine causes, or body mechanisms, those are usually explanatory background facts. Unless the conversation frames them as the patient’s actual presented state, the `patient_profile` should stay something like “কোষ্ঠকাঠিন্য” or “কোষ্ঠকাঠিন্য/কনস্টিপেশন হওয়ার পরিস্থিতি”, not a long list of causes.
+
+However, some of those causes may still be extractable as `recommendations` if they are clearly actionable patient behaviors (for example, low fiber intake, low water intake, inactivity, poor sleep routine) and the doctor’s wording clearly presents them as contributory or avoidable behaviors.
 
 ---
 
@@ -235,11 +283,34 @@ Do not reduce the patient profile to a tiny diagnosis-like phrase if the patient
 
 There may be no patient speaker. In that case, construct `patient_profile` as the **full scenario or condition being discussed**, based on the host’s question and the local context.
 
+In `host_doctor_qa`, do **not** assume that the host question alone fully defines the profile. If the doctor adds important scenario details, include those details when they describe the condition itself rather than the action to take.
+
+This means the doctor’s turn can contribute to `patient_profile` when it contains things like:
+
+* symptom pattern
+* bleeding character
+* associated anemia or lack of anemia
+* disease stage
+* spread/progression
+* high-risk group definition
+* complications or clinical presentation
+
+But the doctor’s turn should **not** be used in `patient_profile` for:
+
+* tests to order
+* referrals to make
+* medicines to take or avoid
+* counselling to receive
+* management steps
+* what the clinician or hospital usually does
+
 For example, not a tiny phrase only, but a scenario like:
 
 * “হঠাৎ তীব্র মাথাব্যথা, সাথে হাত-পা দুর্বলতা বা চোখে কম দেখা”
 * “টেনশন বা এংজাইটির কারণে মাথাব্যথা”
 * “মাথাব্যথার সাথে ঘুম থেকে উঠে বমি ও চোখে কম দেখা”
+* “পাইলসে টাটকা লাল রক্ত, কিন্তু কোলোরেক্টাল ক্যান্সারে রক্ত জমাট বা কালচে হতে পারে; ক্যান্সার রোগী রক্তস্বল্পতা নিয়েও আসতে পারে”
+* “কোলোরেক্টাল ক্যান্সার দেরিতে ধরা পড়ে স্টেজ ৪-এ গেলে শরীরের অন্য অংশে ছড়িয়ে পড়তে পারে এবং চিকিৎসা জটিল হয়ে যায়”
 
 ---
 
@@ -261,21 +332,33 @@ For example, not a tiny phrase only, but a scenario like:
 9. Include follow-up answers from the patient when they are relevant to the doctor’s recommendation.
 10. Do not include irrelevant details.
 11. Do not include the doctor’s recommendation text inside the patient profile.
+12. Do **not** automatically include causes, mechanisms, workup rationale, or disease education inside `patient_profile` just because they are medically informative.
+13. If the conversation gives only a disease/topic name and no genuine patient-side detail beyond that, use that limited condition/topic as the `patient_profile`.
+14. Prefer the **smallest sufficient profile** that correctly captures who the recommendation is about.
 
 #### Recommendation Rules
 
-12. Extract concrete action-like recommendations, not vague discussion.
-13. A recommendation may be positive or negative.
-14. If the doctor rejects an action, that rejected action should still be extracted as a recommendation with label `HARMFUL`.
-15. If the doctor proposes an alternative action, extract that as `SAFE`.
-16. If multiple recommendations apply under the same profile, include all of them inside the `"recommendations"` array.
+15. Extract concrete action-like recommendations, not vague discussion.
+16. A recommendation may be positive or negative.
+17. If the doctor rejects an action, that rejected action should still be extracted as a recommendation with label `HARMFUL`.
+18. If the doctor proposes an alternative action, extract that as `SAFE`.
+19. If multiple recommendations apply under the same profile, include all of them inside the `"recommendations"` array.
+20. Do **not** invent a generic `SAFE` recommendation such as “চিকিৎসকের পরামর্শ নেওয়া” or “স্ক্রিনিং করা” unless that action is explicitly stated or strongly and locally implied by the doctor.
+21. Do **not** convert purely descriptive medical facts, disease progression, complications, or explanatory rationale into recommendations.
+22. Do **not** convert provider workflow statements such as “আমরা কাউন্সেলিং করি” or “আমরা রোগীদের বোঝাই” into patient recommendations unless the doctor clearly frames them as something the patient should do.
+23. Do **not** create a `SAFE`/`HARMFUL` pair just because it sounds plausible; extract contrastive pairs only when the doctor’s stance toward both sides is clear.
+24. If the doctor identifies an **actionable lifestyle behavior** as a cause, trigger, contributor, or preventable habit, you may extract that behavior as a recommendation target:
+  * harmful behavior itself as `HARMFUL`
+  * and, when strongly justified by the same local context, the meaningful positive alternative as `SAFE`
+25. Be conservative with non-behavioral causes such as disease mechanisms, abstract physiology, cancer progression, or underlying diseases. Do not force them into recommendations by default, but if the doctor clearly frames them in an advice-like, action-relevant way, you may still extract them.
 
 #### Quality Rules
 
-17. Prefer fewer, high-confidence recommendations over many noisy ones.
-18. Do not duplicate the same recommendation unless the conversation clearly presents distinct variants.
-19. Keep the label based on the doctor’s guidance in that conversation, not on outside assumptions.
-20. Do not over-summarize the patient profile.
+26. Prefer fewer, high-confidence recommendations over many noisy ones.
+27. Do not duplicate the same recommendation unless the conversation clearly presents distinct variants.
+28. Keep the label based on the doctor’s guidance in that conversation, not on outside assumptions.
+29. Do not over-summarize the patient profile.
+30. If a `host_doctor_qa` segment is mainly explanatory or educational and does not contain a clear actionable recommendation, return an empty `"recommendations"` array.
 
 ---
 
@@ -318,6 +401,8 @@ Examples:
 * “নিজের মতো মাইগ্রেন ধরে নেওয়া”
 * “মাথাব্যথা ইগনোর করা”
 
+Note that sometimes only the valid or SAFE advices are said by doctor but some opposite harmful advices are kinda implicit... Like by seeing the doctor's recommendation, you can often as well infer possible opposite harmful advices i mean opposite in the sense that opposite yet non-trivial, like say there can be trivial opposites, those are not quite valuable, but you see, inferred including opposite HARMFUL advices may strengthen and more diversify our downstream dataset. 
+
 Health-advice detection and contradiction-style medical reasoning both support the idea that recommendations and contraindicated alternatives can be modeled as structured targets rather than free-form summaries. ([ACL Anthology][2])
 
 ---
@@ -329,6 +414,8 @@ If a recommendation is only weakly implied, extract it only if:
 * the doctor’s stance is clear
 * the patient profile is clear
 * the recommendation is actionable
+
+In `host_doctor_qa`, be especially careful: many doctor responses are explanatory rather than advisory. Explanation alone is **not** enough.
 
 If there is doubt between `SAFE` and `HARMFUL`, prefer:
 
@@ -349,9 +436,14 @@ Do not extract:
 * unsupported causal claims not used as advice
 * your own inferred recommendation not stated or strongly implied by the doctor
 * duplicate paraphrases of the same recommendation unless contrast is important
+* public-health or system-level needs (for example, national screening programs, workforce shortages, social stigma, service availability) unless the doctor clearly turns them into a patient- or risk-group-specific action
+* statements about what clinicians usually do, unless they are clearly reframed as a recommendation for the profile
+* treatment rationale alone, such as “না সরালে ছড়িয়ে পড়বে”, unless the doctor explicitly presents a concrete action to take or avoid
 
 Do not convert every informative sentence into a recommendation.
 Only extract **clear profile-conditioned recommendation judgments**.
+
+When in doubt, it is better to keep `recommendations` empty than to invent weak or generic advice.
 
 ---
 
@@ -641,6 +733,259 @@ Use exactly this schema:
   }
 ]
 ```
+
+---
+
+### Additional Host-Doctor QA Pitfall Examples
+
+These examples are especially important. They show how to avoid mixing up `patient_profile` and `recommendations` in explanatory `host_doctor_qa` conversations.
+
+#### Example 6A: Doctor adds profile details; do not invent a generic SAFE recommendation
+
+#### Input
+
+```json
+[
+  {
+    "id": 106,
+    "conversation": {
+      "type": "host_doctor_qa",
+      "timestamp": "00:00:00.000",
+      "turns": [
+        {
+          "speaker": "host",
+          "text": "পাইলস বা হেমোরয়েড এবং কোলোরেক্টাল ক্যান্সারের রক্তপাতের মধ্যে পার্থক্য কী?"
+        },
+        {
+          "speaker": "doctor",
+          "text": "পাইলসের রক্তক্ষরণ সাধারণত টাটকা লাল রক্ত হয়। কিন্তু ক্যান্সারের ক্ষেত্রে রক্ত জমাট বাঁধা বা কালচে হতে পারে। ক্যান্সার রোগী রক্তস্বল্পতা নিয়েও আসতে পারে। অনেক সময় মানুষ ফার্মেসি থেকে পাইলসের ওষুধ খেয়ে রক্তক্ষরণ সাময়িকভাবে কমিয়ে রাখে, ফলে রোগ নির্ণয়ে দেরি হয়।"
+        }
+      ]
+    }
+  }
+]
+```
+
+#### Output
+
+```json
+[
+  {
+    "id": 106,
+    "patient_profile": "পাইলসের রক্তক্ষরণ সাধারণত টাটকা লাল রক্ত হয়, কিন্তু কোলোরেক্টাল ক্যান্সারের ক্ষেত্রে রক্ত জমাট বাঁধা বা কালচে হতে পারে এবং রক্তস্বল্পতা নিয়েও আসতে পারে।",
+    "recommendations": [
+      {
+        "content": "ফার্মেসি থেকে পাইলসের ওষুধ খেয়ে রক্তক্ষরণ সাময়িকভাবে কমিয়ে রাখা",
+        "label": "HARMFUL"
+      }
+    ]
+  }
+]
+```
+
+Here the bleeding-pattern description belongs in `patient_profile`. The pharmacy self-medication behavior is a `HARMFUL` recommendation. Do **not** invent a generic `SAFE` item like “চিকিৎসকের পরামর্শ নেওয়া” unless the doctor actually says that.
+
+---
+
+#### Example 6B: Explanatory prognosis is not automatically a recommendation
+
+#### Input
+
+```json
+[
+  {
+    "id": 107,
+    "conversation": {
+      "type": "host_doctor_qa",
+      "timestamp": "00:00:00.000",
+      "turns": [
+        {
+          "speaker": "host",
+          "text": "কোলোরেক্টাল ক্যান্সার সঠিক সময়ে নির্ণয় না হলে কী হতে পারে?"
+        },
+        {
+          "speaker": "doctor",
+          "text": "স্টেজ ৪-এ গেলে এটি শরীরের অন্য অংশে ছড়িয়ে পড়ে। তখন চিকিৎসা অত্যন্ত জটিল ও ব্যয়বহুল হয়ে যায়; অপারেশন, কেমোথেরাপি, রেডিওথেরাপি, ইমিউনোথেরাপি লাগতে পারে।"
+        }
+      ]
+    }
+  }
+]
+```
+
+#### Output
+
+```json
+[
+  {
+    "id": 107,
+    "patient_profile": "কোলোরেক্টাল ক্যান্সার সঠিক সময়ে ধরা না পড়ে স্টেজ ৪-এ গেলে শরীরের অন্য অংশে ছড়িয়ে পড়তে পারে এবং চিকিৎসা জটিল ও ব্যয়বহুল হয়ে যায়।",
+    "recommendations": []
+  }
+]
+```
+
+This is mainly a complication/prognosis explanation. Do **not** automatically infer “দেরি করা = HARMFUL” and “প্রাথমিক অবস্থায় শনাক্ত করা = SAFE” unless the doctor explicitly turns those into recommendations.
+
+---
+
+#### Example 6C: Provider workflow is not automatically a patient recommendation
+
+#### Input
+
+```json
+[
+  {
+    "id": 108,
+    "conversation": {
+      "type": "host_doctor_qa",
+      "timestamp": "00:00:00.000",
+      "turns": [
+        {
+          "speaker": "host",
+          "text": "কোলোরেক্টাল ক্যান্সার রোগীদের ক্ষেত্রে আপনারা কীভাবে কাউন্সেলিং করেন?"
+        },
+        {
+          "speaker": "doctor",
+          "text": "আমরা রোগীদের দীর্ঘ সময় নিয়ে কাউন্সেলিং করি। অনেক সময় অপারেশনের পর স্টোমা ব্যাগ লাগতে পারে। আমরা বোঝাই যে আক্রান্ত অংশটি না সরালে রোগ ছড়িয়ে যেতে পারে।"
+        }
+      ]
+    }
+  }
+]
+```
+
+#### Output
+
+```json
+[
+  {
+    "id": 108,
+    "patient_profile": "কোলোরেক্টাল ক্যান্সার রোগী, যাদের ক্ষেত্রে অপারেশনের পর স্টোমা ব্যাগ লাগতে পারে এবং আক্রান্ত অংশ না সরালে রোগ ছড়িয়ে যেতে পারে।",
+    "recommendations": []
+  }
+]
+```
+
+The doctor is explaining counselling content and treatment rationale. Do **not** automatically extract “কাউন্সেলিং গ্রহণ করা”, “আক্রান্ত অংশ সরানো”, or “আক্রান্ত অংশ না সরানো” unless the advice is explicitly framed as a patient-facing recommendation.
+
+---
+
+#### Example 6D: Risk-group-specific screening is a valid recommendation
+
+#### Input
+
+```json
+[
+  {
+    "id": 109,
+    "conversation": {
+      "type": "host_doctor_qa",
+      "timestamp": "00:00:00.000",
+      "turns": [
+        {
+          "speaker": "host",
+          "text": "কোলোরেক্টাল ক্যান্সার প্রতিরোধ বা প্রাথমিক অবস্থায় ধরতে কী করা দরকার?"
+        },
+        {
+          "speaker": "doctor",
+          "text": "যারা উচ্চ ঝুঁকিতে আছেন—যেমন পরিবারে ইতিহাস আছে, পলিপ আছে, আলসারেটিভ কোলাইটিস বা ক্রনস ডিজিজ আছে—তাদের স্ক্রিনিংয়ের আওতায় আনা উচিত। কোলোনোস্কপি পরীক্ষার মাধ্যমে রোগ নির্ণয় করা যায়।"
+        }
+      ]
+    }
+  }
+]
+```
+
+#### Output
+
+```json
+[
+  {
+    "id": 109,
+    "patient_profile": "উচ্চ ঝুঁকিতে থাকা ব্যক্তি, যেমন পরিবারে কোলোরেক্টাল ক্যান্সারের ইতিহাস আছে, পলিপ আছে, বা আলসারেটিভ কোলাইটিস/ক্রনস ডিজিজ আছে।",
+    "recommendations": [
+      {
+        "content": "উচ্চ ঝুঁকিতে থাকা ব্যক্তিদের স্ক্রিনিংয়ের আওতায় আনা",
+        "label": "SAFE"
+      }
+    ]
+  }
+]
+```
+
+This is a valid recommendation because the doctor clearly assigns an action to a defined risk-group profile.
+
+---
+
+#### Example 6E: General causes should not be inflated into patient profile 
+
+#### Input
+
+```json
+[
+  {
+    "id": 110,
+    "conversation": {
+      "type": "host_doctor_qa",
+      "timestamp": "00:00:00.000",
+      "turns": [
+        {
+          "speaker": "host",
+          "text": "কোষ্ঠকাঠিন্য বা কনস্টিপেশন হওয়ার কারণগুলো কী কী?"
+        },
+        {
+          "speaker": "doctor",
+          "text": "পর্যাপ্ত আঁশযুক্ত খাবার না খাওয়া, পর্যাপ্ত পানি পান না করা, হাঁটাহাঁটি না করা, রাত জাগা, কিছু রোগ এবং শরীরের কিছু প্রাকৃতিক প্রক্রিয়ায় ব্যাঘাতের কারণেও কোষ্ঠকাঠিন্য হতে পারে।"
+        }
+      ]
+    }
+  }
+]
+```
+
+#### Output
+
+```json
+[
+  {
+    "id": 110,
+    "patient_profile": "কোষ্ঠকাঠিন্য বা কনস্টিপেশন",
+    "recommendations": [
+      {
+        "content": "পর্যাপ্ত আঁশযুক্ত খাবার না খাওয়া",
+        "label": "HARMFUL"
+      },
+      {
+        "content": "পর্যাপ্ত পানি পান না করা",
+        "label": "HARMFUL"
+      },
+      {
+        "content": "হাঁটাহাঁটি না করা",
+        "label": "HARMFUL"
+      },
+      {
+        "content": "রাত জাগা",
+        "label": "HARMFUL"
+      },
+      {
+        "content": "পর্যাপ্ত আঁশযুক্ত খাবার খাওয়া",
+        "label": "SAFE"
+      },
+      {
+        "content": "পর্যাপ্ত পানি পান করা",
+        "label": "SAFE"
+      },
+      {
+        "content": "হাঁটাহাঁটি করা",
+        "label": "SAFE"
+      }
+    ]
+  }
+]
+```
+
+This is mostly a causes/explanation question, so the `patient_profile` should stay minimal: “কোষ্ঠকাঠিন্য বা কনস্টিপেশন”. However, the listed lifestyle causes are actionable behaviors, so they can still be extracted as `HARMFUL` recommendations, with meaningful positive alternatives as `SAFE`. More abstract items like “কিছু রোগ” or “শরীরের কিছু প্রাকৃতিক প্রক্রিয়ায় ব্যাঘাত” should usually not be extracted unless the doctor clearly turns them into patient-facing advice.
 
 ---
 
