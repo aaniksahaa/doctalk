@@ -53,4 +53,9 @@ python generate_medical_ner_dataset.py
 python generate_medical_ner_dataset.py --model gemini-3-flash-preview --batch-size 5
 python generate_medical_ner_dataset.py --force-rewrite
 
-python generate_medical_ner_dataset.py --first-n 5 --force-rewrite
+python generate_medical_ner_dataset.py --first-n 12 --force-rewrite
+
+
+python generate_triage_dataset.py --first-n 55     # test with 2 videos
+python generate_triage_dataset.py                  # all videos
+python generate_triage_dataset.py --force-rewrite  # reprocess everything
