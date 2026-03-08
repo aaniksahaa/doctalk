@@ -33,7 +33,7 @@ The final output must be a **JSON array of the same length and in the same order
 
 ## Allowed Labels
 
-Use **only** the following six labels.
+Use **only** the following seven labels.
 
 ### 1. `SYMPTOM_SIGN`
 
@@ -81,6 +81,11 @@ Examples:
 * ডেঙ্গু (dengue)
 * হার্টের সমস্যা (heart disease)
 
+Important:
+
+* This label is for **specific diseases or conditions**, not generic category words.
+* Words like `রোগ`, `disease`, `অসুস্থতা` by themselves are **not** `DISEASE_CONDITION` entities unless they appear as part of a specific named condition span.
+
 ---
 
 ### 3. `DRUG_MEDICATION`
@@ -104,6 +109,10 @@ Examples:
 * ইনহেলার (inhaler)
 * ঘুমের ওষুধ (sleeping medicine)
 * ব্যথার ওষুধ (pain medicine)
+
+Important:
+
+* Generic words like `ওষুধ`, `medication`, `medicine` by themselves are **not** entities unless they refer to a specific medication expression such as `ঘুমের ওষুধ` or `ব্যথার ওষুধ`.
 
 ---
 
@@ -129,6 +138,10 @@ Examples:
 * আল্ট্রাসনোগ্রাম (ultrasonogram)
 * বায়োপসি (biopsy)
 
+Important:
+
+* Generic words like `পরীক্ষা`, `স্ক্রিনিং`, `Screening`, `রোগ নির্ণয়`, `রোগ নির্ণয়ে`, `আর্লি ডায়াগনোসিস` by themselves are **not** entities unless they are part of a specific named test or investigation mention.
+
 ---
 
 ### 5. `TREATMENT_PROCEDURE`
@@ -152,6 +165,10 @@ Examples:
 * কেমোথেরাপি (chemotherapy)
 * স্পাইনাল ব্লক (spinal block)
 * অক্সিজেন দেওয়া (oxygen administration)
+
+Important:
+
+* Generic treatment words like `চিকিৎসা`, `চিকিৎসাটি`, `চিকিৎসা পদ্ধতি`, `ব্যবস্থাপনা`, `উপশম`, `নিরাময়ের` by themselves are **not** entities unless they are part of a specific treatment/procedure expression.
 
 ---
 
@@ -177,13 +194,43 @@ Examples:
 * হাত-পা (limbs)
 * মেরুদণ্ড (spine)
 
+Important:
+
+* Generic words like `শরীর`, `শরীরে`, `স্বাস্থ্য` are not anatomical entities.
+* Only annotate concrete body parts or structures.
+
+---
+
+### 7. `MEDICAL_SPECIALTY`
+
+Use this label for names of medical specialties, clinical departments, subspecialties, or professional medical domains.
+
+Examples:
+
+* নিউরোলজি
+* কার্ডিওলজি
+* সাইকিয়াট্রি
+* চাইল্ড সাইকিয়াট্রি
+* ক্লিনিক্যাল নিউরো-সাইকিয়াট্রি
+* ডার্মাটোলজি
+* গাইনি
+* মেডিসিন
+* পেডিয়াট্রিক্স
+* অর্থোপেডিক্স
+
+Important:
+
+* These are **not** diseases, symptoms, medicines, tests, procedures, or body parts.
+* Do **not** label specialty names as `DISEASE_CONDITION`.
+* Only annotate them when the specialty/domain name itself appears literally in the text.
+
 ---
 
 ## Annotation Rules
 
 ### General Rules
 
-1. Extract **all medically relevant entity mentions** that belong to one of the six allowed labels.
+1. Extract **all medically relevant entity mentions** that belong to one of the seven allowed labels.
 2. Each entity must be an **exact substring** of the corresponding sample’s input text.
 3. Do **not** translate Bengali to English or English to Bengali.
 4. Do **not** normalize spelling.
@@ -224,15 +271,59 @@ Examples:
 23. Use `TEST_INVESTIGATION` for scans, tests, measurements, and investigations such as MRI, CT scan, blood test, ECG.
 24. Use `TREATMENT_PROCEDURE` for procedures and management actions such as counseling, surgery, referral, follow-up, physiotherapy.
 25. Use `ANATOMY_BODY_PART` for anatomical structures such as head, eye, neck, chest, brain, kidney.
+26. Use `MEDICAL_SPECIALTY` for specialty names and clinical domains such as `সাইকিয়াট্রি`, `চাইল্ড সাইকিয়াট্রি`, `ক্লিনিক্যাল নিউরো-সাইকিয়াট্রি`, `কার্ডিওলজি`.
 
 ### Exclusion Rules
 
-26. Do not annotate non-medical words.
-27. Do not annotate general age, time, duration, quantity, or location expressions unless they are part of a medical entity.
-28. Do not annotate ordinary verbs like “খাই”, “হয়”, “আছে”, “দেখাই” unless they are part of a medical entity.
-29. Do not annotate severity words alone, such as `তীব্র`, `হালকা`, `প্রচণ্ড`, unless they are inseparably part of the entity span.
-30. Do not annotate negation words alone, such as `না`, `নেই`, `হয়নি`.
-31. Do not annotate generic social or provider words such as `ডাক্তার`, `রোগী`, `ফিজিশিয়ান`, `হাসপাতাল` unless they are part of a valid entity under the allowed labels.
+27. Do not annotate non-medical words.
+28. Do not annotate general age, time, duration, quantity, or location expressions unless they are part of a medical entity.
+29. Do not annotate ordinary verbs like `খাই`, `হয়`, `আছে`, `দেখাই` unless they are part of a medical entity.
+30. Do not annotate severity words alone, such as `তীব্র`, `হালকা`, `প্রচণ্ড`, unless they are inseparably part of the entity span.
+31. Do not annotate negation words alone, such as `না`, `নেই`, `হয়নি`.
+32. Do not annotate generic social or provider words such as `ডাক্তার`, `রোগী`, `ফিজিশিয়ান`, `হাসপাতাল` unless they are part of a valid entity under the allowed labels.
+33. Do not annotate generic broad medical words or vague healthcare words when they do not refer to a specific symptom, disease, medicine, test, treatment, body part, or specialty.
+34. The following literal words and phrases are generally **not** medical named entities by themselves, and should **not** be annotated unless they occur as part of a larger specific valid entity:
+
+* `রোগ`
+* `লক্ষণ`
+* `ওষুধ`
+* `রোগ নির্ণয়ে`
+* `শরীর`
+* `উপশম`
+* `চিকিৎসাটি`
+* `রোগ শনাক্ত করার ব্যবস্থা`
+* `চিকিৎসা`
+* `শরীরে`
+* `নিরাময়ের`
+* `পরীক্ষা`
+* `রোগ নির্ণয়`
+* `স্ক্রিনিং`
+* `Screening`
+* `disease`
+* `medication`
+* `presention`
+* `symptom`
+* `অসুস্থতা`
+* `স্বাস্থ্য`
+* `লক্ষণগুলো`
+* `রোগের`
+* `গঠনগত সমস্যা`
+* `ব্যবস্থাপনা`
+* `চিকিৎসা পদ্ধতি`
+* `ওষুধে`
+* `শারীরিক জটিলতা`
+* `ডিসকমফর্ট`
+* `আর্লি ডায়াগনোসিস`
+
+35. These broad terms should be excluded because they are category words, process words, or vague medical language rather than concrete named entities.
+36. If such a broad word appears inside a larger specific valid entity, annotate only the smallest complete specific span that is medically meaningful.
+37. Examples of correct behavior:
+
+* annotate `রক্ত পরীক্ষা`, not `পরীক্ষা`
+* annotate `ঘুমের ওষুধ`, not `ওষুধ`
+* annotate `ডায়াবেটিস`, not `রোগ`
+* annotate `MRI`, not `রোগ নির্ণয়`
+* annotate `চাইল্ড সাইকিয়াট্রি` as `MEDICAL_SPECIALTY`, not `DISEASE_CONDITION`
 
 ---
 
@@ -256,7 +347,7 @@ Use exactly this schema:
     "entities": [
       {
         "text": "<exact substring from sample 1>",
-        "label": "<one of the six allowed labels>"
+        "label": "<one of the seven allowed labels>"
       }
     ]
   },
@@ -265,7 +356,7 @@ Use exactly this schema:
     "entities": [
       {
         "text": "<exact substring from sample 2>",
-        "label": "<one of the six allowed labels>"
+        "label": "<one of the seven allowed labels>"
       }
     ]
   }
@@ -427,6 +518,71 @@ Output:
         "label": "DISEASE_CONDITION"
       }
     ]
+  }
+]
+```
+
+---
+
+## Multi-Sample Example 3
+
+Input:
+
+```json
+[
+  {
+    "text": "রোগ নির্ণয়ে MRI করা হয়েছে, পরে ক্লিনিক্যাল নিউরো-সাইকিয়াট্রি বিভাগে দেখাতে বলা হয়।"
+  },
+  {
+    "text": "চাইল্ড সাইকিয়াট্রি ফলো-আপের আগে শিশুর ঘুম না হওয়া আর খিচুনি ছিল।"
+  },
+  {
+    "text": "চিকিৎসা আর উপশম নিয়ে কথা হয়েছে, কিন্তু নির্দিষ্ট কোনো ওষুধ বা পরীক্ষা এখনো বলা হয়নি।"
+  }
+]
+```
+
+Output:
+
+```json
+[
+  {
+    "text": "রোগ নির্ণয়ে MRI করা হয়েছে, পরে ক্লিনিক্যাল নিউরো-সাইকিয়াট্রি বিভাগে দেখাতে বলা হয়।",
+    "entities": [
+      {
+        "text": "MRI",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "ক্লিনিক্যাল নিউরো-সাইকিয়াট্রি",
+        "label": "MEDICAL_SPECIALTY"
+      }
+    ]
+  },
+  {
+    "text": "চাইল্ড সাইকিয়াট্রি ফলো-আপের আগে শিশুর ঘুম না হওয়া আর খিচুনি ছিল।",
+    "entities": [
+      {
+        "text": "চাইল্ড সাইকিয়াট্রি",
+        "label": "MEDICAL_SPECIALTY"
+      },
+      {
+        "text": "ফলো-আপ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ঘুম না হওয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "খিচুনি",
+        "label": "SYMPTOM_SIGN"
+      }
+    ]
+  },
+  {
+    "text": "চিকিৎসা আর উপশম নিয়ে কথা হয়েছে, কিন্তু নির্দিষ্ট কোনো ওষুধ বা পরীক্ষা এখনো বলা হয়নি।",
+    "entities": []
   }
 ]
 ```

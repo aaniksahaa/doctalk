@@ -53,4 +53,4 @@ python generate_medical_ner_dataset.py
 python generate_medical_ner_dataset.py --model gemini-3-flash-preview --batch-size 5
 python generate_medical_ner_dataset.py --force-rewrite
 
-python generate_medical_ner_dataset.py --first-n 5
+python generate_medical_ner_dataset.py --first-n 5 --force-rewrite

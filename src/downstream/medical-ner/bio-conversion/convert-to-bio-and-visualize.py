@@ -493,6 +493,51 @@ def save_json_file(obj: Any, path: str) -> None:
 # Demo / CLI
 # -----------------------------
 
+def format_bio_plain(converted_sample: Dict[str, Any]) -> str:
+    """
+    Format token/BIO rows as plain text (no ANSI colors).
+    """
+    lines = []
+    lines.append("=" * 80)
+    lines.append("TEXT:")
+    lines.append(converted_sample["text"])
+    lines.append("-" * 80)
+    lines.append(f"TOKENIZATION: {converted_sample['tokenization']}")
+    lines.append("-" * 80)
+
+    for t in converted_sample["tokens"]:
+        tag = t["tag"]
+        lines.append(f"{t['token']:<25} {tag}")
+    lines.append("=" * 80)
+    return "\n".join(lines)
+
+
+def format_entities_in_text_plain(converted_sample: Dict[str, Any]) -> str:
+    """
+    Return text with resolved entities annotated (no ANSI colors).
+    """
+    text = converted_sample["text"]
+    entities = sorted(converted_sample["resolved_entities"], key=lambda x: x["start"])
+
+    out = []
+    cursor = 0
+    for ent in entities:
+        start, end = ent["start"], ent["end"]
+        label = ent["label"]
+
+        if cursor < start:
+            out.append(text[cursor:start])
+
+        span_text = text[start:end]
+        out.append(f"[{span_text}|{label}]")
+        cursor = end
+
+    if cursor < len(text):
+        out.append(text[cursor:])
+
+    return "".join(out)
+
+
 def main():
     """
     Edit these paths/settings as needed.
@@ -523,7 +568,7 @@ def main():
     save_json_file(converted, out_json)
     print(f"Saved converted BIO JSON to: {out_json}")
 
-    # Visualize first successful sample
+    # Visualize first successful sample (terminal)
     first_ok = next((x for x in converted if "error" not in x), None)
     if first_ok:
         visualize_bio_console(first_ok)
@@ -543,6 +588,33 @@ def main():
             f.write(export_conll_like(sample))
             f.write("\n\n")
     print(f"Saved CoNLL-like BIO to: {conll_path}")
+
+    # ---- Write full visualization to a plain-text file ----
+    output_txt_path = f"output_{mode}.txt"
+    with open(output_txt_path, "w", encoding="utf-8") as f:
+        for sample in converted:
+            if "error" in sample:
+                f.write(f"{'=' * 80}\n")
+                f.write(f"SAMPLE #{sample['sample_index']} — ERROR\n")
+                f.write(f"{sample['error']}\n")
+                f.write(f"{'=' * 80}\n\n")
+                continue
+
+            # BIO table
+            f.write(format_bio_plain(sample))
+            f.write("\n\n")
+
+            # Highlighted text (plain)
+            f.write("HIGHLIGHTED TEXT:\n")
+            f.write(format_entities_in_text_plain(sample))
+            f.write("\n\n")
+
+            # CoNLL-like
+            f.write("CONLL-LIKE:\n")
+            f.write(export_conll_like(sample))
+            f.write("\n\n")
+
+    print(f"Saved full visualization (plain text) to: {output_txt_path}")
 
 
 if __name__ == "__main__":

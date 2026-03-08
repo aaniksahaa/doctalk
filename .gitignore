@@ -5,6 +5,8 @@ __pycache__
 
 **/dataset/
 
+downstream-datasets/
+
 *.env 
 
 ap/
