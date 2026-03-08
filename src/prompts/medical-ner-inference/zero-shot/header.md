@@ -65,39 +65,6 @@ If a sample has no valid entities, return `"entities": []` for that sample.
 
 ---
 
-## Example
-
-### Input
-
-```json
-[
-  {"text": "মাথাব্যথার সাথে বমি হলে সিটি স্ক্যান করা দরকার।"},
-  {"text": "রোগীর মাইগ্রেন আছে। ব্যথা বেশি হলে Paracetamol খায়।"}
-]
-```
-
-### Output
-
-```json
-[
-  {
-    "text": "মাথাব্যথার সাথে বমি হলে সিটি স্ক্যান করা দরকার।",
-    "entities": [
-      {"text": "মাথাব্যথার", "label": "SYMPTOM_SIGN"},
-      {"text": "বমি", "label": "SYMPTOM_SIGN"},
-      {"text": "সিটি স্ক্যান", "label": "TEST_INVESTIGATION"}
-    ]
-  },
-  {
-    "text": "রোগীর মাইগ্রেন আছে। ব্যথা বেশি হলে Paracetamol খায়।",
-    "entities": [
-      {"text": "মাইগ্রেন", "label": "DISEASE_CONDITION"},
-      {"text": "ব্যথা", "label": "SYMPTOM_SIGN"},
-      {"text": "Paracetamol", "label": "DRUG_MEDICATION"}
-    ]
-  }
-]
-```
 
 ---
 

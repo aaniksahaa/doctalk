@@ -52,25 +52,7 @@ Return a **JSON array of the same length and in the same order** as the input.
 
 ---
 
-## Example
 
-### Input
-
-```json
-[
-  {"patient_profile": "কয়েকদিন ধরে হালকা মাথাব্যথা হচ্ছে, ঘুম কম হয়েছে।"},
-  {"patient_profile": "হঠাৎ তীব্র মাথাব্যথা শুরু হয়েছে, বমি হচ্ছে, ঘাড় শক্ত লাগছে।"}
-]
-```
-
-### Output
-
-```json
-[
-  {"patient_profile": "কয়েকদিন ধরে হালকা মাথাব্যথা হচ্ছে, ঘুম কম হয়েছে।", "type": "REASSURANCE_SELF_CARE"},
-  {"patient_profile": "হঠাৎ তীব্র মাথাব্যথা শুরু হয়েছে, বমি হচ্ছে, ঘাড় শক্ত লাগছে।", "type": "URGENT_EMERGENCY_CARE"}
-]
-```
 
 ---
 

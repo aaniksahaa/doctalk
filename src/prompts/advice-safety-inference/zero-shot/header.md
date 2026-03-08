@@ -63,40 +63,6 @@ Return a **JSON array of the same length and in the same order** as the input.
 
 ---
 
-## Example
-
-### Input
-
-```json
-[
-  {
-    "patient_profile": "তীব্র মাথাব্যথা, বমি, ঘাড় শক্ত হয়ে যাওয়া",
-    "recommendations": [
-      {"content": "নিজে নিজে ব্যথার ওষুধ খাওয়া"},
-      {"content": "জরুরি ভিত্তিতে হাসপাতালে যাওয়া"},
-      {"content": "সিটি স্ক্যান করানো"}
-    ]
-  }
-]
-```
-
-### Output
-
-```json
-[
-  {
-    "patient_profile": "তীব্র মাথাব্যথা, বমি, ঘাড় শক্ত হয়ে যাওয়া",
-    "recommendations": [
-      {"content": "নিজে নিজে ব্যথার ওষুধ খাওয়া", "label": "HARMFUL"},
-      {"content": "জরুরি ভিত্তিতে হাসপাতালে যাওয়া", "label": "SAFE"},
-      {"content": "সিটি স্ক্যান করানো", "label": "SAFE"}
-    ]
-  }
-]
-```
-
----
-
 Return **valid JSON only**. No markdown fences, no explanations, no text outside the JSON array.
 
 ## Input Data
