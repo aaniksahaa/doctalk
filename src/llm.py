@@ -267,9 +267,15 @@ def _gemini_inference(
     }
     
     # Add thinking config for supported models
-    config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
-        thinking_level="HIGH",
-    )
+    # gemini-3-* supports thinking_level; gemini-2.5-* uses thinking_budget
+    if model.startswith("gemini-3"):
+        config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
+            thinking_level="HIGH",
+        )
+    elif model.startswith("gemini-2.5"):
+        config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
+            thinking_budget=8192,
+        )
     
     # Add system instruction if provided
     if system_prompt:

@@ -44,3 +44,13 @@ python3 parse_transcriptions.py \
   --file filtered-results.json \
   --model gemini-3-flash-preview \
   --test-video-id RkWh5fOOx9s
+
+
+
+# downstream dataset generation
+
+python generate_medical_ner_dataset.py
+python generate_medical_ner_dataset.py --model gemini-3-flash-preview --batch-size 5
+python generate_medical_ner_dataset.py --force-rewrite
+
+python generate_medical_ner_dataset.py --first-n 5
