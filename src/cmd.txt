@@ -71,3 +71,14 @@ python generate_advice_safety_dataset.py --force-rewrite  # reprocess
 
 
 python generate_advice_safety_dataset.py --force-rewrite --first-n 15
+
+
+## Organize Downstream Datasets
+
+python organize_downstream_datasets.py --tasks medical-ner advice-safety triage   # all tasks
+python organize_downstream_datasets.py --tasks medical-ner                        # single task
+python organize_downstream_datasets.py --tasks advice-safety triage               # subset of tasks
+python organize_downstream_datasets.py --train-pct 80 --val-pct 10               # custom split (test=10%)
+python organize_downstream_datasets.py --seed 123                                # different random seed
+python organize_downstream_datasets.py --model gemini-2.5-flash                   # specify generator model
+python organize_downstream_datasets.py --folder saved-data                        # specify data folder
