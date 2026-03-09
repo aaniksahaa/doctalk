@@ -57,6 +57,15 @@ python generate_medical_ner_dataset.py --force-rewrite
 
 python generate_medical_ner_dataset.py --first-n 15 --force-rewrite
 
+# Default 10s delay
+python generate_medical_ner_dataset.py
+
+# Custom delay
+python generate_medical_ner_dataset.py --request-delay 30
+
+# No delay
+python generate_medical_ner_dataset.py --request-delay 0
+
 ## Medical Triage and Recommendation 
 
 python generate_triage_dataset.py --first-n 55     # test with 2 videos

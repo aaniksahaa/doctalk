@@ -207,12 +207,23 @@ def run_triage_on_batch(
             last_error = e
             if attempt < max_retries:
                 print(
-                    f"\n    Retry {attempt}/{max_retries} – parse error: "
-                    f"{str(e)[:80]}"
+                    f"\n    \033[91mRetry {attempt}/{max_retries} – parse error: "
+                    f"{str(e)}\033[0m"
                 )
             continue
         except Exception as e:
-            raise Exception(f"LLM inference error: {str(e)}")
+            err_str = str(e)
+            # Retry with exponential backoff on rate-limit (429) errors
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                wait = min(2 ** attempt * 40, 120)
+                print(
+                    f"\n    \033[91mRate limited (429). Waiting {wait}s before retry "
+                    f"{attempt}/{max_retries}...\n    {err_str}\033[0m"
+                )
+                time.sleep(wait)
+                last_error = e
+                continue
+            raise Exception(f"LLM inference error: {err_str}")
 
     raise Exception(
         f"Failed to parse LLM response after {max_retries} attempts: "
@@ -269,6 +280,7 @@ def process_video(
     batch_size: int,
     max_retries: int,
     force_rewrite: bool = False,
+    request_delay: float = 10.0,
 ) -> str:
     """
     Process a single video for triage classification dataset generation.
@@ -294,7 +306,7 @@ def process_video(
     try:
         conversation = load_conversation(conv_path)
     except Exception as e:
-        print(f"\n    Error loading conversation: {str(e)[:80]}")
+        print(f"\n    \033[91mError loading conversation: {str(e)}\033[0m")
         return "failed"
 
     # ── extract patient_call only ──
@@ -351,8 +363,13 @@ def process_video(
             global_id += len(batch)
             print(f"✓ ({len(batch_result)} classified)")
 
+            # Throttle to avoid rate limits
+            if request_delay > 0:
+                print(f"    \033[90m── Sleeping {request_delay}s before next request...\033[0m")
+                time.sleep(request_delay)
+
         except Exception as e:
-            print(f"✗ Error: {str(e)[:100]}")
+            print(f"\033[91m✗ Error: {str(e)}\033[0m")
             return "failed"
 
     # ── combine & save final output ──
@@ -424,6 +441,12 @@ def main():
         default=-1,
         help="Only process the first N videos; -1 means all (default: -1)",
     )
+    parser.add_argument(
+        "--request-delay",
+        type=float,
+        default=60.0,
+        help="Seconds to sleep after each successful LLM request (default: 60)",
+    )
 
     args = parser.parse_args()
 
@@ -459,6 +482,7 @@ def main():
         f"{f' (limited from {total_available})' if args.first_n > 0 else ''}"
     )
     print(f"First N      : {'all' if args.first_n < 0 else args.first_n}")
+    print(f"Request delay: {args.request_delay}s")
     print()
 
     # ── counters ──
@@ -481,6 +505,7 @@ def main():
                 batch_size=args.batch_size,
                 max_retries=args.max_retries,
                 force_rewrite=args.force_rewrite,
+                request_delay=args.request_delay,
             )
 
             if status == "success":
