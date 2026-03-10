@@ -36,7 +36,10 @@ Notes:
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
+import traceback
 import unicodedata
 from dataclasses import dataclass, asdict
 from typing import List, Dict, Any, Optional, Tuple
@@ -157,23 +160,48 @@ def resolve_entities_to_spans(
     sample: Dict[str, Any],
     fallback_global: bool = True,
     strict_label_check: bool = True,
-) -> List[Entity]:
+) -> Tuple[List[Entity], List[Dict[str, Any]]]:
     """
     Resolve entity texts to character spans in left-to-right order.
+    Entities that cannot be resolved (e.g. due to overlap) are skipped
+    with a warning rather than causing the entire sample to fail.
+
+    Returns:
+        (resolved_entities, skipped_entities)
     """
     text = normalize_text(sample["text"])
     raw_entities = sample.get("entities", [])
 
     resolved: List[Entity] = []
+    skipped: List[Dict[str, Any]] = []
     used_spans: List[Tuple[int, int]] = []
     cursor = 0
 
     for idx, ent in enumerate(raw_entities):
+        # Guard against malformed entity dicts
+        if not isinstance(ent, dict):
+            skipped.append({
+                "index": idx, "text": str(ent), "label": "?",
+                "reason": f"Entity is not a dict (got {type(ent).__name__})",
+            })
+            continue
+        if "text" not in ent or "label" not in ent:
+            missing = [k for k in ("text", "label") if k not in ent]
+            skipped.append({
+                "index": idx, "text": ent.get("text", "?"), "label": ent.get("label", "?"),
+                "reason": f"Missing required key(s): {', '.join(missing)}",
+            })
+            continue
+
         ent_text = normalize_text(ent["text"])
         label = ent["label"]
 
         if strict_label_check and label not in ALLOWED_LABELS:
-            raise ValueError(f"Invalid label at entity #{idx}: {label}")
+            skipped.append({
+                "index": idx, "text": ent_text, "label": label,
+                "reason": f"Invalid label: {label}",
+            })
+            continue
 
         span = find_non_overlapping_span(
             text=text,
@@ -183,29 +211,30 @@ def resolve_entities_to_spans(
             fallback_global=fallback_global,
         )
         if span is None:
-            raise ValueError(
-                f"Could not resolve entity text '{ent_text}' in sample text.\n"
-                f"Sample text: {text}"
-            )
+            skipped.append({
+                "index": idx, "text": ent_text, "label": label,
+                "reason": "No non-overlapping span found in text",
+            })
+            # Do NOT advance cursor — let subsequent entities try from the same position
+            continue
 
         start, end = span
         # Exact substring validation
         if text[start:end] != ent_text:
-            raise ValueError(
-                f"Resolved substring mismatch for entity '{ent_text}'. "
-                f"Found '{text[start:end]}' at [{start}:{end}]"
-            )
+            skipped.append({
+                "index": idx, "text": ent_text, "label": label,
+                "reason": f"Substring mismatch: found '{text[start:end]}' at [{start}:{end}]",
+            })
+            continue
 
         resolved.append(Entity(text=ent_text, label=label, start=start, end=end))
         used_spans.append((start, end))
         cursor = end
 
-    # Final left-to-right check
-    for i in range(1, len(resolved)):
-        if resolved[i].start < resolved[i - 1].start:
-            raise ValueError("Resolved entities are not in non-decreasing left-to-right order.")
+    # Sort resolved entities by start position (safe since skipping may cause out-of-order)
+    resolved.sort(key=lambda e: (e.start, e.end))
 
-    return resolved
+    return resolved, skipped
 
 
 # -----------------------------
@@ -365,41 +394,126 @@ def convert_sample_to_bio(
 ) -> Dict[str, Any]:
     """
     Convert one annotated sample to BIO.
+    Never raises — returns a result dict, possibly with warnings.
     """
+    warnings: List[str] = []
+
+    # ── Validate sample structure ──
+    if not isinstance(sample, dict):
+        return {
+            "text": "",
+            "tokenization": mode if mode != "hf" else f"hf:{hf_model_name}",
+            "resolved_entities": [],
+            "tokens": [],
+            "warnings": [f"Sample is not a dict (got {type(sample).__name__})"],
+        }
+
+    if "text" not in sample:
+        return {
+            "text": "",
+            "tokenization": mode if mode != "hf" else f"hf:{hf_model_name}",
+            "resolved_entities": [],
+            "tokens": [],
+            "warnings": ["Sample has no 'text' key — cannot process"],
+        }
+
     text = normalize_text(sample["text"])
-    resolved_entities = resolve_entities_to_spans(sample)
+
+    if not text or not text.strip():
+        warnings.append("Sample text is empty or whitespace-only")
+
+    raw_entities = sample.get("entities", None)
+    if raw_entities is None:
+        warnings.append("No 'entities' key found — treating as zero entities")
+        sample = {**sample, "entities": []}
+    elif not isinstance(raw_entities, list):
+        warnings.append(
+            f"'entities' is not a list (got {type(raw_entities).__name__}) — treating as zero entities"
+        )
+        sample = {**sample, "entities": []}
+    elif len(raw_entities) == 0:
+        warnings.append("'entities' list is empty — all tokens will be tagged O")
+
+    resolved_entities, skipped_entities = resolve_entities_to_spans(sample)
     token_tuples = get_tokens(text, mode=mode, hf_model_name=hf_model_name)
     bio_tokens = spans_to_bio(text, resolved_entities, token_tuples)
 
-    return {
+    result = {
         "text": text,
         "tokenization": mode if mode != "hf" else f"hf:{hf_model_name}",
         "resolved_entities": [asdict(e) for e in resolved_entities],
         "tokens": [asdict(t) for t in bio_tokens],
     }
+    if skipped_entities:
+        result["skipped_entities"] = skipped_entities
+    if warnings:
+        result["warnings"] = warnings
+    return result
 
 
 def convert_dataset_to_bio(
     dataset: List[Dict[str, Any]],
     mode: str = "whitespace",
     hf_model_name: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+) -> Tuple[List[Dict[str, Any]], int, int, int]:
     """
-    Convert a whole dataset.
+    Convert a whole dataset.  Best-effort: never raises, always returns results.
+
+    Returns:
+        (outputs, total_skipped, total_warnings, total_errors)
     """
-    outputs = []
+    outputs: List[Dict[str, Any]] = []
+    total_skipped = 0
+    total_warnings = 0
+    total_errors = 0
+
     for i, sample in enumerate(dataset):
         try:
             converted = convert_sample_to_bio(sample, mode=mode, hf_model_name=hf_model_name)
             converted["sample_index"] = i
+
+            has_issue = False
+
+            # Report per-sample warnings
+            if converted.get("warnings"):
+                n_warn = len(converted["warnings"])
+                total_warnings += n_warn
+                has_issue = True
+                print(colorize(f"  ⚠ Sample #{i}: {n_warn} warning(s):", "yellow", bold=True))
+                for w in converted["warnings"]:
+                    print(colorize(f"      → {w}", "yellow"))
+
+            # Report skipped entities
+            if converted.get("skipped_entities"):
+                n_skip = len(converted["skipped_entities"])
+                total_skipped += n_skip
+                has_issue = True
+                print(colorize(f"  ⚠ Sample #{i}: skipped {n_skip} entity(ies) due to overlap/issues:", "yellow", bold=True))
+                for sk in converted["skipped_entities"]:
+                    print(colorize(f"      entity #{sk['index']} \"{sk['text']}\" [{sk['label']}]: {sk['reason']}", "yellow"))
+
+            if not has_issue:
+                n_ents = len(converted.get("resolved_entities", []))
+                n_toks = len(converted.get("tokens", []))
+                print(colorize(f"  ✓ Sample #{i}: OK — {n_ents} entities, {n_toks} tokens", "green"))
+
             outputs.append(converted)
+
         except Exception as e:
+            total_errors += 1
+            print(colorize(f"  ✗ Sample #{i}: FAILED — {e}", "red", bold=True))
+            # Include traceback detail for debugging
+            tb = traceback.format_exc()
+            print(colorize(f"      Traceback (last 3 lines):", "red"))
+            for line in tb.strip().splitlines()[-3:]:
+                print(colorize(f"      {line}", "red"))
             outputs.append({
                 "sample_index": i,
-                "text": sample.get("text", ""),
+                "text": sample.get("text", "") if isinstance(sample, dict) else "",
                 "error": str(e),
             })
-    return outputs
+
+    return outputs, total_skipped, total_warnings, total_errors
 
 
 # -----------------------------
@@ -476,17 +590,54 @@ def export_conll_like(converted_sample: Dict[str, Any]) -> str:
 
 
 # -----------------------------
-# I/O helpers
+# I/O helpers (safe, never raise)
 # -----------------------------
 
-def load_json_file(path: str) -> Any:
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+def safe_load_json_file(path: str) -> Tuple[Optional[Any], Optional[str]]:
+    """
+    Load JSON from file.  Returns (data, None) on success or (None, error_msg) on failure.
+    """
+    if not os.path.exists(path):
+        return None, f"File not found: {path}"
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except Exception as e:
+        return None, f"Cannot read file '{path}': {e}"
+
+    if not content.strip():
+        return None, f"File is empty: {path}"
+
+    try:
+        data = json.loads(content)
+    except json.JSONDecodeError as e:
+        return None, f"Invalid JSON in '{path}': {e}"
+
+    return data, None
 
 
-def save_json_file(obj: Any, path: str) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2)
+def safe_save_json_file(obj: Any, path: str) -> Optional[str]:
+    """
+    Save JSON to file.  Returns None on success or error message string on failure.
+    """
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(obj, f, ensure_ascii=False, indent=2)
+        return None
+    except Exception as e:
+        return f"Cannot write '{path}': {e}"
+
+
+def safe_write_text_file(path: str, content: str) -> Optional[str]:
+    """
+    Write text to file.  Returns None on success or error message string on failure.
+    """
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+        return None
+    except Exception as e:
+        return f"Cannot write '{path}': {e}"
 
 
 # -----------------------------
@@ -540,6 +691,10 @@ def format_entities_in_text_plain(converted_sample: Dict[str, Any]) -> str:
 
 def main():
     """
+    Best-effort BIO conversion pipeline.
+    This function NEVER crashes — every failure is caught, reported with
+    colorful output, and the script keeps going to produce whatever it can.
+
     Edit these paths/settings as needed.
     """
     input_path = "input.json"
@@ -556,65 +711,209 @@ def main():
     # hf_model_name = "google/muril-base-cased"
     hf_model_name = None
 
-    dataset = load_json_file(input_path)
+    # ════════════════════════════════════════════════════════════
+    #  STAGE 1 — Load input file
+    # ════════════════════════════════════════════════════════════
+    print(colorize(f"\n{'═' * 60}", "cyan", bold=True))
+    print(colorize(f"  STAGE 1: Loading input", "cyan", bold=True))
+    print(colorize(f"{'═' * 60}", "cyan", bold=True))
 
-    converted = convert_dataset_to_bio(
+    dataset, load_err = safe_load_json_file(input_path)
+    if load_err is not None:
+        print(colorize(f"\n  ✗ FATAL — {load_err}", "red", bold=True))
+        print(colorize(f"    Cannot proceed without a valid input file.", "red"))
+        print(colorize(f"    Please ensure '{input_path}' exists and contains a valid JSON array.\n", "red"))
+        sys.exit(1)
+
+    print(colorize(f"  ✓ Loaded '{input_path}' successfully", "green"))
+
+    # ── Validate dataset structure ──
+    if not isinstance(dataset, list):
+        print(colorize(
+            f"\n  ✗ FATAL — Expected a JSON array (list) at top level, got {type(dataset).__name__}.",
+            "red", bold=True,
+        ))
+        print(colorize(f"    The file should contain a list of sample objects: [ {{\"text\": ..., \"entities\": [...]}}, ... ]", "red"))
+        sys.exit(1)
+
+    if len(dataset) == 0:
+        print(colorize(f"\n  ⚠ WARNING — Input file contains an empty list (0 samples).", "yellow", bold=True))
+        print(colorize(f"    Nothing to convert. Output files will be empty.", "yellow"))
+
+    print(colorize(f"  ✓ Dataset has {len(dataset)} sample(s)", "green"))
+
+    # ════════════════════════════════════════════════════════════
+    #  STAGE 2 — Convert to BIO
+    # ════════════════════════════════════════════════════════════
+    print(colorize(f"\n{'═' * 60}", "cyan", bold=True))
+    print(colorize(f"  STAGE 2: Converting {len(dataset)} sample(s)  ·  mode = {mode}", "cyan", bold=True))
+    print(colorize(f"{'═' * 60}", "cyan", bold=True))
+
+    converted, total_skipped, total_warnings, total_errors = convert_dataset_to_bio(
         dataset=dataset,
         mode=mode,
         hf_model_name=hf_model_name,
     )
 
+    n_ok = sum(1 for s in converted if "error" not in s)
+
+    if n_ok == 0 and len(dataset) > 0:
+        print(colorize(f"\n  ✗ WARNING — ALL {len(dataset)} sample(s) failed! Output will contain only error entries.", "red", bold=True))
+    elif total_errors > 0:
+        print(colorize(f"\n  ⚠ {total_errors} sample(s) failed, {n_ok} succeeded — continuing with partial results.", "yellow", bold=True))
+
+    # ════════════════════════════════════════════════════════════
+    #  STAGE 3 — Save output files
+    # ════════════════════════════════════════════════════════════
+    print(colorize(f"\n{'═' * 60}", "cyan", bold=True))
+    print(colorize(f"  STAGE 3: Saving output files", "cyan", bold=True))
+    print(colorize(f"{'═' * 60}", "cyan", bold=True))
+
+    files_saved = 0
+
+    # ── 3a. BIO JSON ──
     out_json = f"bio_{mode}.json"
-    save_json_file(converted, out_json)
-    print(f"Saved converted BIO JSON to: {out_json}")
+    err = safe_save_json_file(converted, out_json)
+    if err:
+        print(colorize(f"  ✗ Failed to save BIO JSON: {err}", "red", bold=True))
+    else:
+        files_saved += 1
+        print(colorize(f"  ✓ Saved BIO JSON → {out_json}", "green"))
 
-    # Visualize first successful sample (terminal)
-    first_ok = next((x for x in converted if "error" not in x), None)
-    if first_ok:
-        visualize_bio_console(first_ok)
-        print("\nHIGHLIGHTED TEXT:")
-        print(visualize_entities_in_text(first_ok))
-        print("\nCONLL-LIKE:")
-        print(export_conll_like(first_ok))
-
-    # Also export all successful samples to a single CoNLL-like file
+    # ── 3b. CoNLL-like file ──
     conll_path = f"bio_{mode}.conll.txt"
-    with open(conll_path, "w", encoding="utf-8") as f:
+    try:
+        conll_lines = []
         for sample in converted:
             if "error" in sample:
                 continue
-            f.write(f"# sample_index = {sample['sample_index']}\n")
-            f.write(f"# text = {sample['text']}\n")
-            f.write(export_conll_like(sample))
-            f.write("\n\n")
-    print(f"Saved CoNLL-like BIO to: {conll_path}")
+            conll_lines.append(f"# sample_index = {sample['sample_index']}")
+            conll_lines.append(f"# text = {sample['text']}")
+            conll_lines.append(export_conll_like(sample))
+            conll_lines.append("")
+        conll_content = "\n".join(conll_lines)
+        err = safe_write_text_file(conll_path, conll_content)
+        if err:
+            print(colorize(f"  ✗ Failed to save CoNLL file: {err}", "red", bold=True))
+        else:
+            files_saved += 1
+            if not conll_content.strip():
+                print(colorize(f"  ⚠ Saved CoNLL file → {conll_path} (empty — no successful samples)", "yellow", bold=True))
+            else:
+                print(colorize(f"  ✓ Saved CoNLL file → {conll_path}", "green"))
+    except Exception as e:
+        print(colorize(f"  ✗ Failed to build CoNLL content: {e}", "red", bold=True))
 
-    # ---- Write full visualization to a plain-text file ----
+    # ── 3c. Full visualization (plain text) ──
     output_txt_path = f"output_{mode}.txt"
-    with open(output_txt_path, "w", encoding="utf-8") as f:
+    try:
+        viz_parts = []
         for sample in converted:
             if "error" in sample:
-                f.write(f"{'=' * 80}\n")
-                f.write(f"SAMPLE #{sample['sample_index']} — ERROR\n")
-                f.write(f"{sample['error']}\n")
-                f.write(f"{'=' * 80}\n\n")
+                viz_parts.append(f"{'=' * 80}")
+                viz_parts.append(f"SAMPLE #{sample['sample_index']} — ERROR")
+                viz_parts.append(f"{sample['error']}")
+                viz_parts.append(f"{'=' * 80}\n")
                 continue
+
+            # Warnings
+            if sample.get("warnings"):
+                viz_parts.append(f"⚠ WARNINGS FOR SAMPLE #{sample.get('sample_index', '?')}:")
+                for w in sample["warnings"]:
+                    viz_parts.append(f"  → {w}")
+                viz_parts.append("")
+
+            # Skipped entity warnings
+            if sample.get("skipped_entities"):
+                viz_parts.append(f"⚠ SKIPPED {len(sample['skipped_entities'])} ENTITY(IES):")
+                for sk in sample["skipped_entities"]:
+                    viz_parts.append(f"  entity #{sk['index']} \"{sk['text']}\" [{sk['label']}]: {sk['reason']}")
+                viz_parts.append("")
 
             # BIO table
-            f.write(format_bio_plain(sample))
-            f.write("\n\n")
+            viz_parts.append(format_bio_plain(sample))
+            viz_parts.append("")
 
             # Highlighted text (plain)
-            f.write("HIGHLIGHTED TEXT:\n")
-            f.write(format_entities_in_text_plain(sample))
-            f.write("\n\n")
+            viz_parts.append("HIGHLIGHTED TEXT:")
+            viz_parts.append(format_entities_in_text_plain(sample))
+            viz_parts.append("")
 
             # CoNLL-like
-            f.write("CONLL-LIKE:\n")
-            f.write(export_conll_like(sample))
-            f.write("\n\n")
+            viz_parts.append("CONLL-LIKE:")
+            viz_parts.append(export_conll_like(sample))
+            viz_parts.append("")
 
-    print(f"Saved full visualization (plain text) to: {output_txt_path}")
+        viz_content = "\n".join(viz_parts)
+        err = safe_write_text_file(output_txt_path, viz_content)
+        if err:
+            print(colorize(f"  ✗ Failed to save visualization: {err}", "red", bold=True))
+        else:
+            files_saved += 1
+            if not viz_content.strip():
+                print(colorize(f"  ⚠ Saved visualization → {output_txt_path} (empty — nothing to visualize)", "yellow", bold=True))
+            else:
+                print(colorize(f"  ✓ Saved visualization → {output_txt_path}", "green"))
+    except Exception as e:
+        print(colorize(f"  ✗ Failed to build visualization content: {e}", "red", bold=True))
+
+    # ════════════════════════════════════════════════════════════
+    #  STAGE 4 — Preview first successful sample
+    # ════════════════════════════════════════════════════════════
+    first_ok = next((x for x in converted if "error" not in x), None)
+    if first_ok:
+        print(colorize(f"\n{'═' * 60}", "cyan", bold=True))
+        print(colorize(f"  PREVIEW: Sample #{first_ok.get('sample_index', 0)}", "cyan", bold=True))
+        print(colorize(f"{'═' * 60}", "cyan", bold=True))
+        try:
+            visualize_bio_console(first_ok)
+            print("\nHIGHLIGHTED TEXT:")
+            print(visualize_entities_in_text(first_ok))
+            print("\nCONLL-LIKE:")
+            print(export_conll_like(first_ok))
+        except Exception as e:
+            print(colorize(f"  ⚠ Preview rendering failed: {e}", "yellow", bold=True))
+    else:
+        if len(dataset) > 0:
+            print(colorize(f"\n  ⚠ No successful samples to preview.", "yellow", bold=True))
+
+    # ════════════════════════════════════════════════════════════
+    #  SUMMARY
+    # ════════════════════════════════════════════════════════════
+    print(colorize(f"\n{'═' * 60}", "cyan", bold=True))
+    print(colorize(f"  SUMMARY", "cyan", bold=True))
+    print(colorize(f"{'═' * 60}", "cyan", bold=True))
+    print(f"  Input file:     {input_path}")
+    print(f"  Mode:           {mode}")
+    print(f"  Total samples:  {len(converted)}")
+    print(colorize(f"  ✓ Successful:   {n_ok}", "green", bold=True))
+
+    if total_warnings > 0:
+        print(colorize(f"  ⚠ Warnings:     {total_warnings} (structural issues in samples — processed best-effort)", "yellow", bold=True))
+    else:
+        print(f"  ⚠ Warnings:     0")
+
+    if total_skipped > 0:
+        print(colorize(f"  ⚠ Skipped ents: {total_skipped} (overlap / unresolvable — tagged remaining)", "yellow", bold=True))
+    else:
+        print(f"  ⚠ Skipped ents: 0")
+
+    if total_errors > 0:
+        print(colorize(f"  ✗ Errors:       {total_errors} (samples fully failed)", "red", bold=True))
+    else:
+        print(f"  ✗ Errors:       0")
+
+    print(f"  Files saved:    {files_saved}/3")
+
+    # Final verdict
+    if total_errors == 0 and total_skipped == 0 and total_warnings == 0:
+        print(colorize(f"\n  ★ Perfect run — all samples converted cleanly!", "green", bold=True))
+    elif n_ok > 0:
+        print(colorize(f"\n  ◐ Partial success — {n_ok}/{len(dataset)} samples converted (check warnings above).", "yellow", bold=True))
+    elif len(dataset) > 0:
+        print(colorize(f"\n  ✗ Complete failure — no samples could be converted. Check errors above.", "red", bold=True))
+
+    print(colorize(f"{'═' * 60}\n", "cyan", bold=True))
 
 
 if __name__ == "__main__":
