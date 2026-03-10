@@ -44,17 +44,21 @@ class LLMOptions:
     num_predict: int = 16384  # Max tokens to generate
     temperature: float = 0.1
     top_p: float = 0.9
+    top_k: Optional[int] = None  # Top-K sampling (provider-dependent)
     repeat_penalty: float = 1.1
 
     def to_ollama_options(self) -> Dict[str, Any]:
         """Convert to Ollama-compatible options dict."""
-        return {
+        opts: Dict[str, Any] = {
             "num_ctx": self.num_ctx,
             "num_predict": self.num_predict,
             "temperature": self.temperature,
             "top_p": self.top_p,
             "repeat_penalty": self.repeat_penalty,
         }
+        if self.top_k is not None:
+            opts["top_k"] = self.top_k
+        return opts
 
     def to_openai_compatible_params(self) -> Dict[str, Any]:
         """
@@ -69,6 +73,8 @@ class LLMOptions:
         - num_ctx is not sent because context window is model/provider specific.
         - repetition_penalty is not universally supported across providers/models,
           so it is injected selectively by the caller.
+        - top_k is not part of the OpenAI API; providers that support it
+          should inject it separately.
         """
         return {
             "temperature": self.temperature,
@@ -83,6 +89,8 @@ class LLMOptions:
         params = self.to_openai_compatible_params()
         if self.repeat_penalty is not None:
             params["repetition_penalty"] = self.repeat_penalty
+        if self.top_k is not None:
+            params["top_k"] = self.top_k
         return params
 
 
@@ -127,6 +135,40 @@ class LLMResponse:
 
 # Default options instance
 DEFAULT_OPTIONS = LLMOptions()
+
+
+# ── Reasoning-model detection ────────────────────────────────────────────────
+
+# OpenAI reasoning models do not support sampling parameters like temperature,
+# top_p, etc.  Only the default value (1) is accepted.  We detect these models
+# and automatically strip unsupported parameters so callers don't have to
+# special-case them.
+
+_OPENAI_REASONING_PREFIXES = (
+    "o1",
+    "o3",
+    "o4",
+)
+
+_OPENAI_REASONING_SUBSTRINGS = (
+    "gpt-5-mini",
+)
+
+
+def _is_openai_reasoning_model(model: str) -> bool:
+    """Return True if *model* is a known OpenAI reasoning model.
+
+    Reasoning models reject sampling parameters (temperature, top_p, …)
+    with an HTTP 400 unless they are set to the default value.
+    """
+    lower = model.lower()
+    for prefix in _OPENAI_REASONING_PREFIXES:
+        if lower.startswith(prefix):
+            return True
+    for substr in _OPENAI_REASONING_SUBSTRINGS:
+        if substr in lower:
+            return True
+    return False
 
 # Default keep_alive duration
 DEFAULT_KEEP_ALIVE = "5m"
@@ -351,6 +393,8 @@ def _gemini_inference(
         "top_p": options.top_p,
         "max_output_tokens": options.num_predict,
     }
+    if options.top_k is not None:
+        config_kwargs["top_k"] = options.top_k
 
     if model.startswith("gemini-3"):
         config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
@@ -449,6 +493,8 @@ def _openai_inference(
         base_url=OPENAI_BASE_URL,
         timeout_seconds=OPENAI_TIMEOUT_SECONDS,
         add_repetition_penalty=False,  # avoid passing unsupported params
+        max_tokens_key="max_completion_tokens",  # newer OpenAI models require this
+        strip_sampling_params=_is_openai_reasoning_model(model),
     )
 
 
@@ -486,6 +532,8 @@ def _openai_compatible_inference(
     timeout_seconds: float,
     add_repetition_penalty: bool = False,
     extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens_key: str = "max_tokens",
+    strip_sampling_params: bool = False,
 ) -> LLMResponse:
     """
     Shared implementation for OpenAI-compatible chat/completions APIs.
@@ -511,7 +559,16 @@ def _openai_compatible_inference(
         "messages": messages,
         "stream": False,
     }
-    payload.update(options.to_openai_compatible_params())
+    params = options.to_openai_compatible_params()
+    # Rename max_tokens key if needed (e.g. max_completion_tokens for OpenAI)
+    if max_tokens_key != "max_tokens" and "max_tokens" in params:
+        params[max_tokens_key] = params.pop("max_tokens")
+    # Reasoning models (o1, o3, o4, gpt-5-mini, …) reject non-default
+    # sampling parameters.  Strip them to avoid HTTP 400 errors.
+    if strip_sampling_params:
+        for key in ("temperature", "top_p", "top_k"):
+            params.pop(key, None)
+    payload.update(params)
 
     if add_repetition_penalty and options.repeat_penalty is not None:
         payload["repetition_penalty"] = options.repeat_penalty
@@ -627,6 +684,8 @@ def _anthropic_inference(
         "temperature": options.temperature,
         "top_p": options.top_p,
     }
+    if options.top_k is not None:
+        payload["top_k"] = options.top_k
 
     if system_prompt:
         payload["system"] = system_prompt

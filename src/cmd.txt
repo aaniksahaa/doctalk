@@ -84,17 +84,21 @@ python generate_advice_safety_dataset.py --force-rewrite --first-n 15
 
 ## Organize Downstream Datasets
 
-python organize_downstream_datasets.py --tasks medical-ner advice-safety triage   # all tasks
-python organize_downstream_datasets.py --tasks medical-ner                        # single task
-python organize_downstream_datasets.py --tasks advice-safety triage               # subset of tasks
-python organize_downstream_datasets.py --train-pct 80 --val-pct 10               # custom split (test=10%)
-python organize_downstream_datasets.py --seed 123                                # different random seed
-python organize_downstream_datasets.py --model gemini-2.5-flash                   # specify generator model
-python organize_downstream_datasets.py --folder saved-data                        # specify data folder
+python organize_downstream_datasets.py                                                              # all tasks (default)
+python organize_downstream_datasets.py --tasks "medical-ner;advice-safety;advice-generation;triage"  # all tasks (explicit)
+python organize_downstream_datasets.py --tasks medical-ner                                          # single task
+python organize_downstream_datasets.py --tasks "advice-safety;triage"                                # subset of tasks
+python organize_downstream_datasets.py --tasks advice-generation                                    # advice-generation only
+python organize_downstream_datasets.py --train-pct 80 --val-pct 10                                  # custom split (test=10%)
+python organize_downstream_datasets.py --seed 123                                                   # different random seed
+python organize_downstream_datasets.py --model gemini-2.5-flash                                     # specify generator model
+python organize_downstream_datasets.py --folder saved-data                                          # specify data folder
+python organize_downstream_datasets.py --force-rewrite                                              # overwrite existing element dirs
+python organize_downstream_datasets.py --tasks advice-generation                                    # safe: won't overwrite existing tasks
 
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks medical-ner \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
@@ -102,7 +106,7 @@ python infer_downstream.py \
   --force-rewrite
 
 python infer_downstream.py \
-  --task advice-safety \
+  --tasks advice-safety \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
@@ -110,23 +114,58 @@ python infer_downstream.py \
   --force-rewrite
 
 python infer_downstream.py \
-  --task triage \
+  --tasks triage \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
   --batch-size 3 \
   --force-rewrite
 
+# Advice Generation Inference (new task: LLM generates recommendations from patient_profile only)
+python infer_downstream.py \
+  --tasks advice-generation \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting zero-shot \
+  --batch-size 3 \
+  --force-rewrite
+
+# Multiple tasks in one command (semicolon-separated)
+python infer_downstream.py \
+  --tasks "medical-ner;advice-safety;triage" \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting zero-shot \
+  --batch-size 3
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks advice-generation \
+  --split test \
+  --model gpt-4o \
+  --provider openai \
+  --setting zero-shot \
+  --batch-size 3
+
+# Using --standard-model-name (-s) to unify output dirs across providers
+python infer_downstream.py \
+  --tasks advice-generation \
+  --split test \
+  --model openai/gpt-4o \
+  --provider openrouter \
+  -s gpt-4o \
+  --setting zero-shot \
+  --batch-size 3
+
+
+python infer_downstream.py \
+  --tasks medical-ner \
   --split test \
   --model gemini-3-flash-preview \
   --setting zero-shot \
   --batch-size 3
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks medical-ner \
   --split test \
   --model qwen/qwen3-32b \
   --provider openrouter \
@@ -135,10 +174,16 @@ python infer_downstream.py \
 
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks medical-ner \
   --split test \
   --model gpt-4o \
   --provider openai \
   --setting zero-shot \
   --batch-size 3 \
   --force-rewrite
+
+
+python run_bulk_inference.py --tasks medical-ner --split test --batch-size 3
+python run_bulk_inference.py --tasks "medical-ner;advice-generation" --split test --batch-size 3
+python run_bulk_inference.py --tasks "advice-safety;triage" --split test --batch-size 3 --force-rewrite
+python run_bulk_inference.py --tasks "medical-ner;advice-safety;advice-generation;triage" --split test --batch-size 3
