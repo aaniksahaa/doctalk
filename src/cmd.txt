@@ -132,3 +132,13 @@ python infer_downstream.py \
   --provider openrouter \
   --setting zero-shot \
   --batch-size 3
+
+
+python infer_downstream.py \
+  --task medical-ner \
+  --split test \
+  --model gpt-4o \
+  --provider openai \
+  --setting zero-shot \
+  --batch-size 3 \
+  --force-rewrite
