@@ -42,7 +42,7 @@ class LLMOptions:
     """Configuration options for LLM inference."""
     num_ctx: int = 32768  # Context window size
     num_predict: int = 16384  # Max tokens to generate
-    temperature: float = 0.1
+    temperature: float = 0.7
     top_p: float = 0.9
     top_k: Optional[int] = None  # Top-K sampling (provider-dependent)
     repeat_penalty: float = 1.1
