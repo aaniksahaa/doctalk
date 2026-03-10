@@ -50,6 +50,7 @@ VALID_SPLITS = ["train", "val", "test"]
 # Local (non-LLM) fine-tuned models: model name → allowed tasks + forced setting
 LOCAL_MODELS = {
     "banglabert": {"tasks": {"medical-ner"}, "setting": "finetuned"},
+    "mmbert":     {"tasks": {"medical-ner"}, "setting": "finetuned"},
 }
 
 
@@ -409,11 +410,11 @@ def run_local_model_task(task_name: str, args) -> None:
 
     # ── load local model (lazy import — only when needed) ──
     print(f"  {C.DIM}Loading {model_name} model...{C.RESET}")
-    if model_name == "banglabert":
-        from banglabert_ner_helper import BanglaBERTNER
-        predictor = BanglaBERTNER()
-    else:
-        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} no loader for local model '{model_name}'{C.RESET}")
+    try:
+        from local_ner_helper import LocalNERModel
+        predictor = LocalNERModel(model_name)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} {e}{C.RESET}")
         return
     print(f"  {C.GREEN}✓ Model loaded{C.RESET}\n")
 
