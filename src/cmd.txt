@@ -82,6 +82,12 @@ python generate_advice_safety_dataset.py --force-rewrite  # reprocess
 python generate_advice_safety_dataset.py --force-rewrite --first-n 15
 
 
+
+python generate_triage_dataset.py --model gpt-4o -s gemini-2.5-flash
+# Uses gpt-4o for inference but saves into the gemini-2.5-flash directory
+
+
+
 ## Organize Downstream Datasets
 
 python organize_downstream_datasets.py                                                              # all tasks (default)
