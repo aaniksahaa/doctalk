@@ -47,6 +47,11 @@ VALID_TASKS = ["medical-ner", "advice-safety", "advice-generation", "triage"]
 ALL_TASKS_STR = ";".join(VALID_TASKS)
 VALID_SPLITS = ["train", "val", "test"]
 
+# Local (non-LLM) fine-tuned models: model name → allowed tasks + forced setting
+LOCAL_MODELS = {
+    "banglabert": {"tasks": {"medical-ner"}, "setting": "finetuned"},
+}
+
 
 def parse_tasks(tasks_str: str) -> List[str]:
     """Parse semicolon-separated task string and validate each task."""
@@ -301,6 +306,165 @@ def run_inference_on_batch(
     )
 
 
+# ── Local model inference (e.g. fine-tuned BanglaBERT) ───────────────────────
+
+def save_local_model_output(
+    sample_dir: Path,
+    setting: str,
+    model: str,
+    output: Dict[str, Any],
+    inference_time_seconds: float,
+) -> None:
+    """Save output and metadata from a local (non-LLM) model."""
+    output_dir = sample_dir / INFERENCE_SUBDIR / setting / model
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(output_dir / OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+
+    metadata = {
+        "model": model,
+        "setting": setting,
+        "provider": "local",
+        "inference_time_seconds": round(inference_time_seconds, 4),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    with open(output_dir / INFERENCE_METADATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+
+def run_local_model_task(task_name: str, args) -> None:
+    """
+    Run inference using a local fine-tuned model (no LLM API calls).
+    Currently supports: banglabert → medical-ner.
+    """
+    import time
+
+    local_info = LOCAL_MODELS[args.model]
+    setting = local_info["setting"]
+    model_name = args.model
+
+    # ── resolve paths ──
+    folder_path = Path(args.folder)
+    if not folder_path.is_absolute():
+        folder_path = Path(__file__).parent / folder_path
+
+    split_dir = (
+        folder_path
+        / DOWNSTREAM_DATASETS_DIR
+        / task_name
+        / "split"
+        / args.split
+    )
+
+    if not split_dir.exists():
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} split directory not found: {split_dir}{C.RESET}")
+        return
+
+    # ── discover samples ──
+    all_samples = discover_samples(split_dir)
+
+    if not all_samples:
+        print(f"{C.YELLOW}No samples found in {split_dir}{C.RESET}")
+        return
+
+    # ── filter already-processed ──
+    if args.force_rewrite:
+        samples = all_samples
+    else:
+        samples = [
+            (idx, path)
+            for idx, path in all_samples
+            if not is_sample_processed(path, setting, model_name)
+        ]
+
+    already_done = len(all_samples) - len(samples)
+
+    total_pending = len(samples)
+    if args.first_n > 0:
+        samples = samples[: args.first_n]
+
+    # ── header ──
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}  Downstream Inference (local model){C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}         : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}        : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}        : {C.CYAN}{model_name}{C.RESET}")
+    print(f"  {C.BOLD}Provider{C.RESET}     : {C.BLUE}local (fine-tuned){C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}      : {C.YELLOW}{setting}{C.RESET}")
+    print(f"  {C.BOLD}Split dir{C.RESET}    : {C.DIM}{split_dir}{C.RESET}")
+    print(f"  {C.BOLD}Total samples{C.RESET}: {len(all_samples)}")
+    print(f"  {C.BOLD}Already done{C.RESET} : {C.GREEN}{already_done}{C.RESET}")
+    print(
+        f"  {C.BOLD}To process{C.RESET}   : {C.YELLOW}{len(samples)}{C.RESET}"
+        f"{f' (limited from {total_pending})' if args.first_n > 0 else ''}"
+    )
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print()
+
+    if not samples:
+        print(f"{C.GREEN}{C.BOLD}✓ All samples already processed!{C.RESET}")
+        return
+
+    # ── load local model (lazy import — only when needed) ──
+    print(f"  {C.DIM}Loading {model_name} model...{C.RESET}")
+    if model_name == "banglabert":
+        from banglabert_ner_helper import BanglaBERTNER
+        predictor = BanglaBERTNER()
+    else:
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} no loader for local model '{model_name}'{C.RESET}")
+        return
+    print(f"  {C.GREEN}✓ Model loaded{C.RESET}\n")
+
+    # ── process samples one by one ──
+    total_success = 0
+    total_failed = 0
+    total_time = 0.0
+
+    try:
+        for idx, sample_dir in samples:
+            try:
+                inp = load_sample_input(sample_dir)
+                t0 = time.time()
+                output = predictor.predict(inp["text"])
+                elapsed = time.time() - t0
+                total_time += elapsed
+
+                save_local_model_output(
+                    sample_dir, setting, model_name, output, elapsed,
+                )
+                total_success += 1
+                n_ents = len(output.get("entities", []))
+                print(
+                    f"    {C.GREEN}✓{C.RESET} Sample {idx}: "
+                    f"{n_ents} entities ({elapsed:.3f}s)"
+                )
+
+            except Exception as e:
+                total_failed += 1
+                print(f"    {C.RED}✗{C.RESET} Sample {idx}: {e}")
+
+    except KeyboardInterrupt:
+        print(f"\n\n{C.YELLOW}{C.BOLD}⚠ Interrupted by user!{C.RESET}")
+        print(f"  Completed so far: {C.GREEN}{total_success}{C.RESET}")
+        print(f"  Failed so far   : {C.RED}{total_failed}{C.RESET}")
+        sys.exit(1)
+
+    # ── summary ──
+    avg_time = (total_time / total_success) if total_success else 0
+    print(f"\n{C.BOLD}{C.GREEN}✓ Inference complete!{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}       : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}      : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}      : {C.CYAN}{model_name}{C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}    : {C.YELLOW}{setting}{C.RESET}")
+    print(f"  {C.BOLD}Success{C.RESET}    : {C.GREEN}{total_success}{C.RESET}")
+    print(f"  {C.BOLD}Failed{C.RESET}     : {C.RED}{total_failed}{C.RESET}")
+    print(f"  {C.BOLD}Skipped{C.RESET}    : {C.DIM}{already_done}{C.RESET}")
+    print(f"  {C.BOLD}Total time{C.RESET} : {total_time:.2f}s")
+    print(f"  {C.BOLD}Avg / sample{C.RESET}: {avg_time:.3f}s")
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
@@ -465,6 +629,27 @@ def main():
 
 def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
     """Run inference for a single task."""
+
+    # ── route to local model path if applicable ──
+    if args.model in LOCAL_MODELS:
+        local_info = LOCAL_MODELS[args.model]
+        if task_name not in local_info["tasks"]:
+            print(
+                f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} local model "
+                f"'{args.model}' does not support task '{task_name}'. "
+                f"Supported: {', '.join(local_info['tasks'])}{C.RESET}"
+            )
+            return
+        expected_setting = local_info["setting"]
+        if args.setting != expected_setting:
+            print(
+                f"{C.YELLOW}Note: local model '{args.model}' uses "
+                f"setting '{expected_setting}' "
+                f"(ignoring --setting {args.setting}){C.RESET}"
+            )
+        run_local_model_task(task_name, args)
+        return
+
     # ── validate setting directory exists ──
     setting_prompt_dir = (
         PROMPTS_DIR / TASK_PROMPT_DIR[task_name] / args.setting

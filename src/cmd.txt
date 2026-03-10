@@ -187,3 +187,44 @@ python run_bulk_inference.py --tasks medical-ner --split test --batch-size 3
 python run_bulk_inference.py --tasks "medical-ner;advice-generation" --split test --batch-size 3
 python run_bulk_inference.py --tasks "advice-safety;triage" --split test --batch-size 3 --force-rewrite
 python run_bulk_inference.py --tasks "medical-ner;advice-safety;advice-generation;triage" --split test --batch-size 3
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# BanglaBERT Medical NER Fine-tuning
+# ═══════════════════════════════════════════════════════════════════════
+
+# Install dependencies
+pip install -U torch transformers datasets evaluate seqeval accelerate
+pip install -U git+https://github.com/csebuetnlp/normalizer.git
+
+# Train
+cd downstream-artifacts/medical-ner/banglabert-finetuning
+python train_ner_banglabert.py
+
+# Inference (interactive mode)
+python infer_ner_banglabert.py
+
+# Inference (single text)
+python infer_ner_banglabert.py --text "রোগীর হিট স্ট্রোক, জ্বর এবং সর্দি আছে।"
+
+# Inference (custom model dir)
+python infer_ner_banglabert.py --model_dir ./banglabert-medical-ner-output/best_model
+
+# Inference (JSON file in, JSON file out)
+python infer_ner_banglabert.py --json_input input.json --json_output predictions.json
+
+# BanglaBERT NER via the unified infer_downstream.py pipeline
+# (run from src/, setting is always "finetuned")
+cd /home/aaniksahaa/research/doctalk/src
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model banglabert \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model banglabert \
+  --setting finetuned \
+  --force-rewrite
