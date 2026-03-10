@@ -15,11 +15,11 @@ Output structure (per sample):
           inference_metadata.json
 
 Usage:
-  python infer_downstream.py --task medical-ner --split test --model gemini-3-flash-preview --setting zero-shot
-  python infer_downstream.py --task advice-safety --split test --model gemini-2.5-flash --setting few-shot --batch-size 3
-  python infer_downstream.py --task triage --split val --model gemini-3-flash-preview --setting zero-shot --max-retries 3
-  python infer_downstream.py --task medical-ner --split test --model gemini-2.5-flash --setting zero-shot --force-rewrite
-  python infer_downstream.py --task triage --split test --model gemini-3-flash-preview --setting few-shot --first-n 10
+  python infer_downstream.py --tasks medical-ner --split test --model gemini-3-flash-preview --setting zero-shot
+  python infer_downstream.py --tasks "advice-safety;triage" --split test --model gemini-2.5-flash --setting few-shot --batch-size 3
+  python infer_downstream.py --tasks "medical-ner;advice-generation" --split test --model gemini-2.5-flash --setting zero-shot --force-rewrite
+  python infer_downstream.py --tasks triage --split test --model gemini-3-flash-preview --setting few-shot --first-n 10
+  python infer_downstream.py --tasks medical-ner --split test --model openai/gpt-4o --provider openrouter -s gpt-4o --setting zero-shot
 """
 
 import argparse
@@ -29,7 +29,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from llm import Provider, get_response
+from llm import Provider, LLMOptions, InferenceMetadata, get_response
+
+
+from constants import C
 
 
 # ── Constants ────────────────────────────────────────────────────────────────
@@ -40,13 +43,34 @@ INFERENCE_SUBDIR = "inference"
 OUTPUT_FILE = "output.json"
 INFERENCE_METADATA_FILE = "inference_metadata.json"
 
-VALID_TASKS = ["medical-ner", "advice-safety", "triage"]
+VALID_TASKS = ["medical-ner", "advice-safety", "advice-generation", "triage"]
+ALL_TASKS_STR = ";".join(VALID_TASKS)
 VALID_SPLITS = ["train", "val", "test"]
+
+# Local (non-LLM) fine-tuned models: model name → allowed tasks + forced setting
+LOCAL_MODELS = {
+    "banglabert": {"tasks": {"medical-ner"}, "setting": "finetuned"},
+    "mmbert":     {"tasks": {"medical-ner"}, "setting": "finetuned"},
+}
+
+
+def parse_tasks(tasks_str: str) -> List[str]:
+    """Parse semicolon-separated task string and validate each task."""
+    tasks = [t.strip() for t in tasks_str.split(";") if t.strip()]
+    for t in tasks:
+        if t not in VALID_TASKS:
+            print(
+                f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} unknown task '{t}'. "
+                f"Valid tasks: {', '.join(VALID_TASKS)}{C.RESET}"
+            )
+            sys.exit(1)
+    return tasks
 
 # Map task name → inference prompt subdirectory
 TASK_PROMPT_DIR = {
     "medical-ner": "medical-ner-inference",
     "advice-safety": "advice-safety-inference",
+    "advice-generation": "advice-generation-inference",
     "triage": "triage-inference",
 }
 
@@ -82,8 +106,14 @@ def load_prompts(task: str, setting: str) -> Tuple[str, str]:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def normalize_model_name(model: str) -> str:
-    """Normalize model name for use as a directory name (replace / with -)."""
-    return model.replace("/", "-")
+    """Normalize model name for use as a directory name.
+
+    If the model name contains a slash (e.g. 'openai/gpt-4o'),
+    only the part after the last slash is used (e.g. 'gpt-4o').
+    """
+    if "/" in model:
+        return model.rsplit("/", 1)[-1]
+    return model
 
 
 # ── Sample discovery & I/O ───────────────────────────────────────────────────
@@ -109,10 +139,11 @@ def load_sample_input(sample_dir: Path) -> Dict[str, Any]:
 
 
 def is_sample_processed(
-    sample_dir: Path, setting: str, model: str
+    sample_dir: Path, setting: str, model: str,
+    standard_model_name: str | None = None,
 ) -> bool:
     """Check if inference output already exists for this sample."""
-    model_dir = normalize_model_name(model)
+    model_dir = standard_model_name or normalize_model_name(model)
     output_path = (
         sample_dir / INFERENCE_SUBDIR / setting / model_dir / OUTPUT_FILE
     )
@@ -124,20 +155,45 @@ def save_output(
     setting: str,
     model: str,
     output: Dict[str, Any],
+    standard_model_name: str | None = None,
+    inference_metadata: InferenceMetadata | None = None,
+    batch_size: int | None = None,
 ) -> None:
     """Save inference output and inference metadata to the sample directory."""
-    model_dir = normalize_model_name(model)
-    output_dir = sample_dir / INFERENCE_SUBDIR / setting / model_dir
+    effective_name = standard_model_name or normalize_model_name(model)
+    output_dir = sample_dir / INFERENCE_SUBDIR / setting / effective_name
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_path = output_dir / OUTPUT_FILE
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    metadata = {
-        "model": model_dir,
+    metadata: Dict[str, Any] = {
+        "model": effective_name,
         "setting": setting,
     }
+    # Merge detailed inference metadata when available
+    if inference_metadata is not None:
+        meta_dict = inference_metadata.to_dict()
+        # Per-sample share: divide batch-level token counts & cost evenly
+        n = batch_size if batch_size and batch_size > 0 else 1
+        metadata["provider"] = meta_dict.get("provider", "")
+        metadata["model_id"] = meta_dict.get("model", "")
+        metadata["input_tokens"] = meta_dict.get("input_tokens", 0)
+        metadata["output_tokens"] = meta_dict.get("output_tokens", 0)
+        metadata["total_tokens"] = meta_dict.get("total_tokens", 0)
+        metadata["input_tokens_per_sample"] = round(meta_dict.get("input_tokens", 0) / n, 1)
+        metadata["output_tokens_per_sample"] = round(meta_dict.get("output_tokens", 0) / n, 1)
+        metadata["total_tokens_per_sample"] = round(meta_dict.get("total_tokens", 0) / n, 1)
+        metadata["inference_time_seconds"] = meta_dict.get("inference_time_seconds", 0.0)
+        metadata["inference_time_per_sample_seconds"] = round(
+            meta_dict.get("inference_time_seconds", 0.0) / n, 3
+        )
+        metadata["cost_usd"] = meta_dict.get("cost_usd", 0.0)
+        metadata["cost_usd_per_sample"] = round(meta_dict.get("cost_usd", 0.0) / n, 6)
+        metadata["batch_size"] = n
+        metadata["timestamp"] = datetime.now(timezone.utc).isoformat()
+
     metadata_path = output_dir / INFERENCE_METADATA_FILE
     with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
@@ -164,7 +220,8 @@ def run_inference_on_batch(
     batch_inputs: List[Dict[str, Any]],
     max_retries: int = 2,
     provider: str = None,
-) -> List[Dict[str, Any]]:
+    options: LLMOptions = None,
+) -> Tuple[List[Dict[str, Any]], InferenceMetadata]:
     """
     Send a batch of inputs to the LLM for inference.
 
@@ -181,9 +238,12 @@ def run_inference_on_batch(
         batch_inputs: List of input dicts (one per sample)
         max_retries: Max retries on parse failure
         provider: LLM provider (auto-detected if None)
+        options: LLM inference options (sampling params etc.)
 
     Returns:
-        List of output dicts (one per sample, same order as input)
+        Tuple of (results, metadata) where results is a list of output dicts
+        (one per sample, same order as input) and metadata is the
+        InferenceMetadata from the successful LLM call.
     """
     input_json = json.dumps(batch_inputs, ensure_ascii=False, indent=2)
     prompt = header_prompt + input_json
@@ -197,6 +257,7 @@ def run_inference_on_batch(
                 model=model,
                 system_prompt=system_prompt,
                 provider=provider,
+                options=options,
             )
 
             raw = response.content.strip()
@@ -230,20 +291,179 @@ def run_inference_on_batch(
                     f"got {len(result)}"
                 )
 
-            return result
+            return result, response.metadata
 
         except Exception as e:
             last_error = e
             if attempt < max_retries:
                 print(
-                    f"    ⚠ Attempt {attempt}/{max_retries} failed: "
-                    f"{e}, retrying..."
+                    f"    \033[93m⚠ Attempt {attempt}/{max_retries} failed: "
+                    f"{e}, retrying...\033[0m"
                 )
 
     raise Exception(
         f"Failed to get valid response after {max_retries} attempts: "
         f"{last_error}"
     )
+
+
+# ── Local model inference (e.g. fine-tuned BanglaBERT) ───────────────────────
+
+def save_local_model_output(
+    sample_dir: Path,
+    setting: str,
+    model: str,
+    output: Dict[str, Any],
+    inference_time_seconds: float,
+) -> None:
+    """Save output and metadata from a local (non-LLM) model."""
+    output_dir = sample_dir / INFERENCE_SUBDIR / setting / model
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(output_dir / OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+
+    metadata = {
+        "model": model,
+        "setting": setting,
+        "provider": "local",
+        "inference_time_seconds": round(inference_time_seconds, 4),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    with open(output_dir / INFERENCE_METADATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+
+def run_local_model_task(task_name: str, args) -> None:
+    """
+    Run inference using a local fine-tuned model (no LLM API calls).
+    Currently supports: banglabert → medical-ner.
+    """
+    import time
+
+    local_info = LOCAL_MODELS[args.model]
+    setting = local_info["setting"]
+    model_name = args.model
+
+    # ── resolve paths ──
+    folder_path = Path(args.folder)
+    if not folder_path.is_absolute():
+        folder_path = Path(__file__).parent / folder_path
+
+    split_dir = (
+        folder_path
+        / DOWNSTREAM_DATASETS_DIR
+        / task_name
+        / "split"
+        / args.split
+    )
+
+    if not split_dir.exists():
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} split directory not found: {split_dir}{C.RESET}")
+        return
+
+    # ── discover samples ──
+    all_samples = discover_samples(split_dir)
+
+    if not all_samples:
+        print(f"{C.YELLOW}No samples found in {split_dir}{C.RESET}")
+        return
+
+    # ── filter already-processed ──
+    if args.force_rewrite:
+        samples = all_samples
+    else:
+        samples = [
+            (idx, path)
+            for idx, path in all_samples
+            if not is_sample_processed(path, setting, model_name)
+        ]
+
+    already_done = len(all_samples) - len(samples)
+
+    total_pending = len(samples)
+    if args.first_n > 0:
+        samples = samples[: args.first_n]
+
+    # ── header ──
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}  Downstream Inference (local model){C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}         : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}        : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}        : {C.CYAN}{model_name}{C.RESET}")
+    print(f"  {C.BOLD}Provider{C.RESET}     : {C.BLUE}local (fine-tuned){C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}      : {C.YELLOW}{setting}{C.RESET}")
+    print(f"  {C.BOLD}Split dir{C.RESET}    : {C.DIM}{split_dir}{C.RESET}")
+    print(f"  {C.BOLD}Total samples{C.RESET}: {len(all_samples)}")
+    print(f"  {C.BOLD}Already done{C.RESET} : {C.GREEN}{already_done}{C.RESET}")
+    print(
+        f"  {C.BOLD}To process{C.RESET}   : {C.YELLOW}{len(samples)}{C.RESET}"
+        f"{f' (limited from {total_pending})' if args.first_n > 0 else ''}"
+    )
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print()
+
+    if not samples:
+        print(f"{C.GREEN}{C.BOLD}✓ All samples already processed!{C.RESET}")
+        return
+
+    # ── load local model (lazy import — only when needed) ──
+    print(f"  {C.DIM}Loading {model_name} model...{C.RESET}")
+    try:
+        from local_ner_helper import LocalNERModel
+        predictor = LocalNERModel(model_name)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} {e}{C.RESET}")
+        return
+    print(f"  {C.GREEN}✓ Model loaded{C.RESET}\n")
+
+    # ── process samples one by one ──
+    total_success = 0
+    total_failed = 0
+    total_time = 0.0
+
+    try:
+        for idx, sample_dir in samples:
+            try:
+                inp = load_sample_input(sample_dir)
+                t0 = time.time()
+                output = predictor.predict(inp["text"])
+                elapsed = time.time() - t0
+                total_time += elapsed
+
+                save_local_model_output(
+                    sample_dir, setting, model_name, output, elapsed,
+                )
+                total_success += 1
+                n_ents = len(output.get("entities", []))
+                print(
+                    f"    {C.GREEN}✓{C.RESET} Sample {idx}: "
+                    f"{n_ents} entities ({elapsed:.3f}s)"
+                )
+
+            except Exception as e:
+                total_failed += 1
+                print(f"    {C.RED}✗{C.RESET} Sample {idx}: {e}")
+
+    except KeyboardInterrupt:
+        print(f"\n\n{C.YELLOW}{C.BOLD}⚠ Interrupted by user!{C.RESET}")
+        print(f"  Completed so far: {C.GREEN}{total_success}{C.RESET}")
+        print(f"  Failed so far   : {C.RED}{total_failed}{C.RESET}")
+        sys.exit(1)
+
+    # ── summary ──
+    avg_time = (total_time / total_success) if total_success else 0
+    print(f"\n{C.BOLD}{C.GREEN}✓ Inference complete!{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}       : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}      : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}      : {C.CYAN}{model_name}{C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}    : {C.YELLOW}{setting}{C.RESET}")
+    print(f"  {C.BOLD}Success{C.RESET}    : {C.GREEN}{total_success}{C.RESET}")
+    print(f"  {C.BOLD}Failed{C.RESET}     : {C.RED}{total_failed}{C.RESET}")
+    print(f"  {C.BOLD}Skipped{C.RESET}    : {C.DIM}{already_done}{C.RESET}")
+    print(f"  {C.BOLD}Total time{C.RESET} : {total_time:.2f}s")
+    print(f"  {C.BOLD}Avg / sample{C.RESET}: {avg_time:.3f}s")
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
@@ -256,11 +476,14 @@ def main():
         ),
     )
     parser.add_argument(
-        "--task",
+        "--tasks",
         type=str,
         required=True,
-        choices=VALID_TASKS,
-        help="Downstream task to infer on",
+        help=(
+            "Semicolon-separated list of downstream tasks to infer on. "
+            f"Valid tasks: {', '.join(VALID_TASKS)}. "
+            "Example: 'medical-ner;advice-safety;triage'"
+        ),
     )
     parser.add_argument(
         "--split",
@@ -316,6 +539,18 @@ def main():
         ),
     )
     parser.add_argument(
+        "-s",
+        "--standard-model-name",
+        type=str,
+        default=None,
+        help=(
+            "Override the model name used for output directories and "
+            "metadata. When set, this name is used instead of the "
+            "auto-derived name from --model. Useful when the same "
+            "logical model is accessed via different providers."
+        ),
+    )
+    parser.add_argument(
         "--force-rewrite",
         action="store_true",
         help="Overwrite existing inference outputs",
@@ -327,24 +562,111 @@ def main():
         help="Only process the first N samples; -1 means all (default: -1)",
     )
 
+    # ── Sampling / LLM option overrides ──
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=None,
+        help="Sampling temperature (default: 0.1). Ignored for reasoning models.",
+    )
+    parser.add_argument(
+        "--top-p",
+        type=float,
+        default=None,
+        help="Top-p (nucleus) sampling (default: 0.9)",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=None,
+        help="Top-k sampling. Not supported by all providers (default: None)",
+    )
+    parser.add_argument(
+        "--num-ctx",
+        type=int,
+        default=None,
+        help="Context window size (default: 32768, Ollama only)",
+    )
+    parser.add_argument(
+        "--num-predict",
+        type=int,
+        default=None,
+        help="Max tokens to generate (default: 16384)",
+    )
+    parser.add_argument(
+        "--repeat-penalty",
+        type=float,
+        default=None,
+        help="Repetition penalty (default: 1.1)",
+    )
+
     args = parser.parse_args()
+
+    # ── parse tasks ──
+    tasks = parse_tasks(args.tasks)
+
+    # ── build LLMOptions from CLI overrides ──
+    llm_opts_kwargs = {}
+    if args.temperature is not None:
+        llm_opts_kwargs["temperature"] = args.temperature
+    if args.top_p is not None:
+        llm_opts_kwargs["top_p"] = args.top_p
+    if args.top_k is not None:
+        llm_opts_kwargs["top_k"] = args.top_k
+    if args.num_ctx is not None:
+        llm_opts_kwargs["num_ctx"] = args.num_ctx
+    if args.num_predict is not None:
+        llm_opts_kwargs["num_predict"] = args.num_predict
+    if args.repeat_penalty is not None:
+        llm_opts_kwargs["repeat_penalty"] = args.repeat_penalty
+
+    llm_options = LLMOptions(**llm_opts_kwargs) if llm_opts_kwargs else None
+
+    for task_idx, task_name in enumerate(tasks):
+        if task_idx > 0:
+            print()  # blank line between tasks
+        run_task(task_name, args, llm_options=llm_options)
+
+
+def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
+    """Run inference for a single task."""
+
+    # ── route to local model path if applicable ──
+    if args.model in LOCAL_MODELS:
+        local_info = LOCAL_MODELS[args.model]
+        if task_name not in local_info["tasks"]:
+            print(
+                f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} local model "
+                f"'{args.model}' does not support task '{task_name}'. "
+                f"Supported: {', '.join(local_info['tasks'])}{C.RESET}"
+            )
+            return
+        expected_setting = local_info["setting"]
+        if args.setting != expected_setting:
+            print(
+                f"{C.YELLOW}Note: local model '{args.model}' uses "
+                f"setting '{expected_setting}' "
+                f"(ignoring --setting {args.setting}){C.RESET}"
+            )
+        run_local_model_task(task_name, args)
+        return
 
     # ── validate setting directory exists ──
     setting_prompt_dir = (
-        PROMPTS_DIR / TASK_PROMPT_DIR[args.task] / args.setting
+        PROMPTS_DIR / TASK_PROMPT_DIR[task_name] / args.setting
     )
     if not setting_prompt_dir.exists():
         available = [
             d.name
-            for d in (PROMPTS_DIR / TASK_PROMPT_DIR[args.task]).iterdir()
+            for d in (PROMPTS_DIR / TASK_PROMPT_DIR[task_name]).iterdir()
             if d.is_dir()
         ]
         print(
-            f"Error: setting '{args.setting}' not found "
-            f"for task '{args.task}'"
+            f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} setting '{args.setting}' not found "
+            f"for task '{task_name}'{C.RESET}"
         )
         print(f"  Available settings: {', '.join(sorted(available))}")
-        sys.exit(1)
+        return
 
     # ── resolve paths ──
     folder_path = Path(args.folder)
@@ -354,24 +676,29 @@ def main():
     split_dir = (
         folder_path
         / DOWNSTREAM_DATASETS_DIR
-        / args.task
+        / task_name
         / "split"
         / args.split
     )
 
     if not split_dir.exists():
-        print(f"Error: split directory not found: {split_dir}")
-        sys.exit(1)
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} split directory not found: {split_dir}{C.RESET}")
+        return
 
     # ── load prompts ──
-    system_prompt, header_prompt = load_prompts(args.task, args.setting)
+    system_prompt, header_prompt = load_prompts(task_name, args.setting)
 
     # ── discover samples ──
     all_samples = discover_samples(split_dir)
 
     if not all_samples:
-        print(f"No samples found in {split_dir}")
-        sys.exit(0)
+        print(f"{C.YELLOW}No samples found in {split_dir}{C.RESET}")
+        return
+
+    # ── resolve effective model name for dirs/metadata ──
+    effective_model_name = (
+        args.standard_model_name or normalize_model_name(args.model)
+    )
 
     # ── filter already-processed samples (unless --force-rewrite) ──
     if args.force_rewrite:
@@ -380,7 +707,10 @@ def main():
         samples = [
             (idx, path)
             for idx, path in all_samples
-            if not is_sample_processed(path, args.setting, args.model)
+            if not is_sample_processed(
+                path, args.setting, args.model,
+                standard_model_name=args.standard_model_name,
+            )
         ]
 
     already_done = len(all_samples) - len(samples)
@@ -390,24 +720,29 @@ def main():
     if args.first_n > 0:
         samples = samples[: args.first_n]
 
-    print(f"Task         : {args.task}")
-    print(f"Split        : {args.split}")
-    print(f"Model        : {args.model}")
-    print(f"Provider     : {args.provider or 'auto-detect'}")
-    print(f"Setting      : {args.setting}")
-    print(f"Batch size   : {args.batch_size}")
-    print(f"Max retries  : {args.max_retries}")
-    print(f"Split dir    : {split_dir}")
-    print(f"Total samples: {len(all_samples)}")
-    print(f"Already done : {already_done}")
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}  Downstream Inference{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}         : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}        : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}        : {C.CYAN}{args.model}{C.RESET}")
+    print(f"  {C.BOLD}Model (dir){C.RESET}  : {C.CYAN}{effective_model_name}{C.RESET}")
+    print(f"  {C.BOLD}Provider{C.RESET}     : {C.BLUE}{args.provider or 'auto-detect'}{C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}      : {C.YELLOW}{args.setting}{C.RESET}")
+    print(f"  {C.BOLD}Batch size{C.RESET}   : {args.batch_size}")
+    print(f"  {C.BOLD}Max retries{C.RESET}  : {args.max_retries}")
+    print(f"  {C.BOLD}Split dir{C.RESET}    : {C.DIM}{split_dir}{C.RESET}")
+    print(f"  {C.BOLD}Total samples{C.RESET}: {len(all_samples)}")
+    print(f"  {C.BOLD}Already done{C.RESET} : {C.GREEN}{already_done}{C.RESET}")
     print(
-        f"To process   : {len(samples)}"
+        f"  {C.BOLD}To process{C.RESET}   : {C.YELLOW}{len(samples)}{C.RESET}"
         f"{f' (limited from {total_pending})' if args.first_n > 0 else ''}"
     )
+    print(f"{C.BOLD}{C.CYAN}{'─' * 50}{C.RESET}")
     print()
 
     if not samples:
-        print("✓ All samples already processed!")
+        print(f"{C.GREEN}{C.BOLD}✓ All samples already processed!{C.RESET}")
         return
 
     # ── batch & process ──
@@ -419,8 +754,8 @@ def main():
         for batch_idx, batch in enumerate(batches):
             sample_ids = [idx for idx, _ in batch]
             print(
-                f"  Batch {batch_idx + 1}/{len(batches)} "
-                f"(samples: {sample_ids})"
+                f"  {C.BOLD}{C.BLUE}Batch {batch_idx + 1}/{len(batches)}{C.RESET} "
+                f"{C.DIM}(samples: {sample_ids}){C.RESET}"
             )
 
             # Load inputs for this batch
@@ -433,8 +768,8 @@ def main():
                     batch_paths.append((idx, sample_dir))
                 except Exception as e:
                     print(
-                        f"    ⚠ Failed to load input for "
-                        f"sample {idx}: {e}"
+                        f"    {C.YELLOW}⚠ Failed to load input for "
+                        f"sample {idx}: {e}{C.RESET}"
                     )
                     total_failed += 1
 
@@ -443,43 +778,48 @@ def main():
 
             # Run inference
             try:
-                results = run_inference_on_batch(
+                results, inference_meta = run_inference_on_batch(
                     model=args.model,
                     system_prompt=system_prompt,
                     header_prompt=header_prompt,
                     batch_inputs=batch_inputs,
                     max_retries=args.max_retries,
                     provider=args.provider,
+                    options=llm_options,
                 )
 
                 # Save individual outputs
                 for (idx, sample_dir), output in zip(batch_paths, results):
                     save_output(
-                        sample_dir, args.setting, args.model, output
+                        sample_dir, args.setting, args.model, output,
+                        standard_model_name=args.standard_model_name,
+                        inference_metadata=inference_meta,
+                        batch_size=len(batch_inputs),
                     )
                     total_success += 1
 
-                print(f"    ✓ Saved {len(results)} outputs")
+                print(f"    {C.GREEN}✓ Saved {len(results)} outputs{C.RESET}")
 
             except Exception as e:
-                print(f"    ✗ Batch failed: {e}")
+                print(f"    {C.RED}✗ Batch failed: {e}{C.RESET}")
                 total_failed += len(batch_inputs)
 
     except KeyboardInterrupt:
-        print(f"\n\n⚠ Interrupted by user!")
-        print(f"  Completed so far: {total_success}")
-        print(f"  Failed so far   : {total_failed}")
+        print(f"\n\n{C.YELLOW}{C.BOLD}⚠ Interrupted by user!{C.RESET}")
+        print(f"  Completed so far: {C.GREEN}{total_success}{C.RESET}")
+        print(f"  Failed so far   : {C.RED}{total_failed}{C.RESET}")
         sys.exit(1)
 
     # ── final summary ──
-    print(f"\n✓ Inference complete!")
-    print(f"  Task     : {args.task}")
-    print(f"  Split    : {args.split}")
-    print(f"  Model    : {args.model}")
-    print(f"  Setting  : {args.setting}")
-    print(f"  Success  : {total_success}")
-    print(f"  Failed   : {total_failed}")
-    print(f"  Skipped  : {already_done}")
+    print(f"\n{C.BOLD}{C.GREEN}✓ Inference complete!{C.RESET}")
+    print(f"  {C.BOLD}Task{C.RESET}       : {C.MAGENTA}{task_name}{C.RESET}")
+    print(f"  {C.BOLD}Split{C.RESET}      : {args.split}")
+    print(f"  {C.BOLD}Model{C.RESET}      : {C.CYAN}{args.model}{C.RESET}")
+    print(f"  {C.BOLD}Model (dir){C.RESET}: {C.CYAN}{effective_model_name}{C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}    : {C.YELLOW}{args.setting}{C.RESET}")
+    print(f"  {C.BOLD}Success{C.RESET}    : {C.GREEN}{total_success}{C.RESET}")
+    print(f"  {C.BOLD}Failed{C.RESET}     : {C.RED}{total_failed}{C.RESET}")
+    print(f"  {C.BOLD}Skipped{C.RESET}    : {C.DIM}{already_done}{C.RESET}")
 
 
 if __name__ == "__main__":

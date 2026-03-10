@@ -1,4 +1,20 @@
 
+# ── ANSI Colors ──────────────────────────────────────────────────────────────
+
+class C:
+    """ANSI color codes for terminal output."""
+    RESET   = "[0m"
+    BOLD    = "[1m"
+    DIM     = "[2m"
+    RED     = "[91m"
+    GREEN   = "[92m"
+    YELLOW  = "[93m"
+    BLUE    = "[94m"
+    MAGENTA = "[95m"
+    CYAN    = "[96m"
+    WHITE   = "[97m"
+
+
 PROGRAM_NAMES = [
     "স্বাস্থ্য জিজ্ঞাসা",
     "স্বাস্থ্য বার্তা",

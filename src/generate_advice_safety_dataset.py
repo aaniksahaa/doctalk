@@ -35,7 +35,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
-from llm import get_response
+from llm import get_response, Provider
+from constants import C
 
 
 # ── Prompt loading ───────────────────────────────────────────────────────────
@@ -133,6 +134,7 @@ def run_safety_on_batch(
     model: str,
     batch_input: List[Dict[str, Any]],
     max_retries: int = 2,
+    provider: str = None,
 ) -> List[Dict[str, Any]]:
     """
     Send a batch of conversations to the LLM for advice-safety annotation.
@@ -157,6 +159,7 @@ def run_safety_on_batch(
                 prompt=prompt,
                 model=model,
                 system_prompt=SYSTEM_PROMPT,
+                provider=provider,
             )
 
             content = response.content.strip()
@@ -221,12 +224,23 @@ def run_safety_on_batch(
             last_error = e
             if attempt < max_retries:
                 print(
-                    f"\n    Retry {attempt}/{max_retries} – parse error: "
-                    f"{str(e)[:80]}"
+                    f"\n    \033[91mRetry {attempt}/{max_retries} – parse error: "
+                    f"{str(e)}\033[0m"
                 )
             continue
         except Exception as e:
-            raise Exception(f"LLM inference error: {str(e)}")
+            err_str = str(e)
+            # Retry with exponential backoff on rate-limit (429) errors
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                wait = min(2 ** attempt * 40, 120)
+                print(
+                    f"\n    \033[91mRate limited (429). Waiting {wait}s before retry "
+                    f"{attempt}/{max_retries}...\n    {err_str}\033[0m"
+                )
+                time.sleep(wait)
+                last_error = e
+                continue
+            raise Exception(f"LLM inference error: {err_str}")
 
     raise Exception(
         f"Failed to parse LLM response after {max_retries} attempts: "
@@ -284,12 +298,18 @@ def process_video(
     batch_size: int,
     max_retries: int,
     force_rewrite: bool = False,
+    request_delay: float = 10.0,
+    effective_model: str = None,
+    provider: str = None,
 ) -> str:
     """
     Process a single video for advice-safety dataset generation.
 
     Returns one of: 'success', 'skipped', 'no-conversation', 'failed'.
     """
+    if effective_model is None:
+        effective_model = model
+
     # ── locate conversation file ──
     conv_path = find_conversation_file(video_folder, video_id)
     if conv_path is None:
@@ -297,7 +317,7 @@ def process_video(
 
     # ── output directories ──
     parsed_dir = conv_path.parent
-    safety_dir = parsed_dir / DOWNSTREAM_DIR / SAFETY_SUBDIR / model
+    safety_dir = parsed_dir / DOWNSTREAM_DIR / SAFETY_SUBDIR / effective_model
     batches_dir = safety_dir / BATCHES_SUBDIR
 
     # ── check lock ──
@@ -308,7 +328,7 @@ def process_video(
     try:
         conversation = load_conversation(conv_path)
     except Exception as e:
-        print(f"\n    Error loading conversation: {str(e)[:80]}")
+        print(f"\n    \033[91mError loading conversation: {str(e)}\033[0m")
         return "failed"
 
     # ── extract all conversations (patient_call + host_doctor_qa) ──
@@ -352,7 +372,7 @@ def process_video(
             # Build LLM input with sequential ids
             batch_input = build_llm_input(batch, id_offset=global_id)
 
-            llm_output = run_safety_on_batch(model, batch_input, max_retries)
+            llm_output = run_safety_on_batch(model, batch_input, max_retries, provider=provider)
 
             # Merge to final format: {conversation, patient_profile, recommendations}
             batch_result = merge_batch_results(batch_input, llm_output)
@@ -370,8 +390,13 @@ def process_video(
             )
             print(f"✓ ({len(batch_result)} profiles, {total_recs} recs)")
 
+            # Throttle to avoid rate limits
+            if request_delay > 0:
+                print(f"    \033[90m── Sleeping {request_delay}s before next request...\033[0m")
+                time.sleep(request_delay)
+
         except Exception as e:
-            print(f"✗ Error: {str(e)[:100]}")
+            print(f"\033[91m✗ Error: {str(e)}\033[0m")
             return "failed"
 
     # ── combine & save final output ──
@@ -450,6 +475,34 @@ def main():
         default=-1,
         help="Only process the first N videos; -1 means all (default: -1)",
     )
+    parser.add_argument(
+        "--request-delay",
+        type=float,
+        default=60.0,
+        help="Seconds to sleep after each successful LLM request (default: 60)",
+    )
+    parser.add_argument(
+        "--provider",
+        type=str,
+        default=None,
+        choices=[p.value for p in Provider],
+        help=(
+            "LLM provider (auto-detected from model name if not specified). "
+            "e.g., google, openrouter, ollama, openai, anthropic, together"
+        ),
+    )
+    parser.add_argument(
+        "-s",
+        "--standard-model-name",
+        type=str,
+        default=None,
+        help=(
+            "Override the model name used for output directories. "
+            "When set, outputs are saved under this name instead of "
+            "--model. Useful for resuming with a different model while "
+            "writing to the same directory."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -461,8 +514,11 @@ def main():
     dataset_path = folder_path / "dataset"
 
     if not dataset_path.exists():
-        print(f"Error: Dataset path {dataset_path} not found")
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} Dataset path {dataset_path} not found{C.RESET}")
         return 1
+
+    # ── resolve effective model name ──
+    effective_model = args.standard_model_name or args.model
 
     # ── discover video folders ──
     video_folders = sorted(
@@ -476,15 +532,22 @@ def main():
     if args.first_n > 0:
         video_folders = video_folders[: args.first_n]
 
-    print(f"Dataset path : {dataset_path}")
-    print(f"Model        : {args.model}")
-    print(f"Batch size   : {args.batch_size}")
-    print(f"Max retries  : {args.max_retries}")
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}  Advice-Safety Dataset Generator{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
+    print(f"  {C.BOLD}Dataset path{C.RESET}  : {C.DIM}{dataset_path}{C.RESET}")
+    print(f"  {C.BOLD}Model{C.RESET}         : {C.CYAN}{args.model}{C.RESET}")
+    if effective_model != args.model:
+        print(f"  {C.BOLD}Saving as{C.RESET}     : {C.YELLOW}{effective_model}{C.RESET}")
+    print(f"  {C.BOLD}Batch size{C.RESET}    : {args.batch_size}")
+    print(f"  {C.BOLD}Max retries{C.RESET}   : {args.max_retries}")
     print(
-        f"Video folders: {len(video_folders)}"
+        f"  {C.BOLD}Video folders{C.RESET} : {C.CYAN}{len(video_folders)}{C.RESET}"
         f"{f' (limited from {total_available})' if args.first_n > 0 else ''}"
     )
-    print(f"First N      : {'all' if args.first_n < 0 else args.first_n}")
+    print(f"  {C.BOLD}First N{C.RESET}       : {'all' if args.first_n < 0 else args.first_n}")
+    print(f"  {C.BOLD}Request delay{C.RESET} : {args.request_delay}s")
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
     print()
 
     # ── counters ──
@@ -497,7 +560,7 @@ def main():
         for idx, video_folder in enumerate(video_folders):
             video_id = video_folder.name
 
-            print(f"[{idx + 1}/{len(video_folders)}] {video_id}", end=" ")
+            print(f"{C.BOLD}[{idx + 1}/{len(video_folders)}]{C.RESET} {C.DIM}{video_id}{C.RESET}", end=" ")
 
             status = process_video(
                 model=args.model,
@@ -506,17 +569,20 @@ def main():
                 batch_size=args.batch_size,
                 max_retries=args.max_retries,
                 force_rewrite=args.force_rewrite,
+                request_delay=args.request_delay,
+                effective_model=effective_model,
+                provider=args.provider,
             )
 
             if status == "success":
                 total_success += 1
-                print("✓")
+                print(f"{C.GREEN}{C.BOLD}✓{C.RESET}")
             elif status == "skipped":
                 total_skipped += 1
-                print("– skipped (already processed)")
+                print(f"{C.DIM}– skipped (already processed){C.RESET}")
             elif status == "no-conversation":
                 total_no_conv += 1
-                print("– no conversation file")
+                print(f"{C.YELLOW}– no conversation file{C.RESET}")
             elif status == "failed":
                 total_failed += 1
                 # error details already printed in process_video
@@ -525,31 +591,33 @@ def main():
             if (idx + 1) % 50 == 0:
                 pct = ((idx + 1) / len(video_folders)) * 100
                 print(
-                    f"\n>>> Progress: {idx + 1}/{len(video_folders)} "
-                    f"({pct:.1f}%) | success: {total_success}, "
-                    f"skipped: {total_skipped}, "
-                    f"no-conv: {total_no_conv}, "
-                    f"failed: {total_failed}\n"
+                    f"\n{C.BOLD}{C.BLUE}>>> Progress:{C.RESET} "
+                    f"{idx + 1}/{len(video_folders)} ({pct:.1f}%) | "
+                    f"success: {C.GREEN}{total_success}{C.RESET}, "
+                    f"skipped: {C.DIM}{total_skipped}{C.RESET}, "
+                    f"no-conv: {C.YELLOW}{total_no_conv}{C.RESET}, "
+                    f"failed: {C.RED}{total_failed}{C.RESET}\n"
                 )
 
     except KeyboardInterrupt:
         print(
-            "\n\nInterrupted! Progress is saved via lock files and batch "
-            "checkpoints. Resume with the same command."
+            f"\n\n{C.YELLOW}{C.BOLD}⚠ Interrupted!{C.RESET} "
+            f"Progress is saved via lock files and batch "
+            f"checkpoints. Resume with the same command."
         )
         return 130
 
     # ── final summary ──
-    print(f"\n✓ Processing complete!")
-    print(f"  Total video folders       : {len(video_folders)}")
-    print(f"  Newly processed (success) : {total_success}")
-    print(f"  Already processed (skip)  : {total_skipped}")
-    print(f"  No conversation file      : {total_no_conv}")
-    print(f"  Failed                    : {total_failed}")
+    print(f"\n{C.GREEN}{C.BOLD}✓ Processing complete!{C.RESET}")
+    print(f"  {C.BOLD}Total video folders{C.RESET}       : {len(video_folders)}")
+    print(f"  {C.BOLD}Newly processed (success){C.RESET} : {C.GREEN}{total_success}{C.RESET}")
+    print(f"  {C.BOLD}Already processed (skip){C.RESET}  : {C.DIM}{total_skipped}{C.RESET}")
+    print(f"  {C.BOLD}No conversation file{C.RESET}      : {C.YELLOW}{total_no_conv}{C.RESET}")
+    print(f"  {C.BOLD}Failed{C.RESET}                    : {C.RED}{total_failed}{C.RESET}")
     print(
-        f"\nAdvice-safety outputs saved to: "
+        f"\n{C.DIM}Advice-safety outputs saved to: "
         f"dataset/<VIDEO_ID>/{CONVERSATION_SUBPATH}/{DOWNSTREAM_DIR}/"
-        f"{SAFETY_SUBDIR}/<MODEL>/{SAFETY_OUTPUT_FILE}"
+        f"{SAFETY_SUBDIR}/<MODEL>/{SAFETY_OUTPUT_FILE}{C.RESET}"
     )
 
     return 0

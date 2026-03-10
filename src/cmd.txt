@@ -57,6 +57,15 @@ python generate_medical_ner_dataset.py --force-rewrite
 
 python generate_medical_ner_dataset.py --first-n 15 --force-rewrite
 
+# Default 10s delay
+python generate_medical_ner_dataset.py
+
+# Custom delay
+python generate_medical_ner_dataset.py --request-delay 30
+
+# No delay
+python generate_medical_ner_dataset.py --request-delay 0
+
 ## Medical Triage and Recommendation 
 
 python generate_triage_dataset.py --first-n 55     # test with 2 videos
@@ -73,19 +82,29 @@ python generate_advice_safety_dataset.py --force-rewrite  # reprocess
 python generate_advice_safety_dataset.py --force-rewrite --first-n 15
 
 
+
+python generate_triage_dataset.py --model gpt-4o -s gemini-2.5-flash
+# Uses gpt-4o for inference but saves into the gemini-2.5-flash directory
+
+
+
 ## Organize Downstream Datasets
 
-python organize_downstream_datasets.py --tasks medical-ner advice-safety triage   # all tasks
-python organize_downstream_datasets.py --tasks medical-ner                        # single task
-python organize_downstream_datasets.py --tasks advice-safety triage               # subset of tasks
-python organize_downstream_datasets.py --train-pct 80 --val-pct 10               # custom split (test=10%)
-python organize_downstream_datasets.py --seed 123                                # different random seed
-python organize_downstream_datasets.py --model gemini-2.5-flash                   # specify generator model
-python organize_downstream_datasets.py --folder saved-data                        # specify data folder
+python organize_downstream_datasets.py                                                              # all tasks (default)
+python organize_downstream_datasets.py --tasks "medical-ner;advice-safety;advice-generation;triage"  # all tasks (explicit)
+python organize_downstream_datasets.py --tasks medical-ner                                          # single task
+python organize_downstream_datasets.py --tasks "advice-safety;triage"                                # subset of tasks
+python organize_downstream_datasets.py --tasks advice-generation                                    # advice-generation only
+python organize_downstream_datasets.py --train-pct 80 --val-pct 10                                  # custom split (test=10%)
+python organize_downstream_datasets.py --seed 123                                                   # different random seed
+python organize_downstream_datasets.py --model gemini-2.5-flash                                     # specify generator model
+python organize_downstream_datasets.py --folder saved-data                                          # specify data folder
+python organize_downstream_datasets.py --force-rewrite                                              # overwrite existing element dirs
+python organize_downstream_datasets.py --tasks advice-generation                                    # safe: won't overwrite existing tasks
 
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks medical-ner \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
@@ -93,7 +112,7 @@ python infer_downstream.py \
   --force-rewrite
 
 python infer_downstream.py \
-  --task advice-safety \
+  --tasks advice-safety \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
@@ -101,25 +120,185 @@ python infer_downstream.py \
   --force-rewrite
 
 python infer_downstream.py \
-  --task triage \
+  --tasks triage \
   --split test \
   --model gemini-2.5-flash \
   --setting zero-shot \
   --batch-size 3 \
   --force-rewrite
 
+# Advice Generation Inference (new task: LLM generates recommendations from patient_profile only)
+python infer_downstream.py \
+  --tasks advice-generation \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting zero-shot \
+  --batch-size 3 \
+  --force-rewrite
+
+# Multiple tasks in one command (semicolon-separated)
+python infer_downstream.py \
+  --tasks "medical-ner;advice-safety;triage" \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting zero-shot \
+  --batch-size 3
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks advice-generation \
+  --split test \
+  --model gpt-4o \
+  --provider openai \
+  --setting zero-shot \
+  --batch-size 3
+
+# Using --standard-model-name (-s) to unify output dirs across providers
+python infer_downstream.py \
+  --tasks advice-generation \
+  --split test \
+  --model openai/gpt-4o \
+  --provider openrouter \
+  -s gpt-4o \
+  --setting zero-shot \
+  --batch-size 3
+
+
+python infer_downstream.py \
+  --tasks medical-ner \
   --split test \
   --model gemini-3-flash-preview \
   --setting zero-shot \
   --batch-size 3
 
 python infer_downstream.py \
-  --task medical-ner \
+  --tasks medical-ner \
   --split test \
   --model qwen/qwen3-32b \
   --provider openrouter \
   --setting zero-shot \
   --batch-size 3
+
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model gpt-4o \
+  --provider openai \
+  --setting zero-shot \
+  --batch-size 3 \
+  --force-rewrite
+
+
+python run_bulk_inference.py --tasks medical-ner --split test --batch-size 3
+python run_bulk_inference.py --tasks "medical-ner;advice-generation" --split test --batch-size 3
+python run_bulk_inference.py --tasks "advice-safety;triage" --split test --batch-size 3 --force-rewrite
+python run_bulk_inference.py --tasks "medical-ner;advice-safety;advice-generation;triage" --split test --batch-size 3
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Medical NER Fine-tuning  (generalized — BanglaBERT / mmBERT / ...)
+# ═══════════════════════════════════════════════════════════════════════
+#
+# Scripts live in: downstream-artifacts/medical-ner/ner-finetuning/
+#   train_ner.py   — fine-tune any supported encoder
+#   infer_ner.py   — standalone NER inference (interactive / text / JSON)
+#
+# Old BanglaBERT-specific scripts still work at:
+#   downstream-artifacts/medical-ner/banglabert-finetuning/
+# ═══════════════════════════════════════════════════════════════════════
+
+# ---------- Install dependencies ----------
+pip install -U torch transformers datasets evaluate seqeval accelerate
+pip install -U git+https://github.com/csebuetnlp/normalizer.git  # only needed for banglabert
+
+cd downstream-artifacts/medical-ner/ner-finetuning
+
+# ─── BanglaBERT  (csebuetnlp/banglabert, ~110M) ─────────────────────
+
+# Train — defaults (good for ~10K samples, 70-15-15 split)
+python train_ner.py --model banglabert
+
+# Train — tiny dataset (~38 samples)
+python train_ner.py --model banglabert \
+  --epochs 30 --train-batch 4 --grad-accum 2 \
+  --warmup-steps 20 --early-stopping 7 --logging-steps 10
+
+# Train — large dataset (~10K samples)
+python train_ner.py --model banglabert \
+  --epochs 5 --train-batch 16 --grad-accum 1 \
+  --warmup-steps 200 --early-stopping 3 --logging-steps 100
+
+# Train — full override example
+python train_ner.py --model banglabert \
+  --lr 3e-5 --train-batch 8 --eval-batch 16 --grad-accum 1 \
+  --epochs 10 --warmup-steps 100 --early-stopping 5 \
+  --weight-decay 0.01 --logging-steps 50 --max-length 512
+
+# ─── mmBERT  (jhu-clsp/mmBERT-base, ~307M) ──────────────────────────
+
+# Train — defaults (good for ~10K samples)
+python train_ner.py --model mmbert
+
+# Train — tiny dataset (~38 samples)
+python train_ner.py --model mmbert \
+  --epochs 30 --train-batch 2 --grad-accum 4 \
+  --warmup-steps 20 --early-stopping 7 --logging-steps 10 --fp16
+
+# Train — large dataset (~10K samples)
+python train_ner.py --model mmbert \
+  --epochs 5 --train-batch 8 --grad-accum 2 \
+  --warmup-steps 200 --early-stopping 3 --logging-steps 100 --fp16
+
+# Train — full override example
+python train_ner.py --model mmbert \
+  --lr 2e-5 --train-batch 4 --eval-batch 8 --grad-accum 4 \
+  --epochs 10 --warmup-steps 100 --early-stopping 5 \
+  --weight-decay 0.01 --logging-steps 50 --max-length 512 --fp16
+
+# ─── Standalone inference (both models) ──────────────────────────────
+
+# Interactive
+python infer_ner.py --model banglabert
+python infer_ner.py --model mmbert
+
+# Single text
+python infer_ner.py --model banglabert --text "রোগীর হিট স্ট্রোক, জ্বর এবং সর্দি আছে।"
+python infer_ner.py --model mmbert    --text "রোগীর হিট স্ট্রোক, জ্বর এবং সর্দি আছে।"
+
+# Custom model directory
+python infer_ner.py --model banglabert --model-dir ./banglabert-output/best_model
+python infer_ner.py --model mmbert    --model-dir ./mmbert-output/best_model
+
+# JSON file in → JSON file out
+python infer_ner.py --model banglabert --json-input input.json --json-output preds.json
+python infer_ner.py --model mmbert    --json-input input.json --json-output preds.json
+
+# ─── Unified downstream pipeline (infer_downstream.py) ──────────────
+# (run from src/, setting is always "finetuned")
+cd /home/aaniksahaa/research/doctalk/src
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model banglabert \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model mmbert \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model banglabert \
+  --setting finetuned \
+  --force-rewrite
+
+python infer_downstream.py \
+  --tasks medical-ner \
+  --split test \
+  --model mmbert \
+  --setting finetuned \
+  --force-rewrite

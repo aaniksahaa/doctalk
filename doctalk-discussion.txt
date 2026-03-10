@@ -1,0 +1,395 @@
+
+openai/gpt-4o
+
+section - Baselines
+
+- one family - open and closed LLMs - qwen
+- encoder only models... who can give embeddings - bert
+- medical focused models - 
+
+Appendix
+- say strongly that these doctors are reliable expert doctors
+
+Tasks
+======
+1. 
+which models should we benchmark
+- should be good for bengali
+- cost efficient in terms of api / runnable on 24gb vram rifat sir pc with ollama
+
+2. finding metrics for each downstream tasks and writing code for such evaluation
+
+
+
+open llm - 6
+closed llm - 4
+bert type - 2
+
+Main dataset
+=============
+
+70:15:15
+
+Downstream tasks
+
+In general what we want from evaluation
+
+---> csv for each tasks for each individual sample
+
+test/2
+ output.json
+ inf-metadata.json
+ metrics.csv --> single row csv
+ 
+ compare --> corrrespnding output json and gt.json
+ 
+one example csv of single row
+setting, model, m1, m2, 
+few-shot, qwen, ...
+
+metric evaluation codes
+
+- ASR - pending
+- Medical NER
+	- task defintion - entity --> one of 7 types 
+	- extra script --> BIO conversion 
+	- banglabert - per token label... 
+	- 
+- Triage classification
+	- TODO: class identification
+	- task definition --> multi class classification from types
+	- RandF1 / class-wise
+	- 
+- Advice Safety classification
+	- multiple binary classification
+	- (profile, set of )
+	- 
+- Advice Prediction
+	- LLM-as-a-judge
+	- BLEU / token matching / 
+- Follow-up questioning
+	- 
+- simulated conversation and interaction generation
+	- 
+
+low resource later
+
+conversational, etc
+
+
+
+page 1,2 --> abstract, intro, related work
+
+========================================================
+Introduction
+========================================================
+
+eliciting useful information from the noisy conversational turns of patients
+follow-up questions
+context switching
+multimodal
+triage classification - strong
+future
+=======
+	Follow-up questioning
+	simulated conversation and interaction generation
+
+
+Keywords to emphasize
+
+- real-time, conversational, multimodal, low-resource, practical downstream tasks, expert physician's direct advices, diverse medical specialties, regional nuances, high volume or number of samples large, benchmarking, human validated, reliable
+
+skeleton
+
+
+
+
+[input]
+[RAG]
+video 2 min segment recommend 
+
+
+
+
+
+
+MediTOD
+
+- opening and stating the importance or utility
+
+Expert grounded medical advice consistent with the exact inherent patient profile state is essential. Natural patient-doctor conversations often include nuanced and code-mixed language with noise, repetitions, and deviations of context which render the task of understanding the patient's profile difficult. Therefore, real-time conversational datasets capturing the real-world nuances of such doctor-patient real interactions carry immense value in developing models capable of useful medical assistance. 
+
+A growing body of work happening in medical domain... However, existing medical focused datasets are primarily derived from narrative, textual, and online forum question-answers (\cite) which are often not adequately grounded by expert physicians. Some recent works also capture real medical conversations in a doctor-patient dialogure form (\cite). [TODO: find more contrast] While these datasets provide a broader and more reliable view of medical interactions, they often either lack in volume or in sufficient derived datasets for useful downstream medical tasks. Moreover, these datasets are mostly in plain textual form. However, voice data from these real conversations can also be valuable for training voice agents that reliably and correctly provides medical advice [TODO: more search...]. Furthermore, to the best of our knowledge, no such existing work focuses on Bengali, a low-resource language, spoken by ... who represent a culturally diverse and distinct community. Therefore, a dataset capturing real-world conversations in this language with the regional nuances would be extremely valuable.
+
+
+- about our main dataset
+[TODO: ONE STRONG LINE: motivating the fact that these shows are indeed reliable - (doctors are actually experts) and popular] To address this gap, we present Doctalk, a multimodal conversational dataset of real-world doctor-patient interactions in Bengali sourced from expert doctor's recommendations in 1934 public call-in TV shows and youtube shows. Doctalk consists of <...> multi-turn patient conversations and <...> single-turn host-doctor question-answerings from <...> specialties. We also provide <...> total hours of corresponding audio for these conversation turns resulting in a rich multimodal dataset. To facilitate useful tasks for reliable medical assistance, we further curate datasets for three downstream tasks: medical triage classification, advice safety evaluation, and medical named entity recognition. These datasets consist of .., .., . samples resptively. 
+
+
+- about our downstream, tasks
+
+
+-
+-
+- 
+- contribution summary
+	- We present ... 
+	- number in bullet points may also
+	- mentioning number of samples
+	- number of conversations, hours, tokens
+
+
+======================================================================
+Related Work
+======================================================================
+- 
+- 
+
+
+======================================================================
+Methodology
+======================================================================
+- Creation of Doctalk
+	- Data Curation - refer to statistics figs and tables
+	- Data preprocessing - llm, human annotation or validation
+	- Dowsntream Dataset Generation
+		- for each task...
+		- entity types... follow mainstream paper from acl, emnlp etc 
+		- using math notations
+
+======================================================================
+Experimental Setup
+======================================================================
+
+- device 4090 gpu
+- all inference parameters, top_p, top_k etc etc
+- bert 
+
+======================================================================
+Experimental Results
+======================================================================
+Result on ...
+...
+4 subsections
+	
+======================================================================
+Findings and Error Analysis
+======================================================================
+
+	
+
+user survey
+- 
+doctor end survey
+- demographics - 
+- In your regular interactions with patients, how often do you face a situation where the patient's response does not correspond to what you want to know?
+- Generally how many turns of conversations do you require with a patient to fully elicit the patient's actual condition?
+	- 3/4/5/6/more...
+- For rural people, it is oftne difficult to meet an expert doctor. How much do you agree that reliable initial help like whether home care is enough or doctor visit or emergency care is needed, how much do you agree that such a system would be helpful?
+
+- advice safety: How often do you think people do harmful things for remedy unknowinly, thinking that they are good, but actually as an expert you know that it is actually harmful
+
+- 
+
+
+Examples:
+==========
+
+
+Figures and Artifacts:
+=======================
+
+- Main flow - follwing our dataset methodology part - spanning 2 column 
+- dataset nuance - capturing example
+	- short 1 column figure
+	- based on conversation with medical students
+	- context switching 
+	- providing inconsistent and deviant answers to doctor's well-defined queries...
+- 1 tables for each downstream - 2 column - spanning 1 page - for Appendix
+	- table showing
+	- row 
+	- may follow page 27 of MapEval
+	- input, ground truth
+	- model outputs with green and red
+- Prompts as colorful nice boxes (follow MapAgent paper)
+	- github --> src/prompts directory
+	- the exact prompts may often be too big like 1000 lines or so
+	- but we will gracefully make them compact
+		- example --> << examples of ... >>
+		- <<  >>
+- 
+
+
+
+
+Appendix
+- prompts
+- downstream fig/tables
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- dataset
+	- it is not from any text or blog or etc
+	- directly said by expert doctors
+	- host - 
+	- appendix - television channel names
+	- regional aspect - bd 
+	- questionnaire - add
+		- Do you think that we need simplified medical advices tailored to our own culture and region rather than overly scholarly replies that rural people can't quite connect to?
+			- X% said yes, so yes it is valid to take TV channels as sources...
+
+dataset curation - discussion, figure
+	- ASR and conversation
+		- gemini
+		- detail on human annotators verify 
+		- 
+	- downstream
+		- 
+statistics - 
+downstream only benchmarking - 
+
+- paper 
+
+2000 videos - total hours 
+
+- per specialty - 5 - random sampling - 
+- scoring in terms of human metrics
+
+- downstream
+	- dataset annotate by gemini
+	- for each task
+		- 
+		- this advice is harmful for this condition
+	- task --> in, out*
+	- out = model(in), compare
+	- compaparisons across models
+		- model a, model b, c - best performing
+	- comparison across tools
+		- normal
+		- search tool
+		- ReAct - multi turns
+		- CoT
+	- benchmarking open models on Rifat Sir PC, api models anywhere
+		- varying some other aspect keeping same some 1/2/3 models
+		- search tool
+	- one platform - openrouter, 
+	- 
+
+downstream
+1. Medical NER
+	- text chunk --> which parts indicate which type of medical identity or not
+		- No, medicine, disease name, 
+	- open and api approaches --> llama, just running and evaluating accuracy
+2. Medical ASR
+	- 100 audio
+		- WER - word error rate
+		- medical term 
+3. Medical classification
+	- dataset curation: 
+		- C = (P1, D1, P2, D2, ...) --gemini--> 
+		- doctor's suggestion --> nothing/ home remedy/ emergency referral
+	- P1, D1, P2, D2, ... 
+	- P = P1 + P2 ...
+	- P ---> nothing/ home remedy/ emergency referral
+	- open and api approaches --> llama, just running and evaluating accuracy
+	- 
+4. Harmful advice classification
+	- dataset curation
+		- C = (P1, D1, P2, D2, ...) --gemini--> 
+		- is there something, doctor said that this action must be avoided or would be harmful, even better, doctor said, that it is commonly suggested or assumed to do X, but you should not do X, rather do Y
+		- positives --> P --> Y
+		- negatives --> P = P1 + P2 ..., suggestion = X
+		- benchmark on this
+	- patient profiles and adversarial advice
+	- 
+
+what have been done
+- 
+
+====================================
+Todo:
+====================================
+
+- Fahmida
+- 2/3/4 - relevant and similar reference paper
+	- dataset and benchmarking paper
+	- maybe in other domain
+- downstream
+- anik
+	- downstream dataset curation with gemini
+|
+- dataset and metric evaluation code 
+	- dataset from gemini
+	- for each task, F(out, out*) ==> 
+|
+----- api benchmarking - Fahmida, Sadi
+	- benchmarking
+	- api - closed gpt, 
+|
+|
+|
+----- open model benchmarking
+	- local pc or in exceptional cases - may do with api as well
+
+
+
+- CBRS
+- this paper
+	- very professional README...
+	- command
+
+
+- human evaluation
+	- expert doctor side evaluation - Fahmida
+	- Debashree Madam - 
+	- Sadi - web UI - mobile friendly
+	- question, options 
+	- admin side --> json input
+	- ui - show, options...
+	- and data saving
+- justifying the use of tv channel talk shows
+	- cite this of telemedicine
+	- 
+- qualitative questions - for user survey
+	- harmful advice -- Did this ever happen that you thought of doing X on such condition but later found that it is actually detrimental?
+	- Do you think that we need simplified medical advices tailored to our own culture and region rather than overly scholarly replies that rural people can't quite connect to?
+		- X% said yes, so yes it is valid to take TV channels as sources...
+
+
+- paper
+	- diagram - Fahmida, Promi
+	- statistics - Navid
+	- result plotting and table from benchmarks - Anik, Fahmida
+	- 
+
+human eval
+
+- auto preparing converation like below
+
+Patient:
+Doctor:
+
+10 - 2 doctor, 8 student
+
+lickert
+- correctness
+- 
+
+
+
+
+
+
+

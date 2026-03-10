@@ -3,8 +3,8 @@
 LLM Service Abstraction Layer
 
 Provides a clean interface for LLM inference across different providers.
-Currently supports: Ollama, Google Gemini, OpenRouter
-Future: OpenAI, Anthropic, etc.
+Currently supports: Ollama, Google Gemini, OpenRouter, OpenAI, Together, Anthropic
+Future: additional providers as needed
 """
 
 import json
@@ -34,6 +34,7 @@ class Provider(str, Enum):
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     GOOGLE = "google"
+    TOGETHER = "together"
 
 
 @dataclass
@@ -41,39 +42,55 @@ class LLMOptions:
     """Configuration options for LLM inference."""
     num_ctx: int = 32768  # Context window size
     num_predict: int = 16384  # Max tokens to generate
-    temperature: float = 0.1
+    temperature: float = 0.7
     top_p: float = 0.9
+    top_k: Optional[int] = None  # Top-K sampling (provider-dependent)
     repeat_penalty: float = 1.1
-    
+
     def to_ollama_options(self) -> Dict[str, Any]:
         """Convert to Ollama-compatible options dict."""
-        return {
+        opts: Dict[str, Any] = {
             "num_ctx": self.num_ctx,
             "num_predict": self.num_predict,
             "temperature": self.temperature,
             "top_p": self.top_p,
             "repeat_penalty": self.repeat_penalty,
         }
+        if self.top_k is not None:
+            opts["top_k"] = self.top_k
+        return opts
 
-    def to_openrouter_params(self) -> Dict[str, Any]:
+    def to_openai_compatible_params(self) -> Dict[str, Any]:
         """
-        Convert to OpenRouter/OpenAI-compatible params.
+        Convert to OpenAI-compatible chat completion params.
+
+        Used for:
+        - OpenAI
+        - OpenRouter
+        - Together
 
         Notes:
-        - OpenRouter supports max_tokens, temperature, top_p, repetition_penalty, etc.
-        - num_ctx is not sent here because context window is model/provider specific.
+        - num_ctx is not sent because context window is model/provider specific.
+        - repetition_penalty is not universally supported across providers/models,
+          so it is injected selectively by the caller.
+        - top_k is not part of the OpenAI API; providers that support it
+          should inject it separately.
         """
-        params: Dict[str, Any] = {
+        return {
             "temperature": self.temperature,
             "top_p": self.top_p,
             "max_tokens": self.num_predict,
         }
 
-        # OpenRouter supports repetition_penalty for compatible models.
-        # Unsupported params are generally ignored or rejected depending on model/provider.
+    def to_openrouter_params(self) -> Dict[str, Any]:
+        """
+        Backward-compatible alias for existing code paths.
+        """
+        params = self.to_openai_compatible_params()
         if self.repeat_penalty is not None:
             params["repetition_penalty"] = self.repeat_penalty
-
+        if self.top_k is not None:
+            params["top_k"] = self.top_k
         return params
 
 
@@ -87,7 +104,7 @@ class InferenceMetadata:
     total_tokens: int
     inference_time_seconds: float
     cost_usd: float = 0.0
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -107,7 +124,7 @@ class LLMResponse:
     content: str
     metadata: InferenceMetadata
     raw_response: Optional[Dict[str, Any]] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -119,12 +136,59 @@ class LLMResponse:
 # Default options instance
 DEFAULT_OPTIONS = LLMOptions()
 
+
+# ── Reasoning-model detection ────────────────────────────────────────────────
+
+# OpenAI reasoning models do not support sampling parameters like temperature,
+# top_p, etc.  Only the default value (1) is accepted.  We detect these models
+# and automatically strip unsupported parameters so callers don't have to
+# special-case them.
+
+_OPENAI_REASONING_PREFIXES = (
+    "o1",
+    "o3",
+    "o4",
+)
+
+_OPENAI_REASONING_SUBSTRINGS = (
+    "gpt-5-mini",
+)
+
+
+def _is_openai_reasoning_model(model: str) -> bool:
+    """Return True if *model* is a known OpenAI reasoning model.
+
+    Reasoning models reject sampling parameters (temperature, top_p, …)
+    with an HTTP 400 unless they are set to the default value.
+    """
+    lower = model.lower()
+    for prefix in _OPENAI_REASONING_PREFIXES:
+        if lower.startswith(prefix):
+            return True
+    for substr in _OPENAI_REASONING_SUBSTRINGS:
+        if substr in lower:
+            return True
+    return False
+
 # Default keep_alive duration
 DEFAULT_KEEP_ALIVE = "5m"
 
 # OpenRouter defaults
 OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 OPENROUTER_TIMEOUT_SECONDS = float(os.environ.get("OPENROUTER_TIMEOUT_SECONDS", "180"))
+
+# OpenAI defaults
+OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+OPENAI_TIMEOUT_SECONDS = float(os.environ.get("OPENAI_TIMEOUT_SECONDS", "180"))
+
+# Together defaults
+TOGETHER_BASE_URL = os.environ.get("TOGETHER_BASE_URL", "https://api.together.xyz/v1")
+TOGETHER_TIMEOUT_SECONDS = float(os.environ.get("TOGETHER_TIMEOUT_SECONDS", "180"))
+
+# Anthropic defaults
+ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+ANTHROPIC_TIMEOUT_SECONDS = float(os.environ.get("ANTHROPIC_TIMEOUT_SECONDS", "180"))
+ANTHROPIC_VERSION = os.environ.get("ANTHROPIC_VERSION", "2023-06-01")
 
 
 def get_response(
@@ -145,16 +209,19 @@ def get_response(
             Examples:
                 - Ollama: "qwen2.5:3b-instruct"
                 - Gemini direct: "gemini-2.5-flash"
-                - OpenRouter: "openai/gpt-4o-mini", "anthropic/claude-3.7-sonnet",
-                              "google/gemini-2.5-pro"
+                - OpenRouter: "openai/gpt-4o-mini", "anthropic/claude-3.7-sonnet"
+                - OpenAI: "gpt-4o-mini", "gpt-4.1-mini", "o3-mini"
+                - Together: "meta-llama/Llama-3.3-70B-Instruct-Turbo"
+                - Anthropic: "claude-sonnet-4-5", "claude-opus-4-1"
         provider: LLM provider (auto-detected from model name if not specified)
         system_prompt: Optional system prompt
         options: LLM options (uses defaults if not provided)
         keep_alive: How long to keep model loaded (default: "5m", Ollama only)
         format_schema: Optional JSON schema for structured output
             - Ollama: passed via "format"
-            - OpenRouter: converted to response_format json_schema
+            - OpenRouter/OpenAI/Together: converted to response_format json_schema
             - Gemini direct: currently ignored in this implementation
+            - Anthropic: currently ignored in this implementation
 
     Returns:
         LLMResponse containing content and metadata
@@ -162,22 +229,34 @@ def get_response(
     # Auto-detect provider from model name if not specified
     if provider is None:
         lower_model = model.lower()
+
         if lower_model.startswith("gemini"):
             provider = Provider.GOOGLE
+        elif lower_model.startswith("claude"):
+            provider = Provider.ANTHROPIC
+        elif (
+            lower_model.startswith("gpt-")
+            or lower_model.startswith("o1")
+            or lower_model.startswith("o3")
+            or lower_model.startswith("o4")
+            or lower_model.startswith("chatgpt")
+        ):
+            provider = Provider.OPENAI
         elif "/" in model:
-            # Most OpenRouter models are namespaced, e.g. "openai/gpt-4o-mini"
+            # Preserve existing behavior:
+            # namespaced models default to OpenRouter unless provider is explicitly set to TOGETHER
             provider = Provider.OPENROUTER
         else:
             provider = Provider.OLLAMA
-    
+
     # Normalize provider to enum
     if isinstance(provider, str):
         provider = Provider(provider.lower())
-    
+
     # Use default options if not provided
     if options is None:
         options = DEFAULT_OPTIONS
-    
+
     if provider == Provider.OLLAMA:
         return _ollama_inference(
             prompt=prompt,
@@ -203,9 +282,29 @@ def get_response(
             format_schema=format_schema,
         )
     elif provider == Provider.OPENAI:
-        raise NotImplementedError("OpenAI provider not yet implemented")
+        return _openai_inference(
+            prompt=prompt,
+            model=model,
+            system_prompt=system_prompt,
+            options=options,
+            format_schema=format_schema,
+        )
+    elif provider == Provider.TOGETHER:
+        return _together_inference(
+            prompt=prompt,
+            model=model,
+            system_prompt=system_prompt,
+            options=options,
+            format_schema=format_schema,
+        )
     elif provider == Provider.ANTHROPIC:
-        raise NotImplementedError("Anthropic provider not yet implemented")
+        return _anthropic_inference(
+            prompt=prompt,
+            model=model,
+            system_prompt=system_prompt,
+            options=options,
+            format_schema=format_schema,
+        )
     else:
         raise ValueError(f"Unsupported provider: {provider}")
 
@@ -219,16 +318,14 @@ def _ollama_inference(
     format_schema: Optional[Dict[str, Any]] = None,
 ) -> LLMResponse:
     """Internal function for Ollama inference."""
-    
-    # Build messages
+
     messages: List[Dict[str, str]] = []
-    
+
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
-    
+
     messages.append({"role": "user", "content": prompt})
-    
-    # Build kwargs
+
     kwargs = {
         "model": model,
         "messages": messages,
@@ -236,29 +333,21 @@ def _ollama_inference(
         "keep_alive": keep_alive,
         "stream": False,
     }
-    
-    # Add format schema if provided (for structured output)
+
     if format_schema is not None:
         kwargs["format"] = format_schema
-    
-    # Time the inference
+
     start_time = time.perf_counter()
-    
     response = ollama_chat(**kwargs)
-    
     end_time = time.perf_counter()
     inference_time = end_time - start_time
-    
-    # Extract content
+
     content = response.get("message", {}).get("content", "")
-    
-    # Extract token counts from response
-    # Ollama provides these in different places depending on version
+
     input_tokens = response.get("prompt_eval_count", 0)
     output_tokens = response.get("eval_count", 0)
     total_tokens = input_tokens + output_tokens
-    
-    # Build metadata
+
     metadata = InferenceMetadata(
         provider="ollama",
         model=model,
@@ -266,9 +355,9 @@ def _ollama_inference(
         output_tokens=output_tokens,
         total_tokens=total_tokens,
         inference_time_seconds=inference_time,
-        cost_usd=0.0,  # Ollama is free/local
+        cost_usd=0.0,
     )
-    
+
     return LLMResponse(
         content=content,
         metadata=metadata,
@@ -283,32 +372,30 @@ def _gemini_inference(
     options: LLMOptions,
 ) -> LLMResponse:
     """Internal function for Google Gemini inference."""
-    
+
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise ValueError(
             "GEMINI_API_KEY not found. Set it in .env or as an environment variable."
         )
-    
+
     client = genai.Client(api_key=api_key)
-    
-    # Build contents
+
     contents = [
         genai_types.Content(
             role="user",
             parts=[genai_types.Part.from_text(text=prompt)],
         ),
     ]
-    
-    # Build config
+
     config_kwargs = {
         "temperature": options.temperature,
         "top_p": options.top_p,
         "max_output_tokens": options.num_predict,
     }
-    
-    # Add thinking config for supported models
-    # gemini-3-* supports thinking_level; gemini-2.5-* uses thinking_budget
+    if options.top_k is not None:
+        config_kwargs["top_k"] = options.top_k
+
     if model.startswith("gemini-3"):
         config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
             thinking_level="HIGH",
@@ -317,17 +404,14 @@ def _gemini_inference(
         config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
             thinking_budget=8192,
         )
-    
-    # Add system instruction if provided
+
     if system_prompt:
         config_kwargs["system_instruction"] = system_prompt
-    
+
     generate_content_config = genai_types.GenerateContentConfig(**config_kwargs)
-    
-    # Time the inference
+
     start_time = time.perf_counter()
-    
-    # Collect streaming response
+
     full_text = ""
     raw_response = None
     for chunk in client.models.generate_content_stream(
@@ -337,21 +421,19 @@ def _gemini_inference(
     ):
         if chunk.text:
             full_text += chunk.text
-        raw_response = chunk  # Keep last chunk for metadata
-    
+        raw_response = chunk
+
     end_time = time.perf_counter()
     inference_time = end_time - start_time
-    
-    # Extract token counts from usage_metadata if available
+
     input_tokens = 0
     output_tokens = 0
-    if raw_response and hasattr(raw_response, 'usage_metadata') and raw_response.usage_metadata:
+    if raw_response and hasattr(raw_response, "usage_metadata") and raw_response.usage_metadata:
         usage = raw_response.usage_metadata
-        input_tokens = getattr(usage, 'prompt_token_count', 0) or 0
-        output_tokens = getattr(usage, 'candidates_token_count', 0) or 0
+        input_tokens = getattr(usage, "prompt_token_count", 0) or 0
+        output_tokens = getattr(usage, "candidates_token_count", 0) or 0
     total_tokens = input_tokens + output_tokens
-    
-    # Build metadata
+
     metadata = InferenceMetadata(
         provider="google",
         model=model,
@@ -359,13 +441,13 @@ def _gemini_inference(
         output_tokens=output_tokens,
         total_tokens=total_tokens,
         inference_time_seconds=inference_time,
-        cost_usd=0.0,  # TODO: Calculate based on model pricing
+        cost_usd=0.0,
     )
-    
+
     return LLMResponse(
         content=full_text,
         metadata=metadata,
-        raw_response=None,  # Gemini response objects aren't easily serializable
+        raw_response=None,
     )
 
 
@@ -376,12 +458,95 @@ def _openrouter_inference(
     options: LLMOptions,
     format_schema: Optional[Dict[str, Any]] = None,
 ) -> LLMResponse:
-    """Internal function for OpenRouter inference using the OpenAI-compatible Chat Completions API."""
+    """Internal function for OpenRouter inference."""
+    return _openai_compatible_inference(
+        prompt=prompt,
+        model=model,
+        system_prompt=system_prompt,
+        options=options,
+        format_schema=format_schema,
+        provider_name="openrouter",
+        api_key_env="OPENROUTER_API_KEY",
+        base_url=OPENROUTER_BASE_URL,
+        timeout_seconds=OPENROUTER_TIMEOUT_SECONDS,
+        add_repetition_penalty=True,
+        extra_headers=_build_openrouter_headers(),
+    )
 
-    api_key = os.environ.get("OPENROUTER_API_KEY")
+
+def _openai_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+    format_schema: Optional[Dict[str, Any]] = None,
+) -> LLMResponse:
+    """Internal function for OpenAI inference."""
+    return _openai_compatible_inference(
+        prompt=prompt,
+        model=model,
+        system_prompt=system_prompt,
+        options=options,
+        format_schema=format_schema,
+        provider_name="openai",
+        api_key_env="OPENAI_API_KEY",
+        base_url=OPENAI_BASE_URL,
+        timeout_seconds=OPENAI_TIMEOUT_SECONDS,
+        add_repetition_penalty=False,  # avoid passing unsupported params
+        max_tokens_key="max_completion_tokens",  # newer OpenAI models require this
+        strip_sampling_params=_is_openai_reasoning_model(model),
+    )
+
+
+def _together_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+    format_schema: Optional[Dict[str, Any]] = None,
+) -> LLMResponse:
+    """Internal function for Together inference."""
+    return _openai_compatible_inference(
+        prompt=prompt,
+        model=model,
+        system_prompt=system_prompt,
+        options=options,
+        format_schema=format_schema,
+        provider_name="together",
+        api_key_env="TOGETHER_API_KEY",
+        base_url=TOGETHER_BASE_URL,
+        timeout_seconds=TOGETHER_TIMEOUT_SECONDS,
+        add_repetition_penalty=False,
+    )
+
+
+def _openai_compatible_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+    format_schema: Optional[Dict[str, Any]],
+    provider_name: str,
+    api_key_env: str,
+    base_url: str,
+    timeout_seconds: float,
+    add_repetition_penalty: bool = False,
+    extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens_key: str = "max_tokens",
+    strip_sampling_params: bool = False,
+) -> LLMResponse:
+    """
+    Shared implementation for OpenAI-compatible chat/completions APIs.
+
+    Used by:
+    - OpenAI
+    - OpenRouter
+    - Together
+    """
+    api_key = os.environ.get(api_key_env)
     if not api_key:
         raise ValueError(
-            "OPENROUTER_API_KEY not found. Set it in .env or as an environment variable."
+            f"{api_key_env} not found. Set it in .env or as an environment variable."
         )
 
     messages: List[Dict[str, Any]] = []
@@ -394,10 +559,20 @@ def _openrouter_inference(
         "messages": messages,
         "stream": False,
     }
-    payload.update(options.to_openrouter_params())
+    params = options.to_openai_compatible_params()
+    # Rename max_tokens key if needed (e.g. max_completion_tokens for OpenAI)
+    if max_tokens_key != "max_tokens" and "max_tokens" in params:
+        params[max_tokens_key] = params.pop("max_tokens")
+    # Reasoning models (o1, o3, o4, gpt-5-mini, …) reject non-default
+    # sampling parameters.  Strip them to avoid HTTP 400 errors.
+    if strip_sampling_params:
+        for key in ("temperature", "top_p", "top_k"):
+            params.pop(key, None)
+    payload.update(params)
 
-    # Structured output support:
-    # Convert your existing format_schema into OpenRouter/OpenAI-style response_format.
+    if add_repetition_penalty and options.repeat_penalty is not None:
+        payload["repetition_penalty"] = options.repeat_penalty
+
     if format_schema is not None:
         payload["response_format"] = {
             "type": "json_schema",
@@ -412,35 +587,32 @@ def _openrouter_inference(
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
+    if extra_headers:
+        headers.update(extra_headers)
 
-    # Optional OpenRouter attribution headers
-    referer = os.environ.get("OPENROUTER_SITE_URL") or os.environ.get("OPENROUTER_HTTP_REFERER")
-    title = os.environ.get("OPENROUTER_APP_NAME") or os.environ.get("OPENROUTER_TITLE")
-
-    if referer:
-        headers["HTTP-Referer"] = referer
-    if title:
-        headers["X-Title"] = title
-
-    url = f"{OPENROUTER_BASE_URL.rstrip('/')}/chat/completions"
+    url = f"{base_url.rstrip('/')}/chat/completions"
     body = json.dumps(payload).encode("utf-8")
     request = urllib_request.Request(url=url, data=body, headers=headers, method="POST")
 
     start_time = time.perf_counter()
 
     try:
-        with urllib_request.urlopen(request, timeout=OPENROUTER_TIMEOUT_SECONDS) as response:
+        with urllib_request.urlopen(request, timeout=timeout_seconds) as response:
             response_bytes = response.read()
     except urllib_error.HTTPError as exc:
         error_text = exc.read().decode("utf-8", errors="replace")
         try:
             error_json = json.loads(error_text)
-            message = error_json.get("error", {}).get("message", error_text)
+            message = (
+                error_json.get("error", {}).get("message")
+                or error_json.get("message")
+                or error_text
+            )
         except json.JSONDecodeError:
             message = error_text or str(exc)
-        raise RuntimeError(f"OpenRouter HTTP {exc.code}: {message}") from exc
+        raise RuntimeError(f"{provider_name.capitalize()} HTTP {exc.code}: {message}") from exc
     except urllib_error.URLError as exc:
-        raise RuntimeError(f"OpenRouter request failed: {exc}") from exc
+        raise RuntimeError(f"{provider_name.capitalize()} request failed: {exc}") from exc
 
     end_time = time.perf_counter()
     inference_time = end_time - start_time
@@ -448,16 +620,16 @@ def _openrouter_inference(
     try:
         response_json = json.loads(response_bytes.decode("utf-8"))
     except json.JSONDecodeError as exc:
-        raise RuntimeError("OpenRouter returned non-JSON response") from exc
+        raise RuntimeError(f"{provider_name.capitalize()} returned non-JSON response") from exc
 
-    content = _extract_openrouter_content(response_json)
+    content = _extract_openai_compatible_content(response_json)
 
     usage = response_json.get("usage") or {}
     input_tokens = int(usage.get("prompt_tokens") or 0)
     output_tokens = int(usage.get("completion_tokens") or 0)
     total_tokens = int(usage.get("total_tokens") or (input_tokens + output_tokens))
 
-    # OpenRouter usage accounting includes cost in the usage object.
+    # Only OpenRouter reliably returns cost in usage.
     cost_value = usage.get("cost", 0.0)
     try:
         cost_usd = float(cost_value or 0.0)
@@ -465,7 +637,7 @@ def _openrouter_inference(
         cost_usd = 0.0
 
     metadata = InferenceMetadata(
-        provider="openrouter",
+        provider=provider_name,
         model=response_json.get("model", model),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
@@ -481,9 +653,108 @@ def _openrouter_inference(
     )
 
 
-def _extract_openrouter_content(response_json: Dict[str, Any]) -> str:
+def _anthropic_inference(
+    prompt: str,
+    model: str,
+    system_prompt: Optional[str],
+    options: LLMOptions,
+    format_schema: Optional[Dict[str, Any]] = None,
+) -> LLMResponse:
+    """Internal function for Anthropic Claude inference via Messages API."""
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise ValueError(
+            "ANTHROPIC_API_KEY not found. Set it in .env or as an environment variable."
+        )
+
+    # Anthropic structured output is not wired here yet to keep this addition minimal
+    # and avoid changing current behavior unexpectedly.
+    _ = format_schema
+
+    payload: Dict[str, Any] = {
+        "model": model,
+        "max_tokens": options.num_predict,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        "temperature": options.temperature,
+        "top_p": options.top_p,
+    }
+    if options.top_k is not None:
+        payload["top_k"] = options.top_k
+
+    if system_prompt:
+        payload["system"] = system_prompt
+
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": ANTHROPIC_VERSION,
+        "content-type": "application/json",
+    }
+
+    url = f"{ANTHROPIC_BASE_URL.rstrip('/')}/v1/messages"
+    body = json.dumps(payload).encode("utf-8")
+    request = urllib_request.Request(url=url, data=body, headers=headers, method="POST")
+
+    start_time = time.perf_counter()
+
+    try:
+        with urllib_request.urlopen(request, timeout=ANTHROPIC_TIMEOUT_SECONDS) as response:
+            response_bytes = response.read()
+    except urllib_error.HTTPError as exc:
+        error_text = exc.read().decode("utf-8", errors="replace")
+        try:
+            error_json = json.loads(error_text)
+            message = (
+                error_json.get("error", {}).get("message")
+                or error_json.get("message")
+                or error_text
+            )
+        except json.JSONDecodeError:
+            message = error_text or str(exc)
+        raise RuntimeError(f"Anthropic HTTP {exc.code}: {message}") from exc
+    except urllib_error.URLError as exc:
+        raise RuntimeError(f"Anthropic request failed: {exc}") from exc
+
+    end_time = time.perf_counter()
+    inference_time = end_time - start_time
+
+    try:
+        response_json = json.loads(response_bytes.decode("utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("Anthropic returned non-JSON response") from exc
+
+    content = _extract_anthropic_content(response_json)
+
+    usage = response_json.get("usage") or {}
+    input_tokens = int(usage.get("input_tokens") or 0)
+    output_tokens = int(usage.get("output_tokens") or 0)
+    total_tokens = input_tokens + output_tokens
+
+    metadata = InferenceMetadata(
+        provider="anthropic",
+        model=response_json.get("model", model),
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
+        inference_time_seconds=inference_time,
+        cost_usd=0.0,  # TODO: calculate if you want pricing estimates
+    )
+
+    return LLMResponse(
+        content=content,
+        metadata=metadata,
+        raw_response=response_json,
+    )
+
+
+def _extract_openai_compatible_content(response_json: Dict[str, Any]) -> str:
     """
-    Extract assistant content from an OpenRouter chat completion response.
+    Extract assistant content from an OpenAI-compatible chat completion response.
 
     Handles:
     - Standard string content
@@ -514,6 +785,41 @@ def _extract_openrouter_content(response_json: Dict[str, Any]) -> str:
     return str(content)
 
 
+def _extract_anthropic_content(response_json: Dict[str, Any]) -> str:
+    """
+    Extract assistant text from an Anthropic Messages API response.
+    """
+    content = response_json.get("content") or []
+    if not isinstance(content, list):
+        return str(content)
+
+    parts: List[str] = []
+    for block in content:
+        if not isinstance(block, dict):
+            continue
+        if block.get("type") == "text" and isinstance(block.get("text"), str):
+            parts.append(block["text"])
+
+    return "".join(parts)
+
+
+def _build_openrouter_headers() -> Dict[str, str]:
+    """
+    Optional OpenRouter attribution headers.
+    """
+    headers: Dict[str, str] = {}
+
+    referer = os.environ.get("OPENROUTER_SITE_URL") or os.environ.get("OPENROUTER_HTTP_REFERER")
+    title = os.environ.get("OPENROUTER_APP_NAME") or os.environ.get("OPENROUTER_TITLE")
+
+    if referer:
+        headers["HTTP-Referer"] = referer
+    if title:
+        headers["X-Title"] = title
+
+    return headers
+
+
 # Convenience function with simpler signature
 def quick_inference(
     prompt: str,
@@ -522,18 +828,6 @@ def quick_inference(
 ) -> str:
     """
     Quick inference with sensible defaults. Returns just the content string.
-    
-    Args:
-        prompt: The user prompt
-        model: Model name (default: qwen2.5:3b-instruct)
-        system_prompt: Optional system prompt
-    
-    Returns:
-        Response content as string
-    
-    Example:
-        >>> answer = quick_inference("What is 2+2?")
-        >>> print(answer)
     """
     response = get_response(
         prompt=prompt,

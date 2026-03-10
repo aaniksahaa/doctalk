@@ -2,7 +2,7 @@
 """
 Organize downstream datasets into a structured, exportable format.
 
-Collects downstream inference outputs (medical-ner, advice-safety, triage)
+Collects downstream inference outputs (medical-ner, advice-safety, advice-generation, triage)
 from per-video dataset folders and reorganizes them into a clean numbered
 structure suitable for downstream model evaluation.
 
@@ -18,6 +18,10 @@ Output structure:
         test/   2/ 9/ ...
       summary.json
     advice-safety/
+      all/ ...
+      split/ ...
+      summary.json
+    advice-generation/
       all/ ...
       split/ ...
       summary.json
@@ -45,20 +49,33 @@ Task-specific input/ground_truth schemas:
     input.json:        {"patient_profile": "..."}
     ground_truth.json: {"patient_profile": "...", "type": "..."}
 
+  advice-generation:
+    input.json:        {"patient_profile": "..."}
+    ground_truth.json: {"patient_profile": "...", "recommendations": [{"content": "...", "label": "..."}]}
+    NOTE: Built from the same advice-safety source data. Input contains only
+    patient_profile (no recommendations). Ground truth retains full
+    recommendations with labels for evaluation.
+
 Usage:
   python organize_downstream_datasets.py
   python organize_downstream_datasets.py --train-pct 70 --val-pct 15
   python organize_downstream_datasets.py --model gemini-2.5-flash --seed 42
-  python organize_downstream_datasets.py --tasks medical-ner triage
+  python organize_downstream_datasets.py --tasks "medical-ner;triage"
+  python organize_downstream_datasets.py --tasks advice-generation
+  python organize_downstream_datasets.py --force-rewrite
 """
 
 import argparse
 import json
 import random
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
+
+
+from constants import C
 
 
 # ── Constants ────────────────────────────────────────────────────────────────
@@ -67,12 +84,35 @@ CONVERSATION_SUBPATH = "transcribed/yt-auto/parsed/gemini-3-flash-preview"
 DOWNSTREAM_DIR = "downstream"
 DOWNSTREAM_DATASETS_DIR = "downstream-datasets"
 
+VALID_TASKS = ["medical-ner", "advice-safety", "advice-generation", "triage"]
+ALL_TASKS_STR = ";".join(VALID_TASKS)
+
+
+def parse_tasks(tasks_str: str) -> List[str]:
+    """Parse semicolon-separated task string and validate each task."""
+    tasks = [t.strip() for t in tasks_str.split(";") if t.strip()]
+    for t in tasks:
+        if t not in VALID_TASKS:
+            print(
+                f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} unknown task '{t}'. "
+                f"Valid tasks: {', '.join(VALID_TASKS)}{C.RESET}"
+            )
+            sys.exit(1)
+    return tasks
+
+
 TASK_CONFIG = {
     "medical-ner": {
         "subdir": "medical-ner",
         "output_file": "ner_output.json",
     },
     "advice-safety": {
+        "subdir": "advice-safety",
+        "output_file": "advice_safety_output.json",
+    },
+    "advice-generation": {
+        # Reuses the same source data as advice-safety.
+        # Only the input/ground_truth processing differs.
         "subdir": "advice-safety",
         "output_file": "advice_safety_output.json",
     },
@@ -106,7 +146,7 @@ def process_ner_element(
 
 def process_advice_safety_element(
     element: Dict[str, Any],
-) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+) -> Tuple[Dict[str, Any], Dict[str, Any]] | None:
     """
     Process a single advice-safety element into (input, ground_truth).
 
@@ -114,10 +154,14 @@ def process_advice_safety_element(
     ground_truth.json: patient_profile + full recommendations with labels
 
     The conversation field is excluded from both.
+    Returns None if the recommendations array is empty (element is skipped).
     """
+    recs = element.get("recommendations", [])
+    if not recs:
+        return None
     input_recs = [
         {"content": r["content"]}
-        for r in element.get("recommendations", [])
+        for r in recs
     ]
     input_data = {
         "patient_profile": element["patient_profile"],
@@ -125,7 +169,35 @@ def process_advice_safety_element(
     }
     ground_truth = {
         "patient_profile": element["patient_profile"],
-        "recommendations": element.get("recommendations", []),
+        "recommendations": recs,
+    }
+    return input_data, ground_truth
+
+
+def process_advice_generation_element(
+    element: Dict[str, Any],
+) -> Tuple[Dict[str, Any], Dict[str, Any]] | None:
+    """
+    Process a single advice-generation element into (input, ground_truth).
+
+    Built from the same advice-safety source data, but the input contains
+    only patient_profile (no recommendations). The LLM is expected to
+    generate recommendations from scratch.
+
+    input.json:        {"patient_profile": "..."}
+    ground_truth.json: {"patient_profile": "...", "recommendations": [{"content": "...", "label": "..."}]}
+
+    Returns None if the recommendations array is empty (element is skipped).
+    """
+    recs = element.get("recommendations", [])
+    if not recs:
+        return None
+    input_data = {
+        "patient_profile": element["patient_profile"],
+    }
+    ground_truth = {
+        "patient_profile": element["patient_profile"],
+        "recommendations": recs,
     }
     return input_data, ground_truth
 
@@ -192,6 +264,7 @@ def process_triage_element(
 PROCESSORS = {
     "medical-ner": process_ner_element,
     "advice-safety": process_advice_safety_element,
+    "advice-generation": process_advice_generation_element,
     "triage": process_triage_element,
 }
 
@@ -246,7 +319,12 @@ def collect_task_elements(
 
         for item in data:
             try:
-                input_data, ground_truth = processor(item)
+                result = processor(item)
+                if result is None:
+                    # Processor decided to skip this element
+                    # (e.g. empty recommendations)
+                    continue
+                input_data, ground_truth = result
                 elements.append({
                     "origin_video_id": video_id,
                     "generator_model": model,
@@ -265,9 +343,16 @@ def write_element(
     target_dir: Path,
     idx: int,
     element: Dict[str, Any],
+    force_rewrite: bool = False,
 ) -> None:
-    """Write a single element to a numbered directory."""
+    """Write a single element to a numbered directory.
+
+    If the element directory already exists and force_rewrite is False,
+    the write is skipped to preserve existing data (e.g. inference results).
+    """
     elem_dir = target_dir / str(idx)
+    if elem_dir.exists() and not force_rewrite:
+        return
     elem_dir.mkdir(parents=True, exist_ok=True)
 
     metadata = {
@@ -289,15 +374,20 @@ def write_all(
     output_base: Path,
     task_name: str,
     elements: List[Dict[str, Any]],
+    force_rewrite: bool = False,
 ) -> None:
-    """Write all elements to the all/ directory with sequential numbering."""
+    """Write all elements to the all/ directory with sequential numbering.
+
+    If force_rewrite is True, removes the existing all/ directory first.
+    Otherwise, only writes elements whose directories don't yet exist.
+    """
     all_dir = output_base / task_name / "all"
-    if all_dir.exists():
+    if all_dir.exists() and force_rewrite:
         shutil.rmtree(all_dir)
     all_dir.mkdir(parents=True, exist_ok=True)
 
     for idx, element in enumerate(elements, start=1):
-        write_element(all_dir, idx, element)
+        write_element(all_dir, idx, element, force_rewrite=force_rewrite)
 
 
 def write_splits(
@@ -307,15 +397,19 @@ def write_splits(
     train_pct: float,
     val_pct: float,
     seed: int,
+    force_rewrite: bool = False,
 ) -> Dict[str, int]:
     """
     Randomly shuffle elements and write train/val/test splits.
 
     Each split directory contains copies of the numbered element folders
     from all/, preserving the original numbering for traceability.
+
+    If force_rewrite is True, removes the existing split/ directory first.
+    Otherwise, only copies elements whose split directories don't yet exist.
     """
     split_dir = output_base / task_name / "split"
-    if split_dir.exists():
+    if split_dir.exists() and force_rewrite:
         shutil.rmtree(split_dir)
 
     n = len(elements)
@@ -345,6 +439,8 @@ def write_splits(
         for idx in split_indices:
             src = all_dir / str(idx)
             dst = split_subdir / str(idx)
+            if dst.exists() and not force_rewrite:
+                continue
             shutil.copytree(src, dst)
 
     return {k: len(v) for k, v in splits.items()}
@@ -395,12 +491,20 @@ def main():
     parser.add_argument(
         "--tasks",
         type=str,
-        nargs="+",
-        default=["medical-ner", "advice-safety", "triage"],
-        choices=["medical-ner", "advice-safety", "triage"],
+        default=ALL_TASKS_STR,
         help=(
-            "Downstream tasks to organize "
-            "(default: all three)"
+            "Semicolon-separated list of downstream tasks to organize. "
+            f"Valid tasks: {', '.join(VALID_TASKS)}. "
+            f"(default: all — {ALL_TASKS_STR})"
+        ),
+    )
+    parser.add_argument(
+        "--force-rewrite",
+        action="store_true",
+        help=(
+            "Overwrite existing element directories. Without this flag, "
+            "existing directories are preserved to avoid clobbering "
+            "inference results."
         ),
     )
 
@@ -410,8 +514,8 @@ def main():
     test_pct = 100 - args.train_pct - args.val_pct
     if test_pct < 0:
         print(
-            f"Error: train-pct ({args.train_pct}) + "
-            f"val-pct ({args.val_pct}) exceeds 100"
+            f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} train-pct ({args.train_pct}) + "
+            f"val-pct ({args.val_pct}) exceeds 100{C.RESET}"
         )
         return
 
@@ -424,49 +528,58 @@ def main():
     output_base = folder_path / DOWNSTREAM_DATASETS_DIR
 
     if not dataset_path.exists():
-        print(f"Error: dataset path not found: {dataset_path}")
+        print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} dataset path not found: {dataset_path}{C.RESET}")
         return
 
-    print(f"Dataset path  : {dataset_path}")
-    print(f"Output path   : {output_base}")
-    print(f"Model         : {args.model}")
-    print(f"Train/Val/Test: {args.train_pct}% / {args.val_pct}% / {test_pct}%")
-    print(f"Seed          : {args.seed}")
-    print(f"Tasks         : {', '.join(args.tasks)}")
+    # ── parse tasks ──
+    tasks = parse_tasks(args.tasks)
+
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}  Downstream Dataset Organizer{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
+    print(f"  {C.BOLD}Dataset path{C.RESET}  : {C.DIM}{dataset_path}{C.RESET}")
+    print(f"  {C.BOLD}Output path{C.RESET}   : {C.DIM}{output_base}{C.RESET}")
+    print(f"  {C.BOLD}Model{C.RESET}         : {C.CYAN}{args.model}{C.RESET}")
+    print(f"  {C.BOLD}Train/Val/Test{C.RESET}: {C.YELLOW}{args.train_pct}%{C.RESET} / {C.YELLOW}{args.val_pct}%{C.RESET} / {C.YELLOW}{test_pct}%{C.RESET}")
+    print(f"  {C.BOLD}Seed{C.RESET}          : {args.seed}")
+    print(f"  {C.BOLD}Tasks{C.RESET}         : {C.MAGENTA}{', '.join(tasks)}{C.RESET}")
+    print(f"{C.BOLD}{C.CYAN}{'═' * 60}{C.RESET}")
     print()
 
-    for task_name in args.tasks:
-        print(f"{'─' * 60}")
-        print(f"  Task: {task_name}")
-        print(f"{'─' * 60}")
+    for task_name in tasks:
+        print(f"{C.BOLD}{C.BLUE}{'─' * 60}{C.RESET}")
+        print(f"  {C.BOLD}Task:{C.RESET} {C.MAGENTA}{task_name}{C.RESET}")
+        print(f"{C.BOLD}{C.BLUE}{'─' * 60}{C.RESET}")
 
         # ── collect elements ──
         elements = collect_task_elements(dataset_path, task_name, args.model)
-        print(f"  Collected {len(elements)} elements")
+        print(f"  {C.BOLD}Collected{C.RESET}      : {C.CYAN}{len(elements)}{C.RESET} elements")
 
         if not elements:
-            print(f"  ⚠ No elements found, skipping")
+            print(f"  {C.YELLOW}{C.BOLD}⚠ No elements found, skipping{C.RESET}")
             print()
             continue
 
         # ── count source videos ──
         source_videos = len(set(e["origin_video_id"] for e in elements))
-        print(f"  Source videos: {source_videos}")
+        print(f"  {C.BOLD}Source videos{C.RESET}  : {C.CYAN}{source_videos}{C.RESET}")
 
         # ── write all/ ──
-        write_all(output_base, task_name, elements)
+        write_all(output_base, task_name, elements, force_rewrite=args.force_rewrite)
         all_dir = output_base / task_name / "all"
-        print(f"  Written all/ → {all_dir.relative_to(folder_path)}")
+        print(f"  {C.GREEN}✓{C.RESET} {C.BOLD}Written all/{C.RESET} → {C.DIM}{all_dir.relative_to(folder_path)}{C.RESET}")
 
         # ── write splits ──
         split_counts = write_splits(
             output_base, task_name, elements,
             args.train_pct, args.val_pct, args.seed,
+            force_rewrite=args.force_rewrite,
         )
         print(
-            f"  Split: train={split_counts['train']}, "
-            f"val={split_counts['val']}, "
-            f"test={split_counts['test']}"
+            f"  {C.GREEN}✓{C.RESET} {C.BOLD}Split{C.RESET}        : "
+            f"train={C.GREEN}{split_counts['train']}{C.RESET}, "
+            f"val={C.YELLOW}{split_counts['val']}{C.RESET}, "
+            f"test={C.BLUE}{split_counts['test']}{C.RESET}"
         )
 
         # ── write task-level summary ──
@@ -488,12 +601,12 @@ def main():
         with open(summary_path, "w", encoding="utf-8") as f:
             json.dump(summary, f, ensure_ascii=False, indent=2)
         print(
-            f"  Summary → "
-            f"{summary_path.relative_to(folder_path)}"
+            f"  {C.GREEN}✓{C.RESET} {C.BOLD}Summary{C.RESET}      → "
+            f"{C.DIM}{summary_path.relative_to(folder_path)}{C.RESET}"
         )
         print()
 
-    print("✓ Organization complete!")
+    print(f"{C.GREEN}{C.BOLD}✓ Organization complete!{C.RESET}")
 
 
 if __name__ == "__main__":
