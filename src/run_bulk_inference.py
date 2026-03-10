@@ -42,12 +42,41 @@ MODELS = [
     #     "provider": "openai",
     #     "model": "gpt-4o-mini",
     # },
-    # Example with standard_model_name override:
     # {
     #     "provider": "openrouter",
     #     "model": "openai/gpt-4o",
     #     "standard_model_name": "gpt-4o",
     # },
+
+    # llama 70b 
+
+    # {
+    #     "provider": "openrouter",
+    #     "model": "meta-llama/llama-3-70b-instruct",
+    #     "standard_model_name": "llama-3-70b-instruct"
+    # },
+
+    # # qwen3.5 flash
+    # {
+    #     "provider": "openrouter",
+    #     "model": "qwen/qwen3.5-flash-02-23",
+    #     "standard_model_name": "qwen3.5-flash"
+    # },
+
+    # # deepseek
+    # {
+    #     "provider": "openrouter",
+    #     "model": "deepseek/deepseek-v3.2",
+    #     "standard_model_name": "deepseek-v3.2"
+    # },
+
+    # gemma
+    {
+        "provider": "openrouter",
+        "model": "google/gemma-3-27b-it",
+        "standard_model_name": "gemma-3-27b-it"
+    }
+
 ]
 
 SETTINGS = [
