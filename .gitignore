@@ -29,3 +29,22 @@ diar_out/
 
 *.zip
 
+
+
+
+*.pt
+*.safetensors
+*.pth
+tokenizer.json
+*.bin
+tokenizer_config.json
+config.json
+trainer_state.json
+label_info.json
+
+
+
+
+
+
+
