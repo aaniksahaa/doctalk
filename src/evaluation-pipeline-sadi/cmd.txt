@@ -1,8 +1,10 @@
 python triage-summary.py ../saved-data/downstream-datasets/triage/split/test
 python triage-results.py ../saved-data/downstream-datasets/triage/split/test/summary.csv
+python triage-analysis-results.py ../saved-data/downstream-datasets/triage/split/test
 
 python harmful-summary.py ../saved-data/downstream-datasets/advice-safety/split/test
 python harmful-results.py ../saved-data/downstream-datasets/advice-safety/split/test/summary.csv
+python harmful-analysis-results.py ../saved-data/downstream-datasets/advice-safety/split/test
 
 pip install nervaluate
 
