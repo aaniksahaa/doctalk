@@ -1,0 +1,31 @@
+=== DOWNSTREAM BENCHMARK DATASETS ===
+  Downstream Task Source Videos Samples Total Labels/Items Train/Val/Test Split
+Advice Generation         1,744   8,689             29,957         6951/868/870
+    Advice Safety         1,744   8,689             29,957         6951/868/870
+      Medical NER         1,842  11,239            105,697       8991/1123/1125
+           Triage           490   1,515              1,515         1212/151/152
+
+=== CLASS DISTRIBUTIONS (For Appendix) ===
+
+-- Advice Generation --
+   SAFE: 22,513
+   HARMFUL: 7,444
+
+-- Advice Safety --
+   SAFE: 22,513
+   HARMFUL: 7,444
+
+-- Medical Ner --
+   DISEASE_CONDITION: 31,680
+   SYMPTOM_SIGN: 23,385
+   ANATOMY_BODY_PART: 21,624
+   TREATMENT_PROCEDURE: 13,802
+   DRUG_MEDICATION: 7,608
+   TEST_INVESTIGATION: 6,647
+   MEDICAL_SPECIALTY: 951
+
+-- Triage --
+   INVESTIGATION_OR_SPECIALIST_REFERRAL: 1,028
+   REASSURANCE_SELF_CARE: 258
+   ROUTINE_OUTPATIENT_VISIT: 185
+   URGENT_EMERGENCY_CARE: 44

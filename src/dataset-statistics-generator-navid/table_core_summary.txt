@@ -1,0 +1,31 @@
+=== OVERALL DATASET STATISTICS ===
+                       Metric     Count
+          Total Conversations    11,789
+     Dataset Duration (Hours)    557.63
+   Total Tokens (Bangla-BERT) 1,671,210
+   Unique Medical Specialties        26
+ Patient Calls Proportion (%)     12.9%
+Host-Doctor QA Proportion (%)     87.1%
+
+=== PATIENT-DOCTOR CALLS ===
+                    Metric           Count
+Total Patient-Doctor Calls           1,515
+              Total Tokens         244,027
+               Total Turns           4,857
+        Avg Turns per Call             3.2
+       Max Turns in a Call              14
+       Avg Tokens per Turn            50.2
+       Total Doctor Tokens 156,573 (64.2%)
+      Total Patient Tokens  87,454 (35.8%)
+  Avg Doctor Tokens / Call           103.3
+ Avg Patient Tokens / Call            57.7
+
+=== HOST-DOCTOR QA ===
+                       Metric     Count
+Total Host-Doctor QA Sessions    10,274
+                 Total Tokens 1,427,183
+                  Total Turns    20,553
+     Avg Turns per QA Session       2.0
+    Max Turns in a QA Session         4
+    Avg Tokens per QA Session     138.9
+          Avg Tokens per Turn      69.4

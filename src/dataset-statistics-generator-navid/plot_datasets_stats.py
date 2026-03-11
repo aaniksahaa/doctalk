@@ -18,46 +18,45 @@ def create_plots(input_dir="statistics-results", output_dir="paper_plots"):
     print(f"Reading CSVs from {in_path.absolute()}")
     print(f"Saving figures to {out_path.absolute()}...\n")
 
-# --- 1. Conversation Types (Pie Chart - Better for 2 types) ---
+    # --- 1. Conversation Types (Dynamic Pie Chart) ---
     csv_types = in_path / "stat_conversation_types.csv"
     if csv_types.exists():
         df = pd.read_csv(csv_types)
-        plt.figure(figsize=(6, 6)) # Square aspect ratio for the pie
+        plt.figure(figsize=(6, 6))
         colors = sns.color_palette("viridis", len(df))
+        # Dynamically create the explode list based on number of rows
+        explode_vals = [0.05 if i == 0 else 0 for i in range(len(df))]
+        
         plt.pie(df['Count'], labels=df['Type'], autopct='%1.1f%%', 
-                startangle=140, colors=colors, explode=[0.05, 0])
+                startangle=140, colors=colors, explode=explode_vals)
         plt.title("Proportion of Conversation Types", weight="bold", pad=20)
         plt.tight_layout()
         plt.savefig(out_path / "fig1_conversation_types_pie.png", dpi=300)
         plt.close()
-        print("✓ Created fig1_conversation_types_pie.png (Pie Chart)")
+        print("✓ Created fig1_conversation_types_pie.png")
 
-    # --- 2. Patient Call Turns (Narrower Bar Chart) ---
-# --- 2. Patient Call Turns (Refined Density & Color) ---
-# --- 2. Patient Call Turns (Professional Academic Style) ---
+    # --- 2. Patient Call Turns (Fixed Seaborn Warnings) ---
     csv_turns = in_path / "stat_patient_call_turns_freq.csv"
     if csv_turns.exists():
         df = pd.read_csv(csv_turns)
-        
         plt.figure(figsize=(7, 5)) 
         
-        # Filter for non-zero counts and ensure proper ordering
         actual_turns_data = df[df['Frequency'] > 0].copy()
         actual_turns_data['Turns'] = actual_turns_data['Turns'].astype(int)
         actual_turns_data = actual_turns_data.sort_values('Turns')
         actual_turns_data['Turns'] = actual_turns_data['Turns'].astype(str)
         
-        # Use 'rocket_r' for a deep, sophisticated dark-purple/red-to-pink gradient
-        # or 'flare' for a more muted, professional look.
+        # Added hue="Turns" and legend=False to prevent Seaborn warnings
         ax = sns.barplot(
             x="Turns", 
             y="Frequency", 
+            hue="Turns",
+            legend=False,
             data=actual_turns_data, 
-            palette="rocket_r", # Academic and high-contrast
-            edgecolor=".2"      # Adds a subtle dark border to bars
+            palette="rocket_r", 
+            edgecolor=".2"      
         )
         
-        # Add exact numbers on top with a slightly smaller font for a cleaner look
         for p in ax.patches:
             height = p.get_height()
             if height > 0:
@@ -65,21 +64,60 @@ def create_plots(input_dir="statistics-results", output_dir="paper_plots"):
                             (p.get_x() + p.get_width() / 2., height), 
                             ha='center', va='center', xytext=(0, 8), 
                             textcoords='offset points', 
-                            fontsize=9, 
-                            weight='semibold', 
-                            color='#333333')
+                            fontsize=9, weight='semibold', color='#333333')
         
         plt.title("Conversational Turn Distribution (Patient Calls)", weight="bold", pad=15)
         plt.xlabel("Number of Turns")
         plt.ylabel("Count")
-        
-        # Despine removes the top and right borders for a modern "clean" look
         sns.despine()
-        
         plt.tight_layout()
-        plt.savefig(out_path / "fig2_turn_distribution.png", dpi=300)
+        plt.savefig(out_path / "fig2_patient_turn_distribution.png", dpi=300)
         plt.close()
-        print("✓ Created fig2_turn_distribution.png (Rocket Palette)")
+        print("✓ Created fig2_patient_turn_distribution.png")
+
+# --- 2B. Host-Doctor QA Turns (FIXED Bar Chart) ---
+    csv_qa_turns = in_path / "stat_qa_turns_raw.csv"
+    if csv_qa_turns.exists():
+        df_qa = pd.read_csv(csv_qa_turns)
+        
+        # Count frequencies just like we did for patient calls
+        qa_turn_counts = df_qa['turns'].value_counts().reset_index()
+        qa_turn_counts.columns = ['Turns', 'Frequency']
+        qa_turn_counts = qa_turn_counts.sort_values('Turns')
+        qa_turn_counts['Turns'] = qa_turn_counts['Turns'].astype(str)
+
+        plt.figure(figsize=(7, 5))
+        
+        # Use a cool blue/green 'mako' palette to contrast with the red patient calls
+        ax = sns.barplot(
+            x="Turns", 
+            y="Frequency", 
+            hue="Turns",
+            legend=False,
+            data=qa_turn_counts, 
+            palette="mako", 
+            edgecolor=".2"      
+        )
+        
+        # Add the exact numbers on top of the bars
+        for p in ax.patches:
+            height = p.get_height()
+            if height > 0:
+                ax.annotate(format(height, '.0f'), 
+                            (p.get_x() + p.get_width() / 2., height), 
+                            ha='center', va='center', xytext=(0, 8), 
+                            textcoords='offset points', 
+                            fontsize=9, weight='semibold', color='#333333')
+        
+        plt.title("Conversational Turn Distribution (Host-Doctor QA)", weight="bold", pad=15)
+        plt.xlabel("Number of Turns")
+        plt.ylabel("Count")
+        sns.despine()
+        plt.tight_layout()
+        plt.savefig(out_path / "fig2b_qa_turn_distribution.png", dpi=300)
+        plt.close()
+        print("✓ Created fig2b_qa_turn_distribution.png (Bar Chart Fixed)")
+
     # --- 3. Video Durations (Histogram) ---
     csv_dur = in_path / "stat_video_durations.csv"
     if csv_dur.exists():
@@ -106,26 +144,28 @@ def create_plots(input_dir="statistics-results", output_dir="paper_plots"):
         plt.close()
         print("✓ Created fig4_token_counts.png")
 
-    # --- 5. Patient vs. Doctor Tokens (Box Plot) ---
+    # --- 5. Patient vs. Doctor Tokens (Fixed Seaborn Warnings) ---
     csv_vs = in_path / "stat_patient_vs_doctor_tokens.csv"
     if csv_vs.exists():
         df = pd.read_csv(csv_vs)
         df_melted = df.melt(var_name="Speaker", value_name="Tokens")
         df_melted["Speaker"] = df_melted["Speaker"].replace({"patient_tokens": "Patient", "doctor_tokens": "Doctor"})
         plt.figure(figsize=(7, 6))
-        sns.boxplot(x="Speaker", y="Tokens", data=df_melted, palette="Set2")
+        # Added hue="Speaker" and legend=False
+        sns.boxplot(x="Speaker", y="Tokens", hue="Speaker", legend=False, data=df_melted, palette="Set2")
         plt.title("Speaker Token Comparison", weight="bold")
         plt.tight_layout()
         plt.savefig(out_path / "fig5_patient_vs_doctor.png", dpi=300)
         plt.close()
         print("✓ Created fig5_patient_vs_doctor.png")
 
-    # --- 6. Specialty Distribution (Horizontal Bar Chart) ---
+    # --- 6. Specialty Distribution (Fixed Seaborn Warnings) ---
     csv_spec = in_path / "stat_specialties.csv"
     if csv_spec.exists():
         df = pd.read_csv(csv_spec)
-        plt.figure(figsize=(10, 6))
-        sns.barplot(x="Count", y="Specialty", data=df, palette="magma")
+        plt.figure(figsize=(10, 8)) # Made slightly taller for better readability
+        # Added hue="Specialty" and legend=False
+        sns.barplot(x="Count", y="Specialty", hue="Specialty", legend=False, data=df, palette="magma")
         plt.title("Medical Specialty Coverage", weight="bold")
         plt.tight_layout()
         plt.savefig(out_path / "fig6_specialty_coverage.png", dpi=300)
