@@ -9,3 +9,6 @@ pip install nervaluate
 python medical-ner-bio-conversion-if-needed/convert-to-bio.py ../saved-data/downstream-datasets/medical-ner/split/test
 python ner-initial-eval.py ../saved-data/downstream-datasets/medical-ner/split/test
 python ner-final-eval.py ../saved-data/downstream-datasets/medical-ner/split/test
+
+python advice-comparison.py ../saved-data/downstream-datasets/advice-generation/split/test
+python advice-results.py ../saved-data/downstream-datasets/advice-generation/split/test
