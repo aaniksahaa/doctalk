@@ -245,7 +245,7 @@ python train_ner.py --model banglabert \
 python train_ner.py \
   --model banglabert \
   --lr 3e-5 \
-  --epochs 100 \
+  --epochs 20 \
   --train-batch 8 \
   --eval-batch 16 \
   --grad-accum 2 \
@@ -281,7 +281,7 @@ python train_ner.py --model mmbert \
 python train_ner.py \
   --model mmbert \
   --lr 2e-5 \
-  --epochs 100 \
+  --epochs 20 \
   --train-batch 4 \
   --eval-batch 8 \
   --grad-accum 4 \
