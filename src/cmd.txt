@@ -195,6 +195,13 @@ python run_bulk_inference.py --tasks "advice-safety;triage" --split test --batch
 python run_bulk_inference.py --tasks "medical-ner;advice-safety;advice-generation;triage" --split test --batch-size 3
 
 
+python run_bulk_inference.py --tasks triage --split test --batch-size 3
+
+python run_bulk_inference.py --tasks advice-safety --split test --batch-size 3
+
+python run_bulk_inference.py --tasks medical-ner --split test --batch-size 3
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # Medical NER Fine-tuning  (generalized — BanglaBERT / mmBERT / ...)
 # ═══════════════════════════════════════════════════════════════════════
@@ -225,14 +232,29 @@ python train_ner.py --model banglabert \
 
 # Train — large dataset (~10K samples)
 python train_ner.py --model banglabert \
-  --epochs 5 --train-batch 16 --grad-accum 1 \
-  --warmup-steps 200 --early-stopping 3 --logging-steps 100
+  --lr 3e-5 --weight-decay 0.01 --epochs 100 --train-batch 32 --grad-accum 1 \
+  --warmup-steps 200 --early-stopping 10 --logging-steps 100
 
 # Train — full override example
 python train_ner.py --model banglabert \
   --lr 3e-5 --train-batch 8 --eval-batch 16 --grad-accum 1 \
   --epochs 10 --warmup-steps 100 --early-stopping 5 \
   --weight-decay 0.01 --logging-steps 50 --max-length 512
+
+
+python train_ner.py \
+  --model banglabert \
+  --lr 3e-5 \
+  --epochs 100 \
+  --train-batch 8 \
+  --eval-batch 16 \
+  --grad-accum 2 \
+  --warmup-steps 200 \
+  --early-stopping 10 \
+  --weight-decay 0.01 \
+  --logging-steps 50
+
+
 
 # ─── mmBERT  (jhu-clsp/mmBERT-base, ~307M) ──────────────────────────
 
@@ -254,6 +276,21 @@ python train_ner.py --model mmbert \
   --lr 2e-5 --train-batch 4 --eval-batch 8 --grad-accum 4 \
   --epochs 10 --warmup-steps 100 --early-stopping 5 \
   --weight-decay 0.01 --logging-steps 50 --max-length 512 --fp16
+
+
+python train_ner.py \
+  --model mmbert \
+  --lr 2e-5 \
+  --epochs 100 \
+  --train-batch 4 \
+  --eval-batch 8 \
+  --grad-accum 4 \
+  --warmup-steps 200 \
+  --early-stopping 2 \
+  --weight-decay 0.01 \
+  --fp16 \
+  --logging-steps 50
+
 
 # ─── Standalone inference (both models) ──────────────────────────────
 

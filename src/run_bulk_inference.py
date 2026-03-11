@@ -33,11 +33,11 @@ MODELS = [
         "provider": "openai",
         "model": "gpt-4o",
     },
-    # {
-    #     "provider": "openai",
-    #     "model": "gpt-5-mini-2025-08-07",
-    #     "standard_model_name": "gpt-5-mini",
-    # },
+    {
+        "provider": "openai",
+        "model": "gpt-5-mini-2025-08-07",
+        "standard_model_name": "gpt-5-mini",
+    },
     # {
     #     "provider": "openai",
     #     "model": "gpt-4o-mini",
@@ -50,25 +50,25 @@ MODELS = [
 
     # llama 70b 
 
-    # {
-    #     "provider": "openrouter",
-    #     "model": "meta-llama/llama-3-70b-instruct",
-    #     "standard_model_name": "llama-3-70b-instruct"
-    # },
+    {
+        "provider": "openrouter",
+        "model": "meta-llama/llama-3-70b-instruct",
+        "standard_model_name": "llama-3-70b-instruct"
+    },
 
-    # # qwen3.5 flash
-    # {
-    #     "provider": "openrouter",
-    #     "model": "qwen/qwen3.5-flash-02-23",
-    #     "standard_model_name": "qwen3.5-flash"
-    # },
+    # qwen3.5 flash
+    {
+        "provider": "openrouter",
+        "model": "qwen/qwen3.5-flash-02-23",
+        "standard_model_name": "qwen3.5-flash"
+    },
 
-    # # deepseek
-    # {
-    #     "provider": "openrouter",
-    #     "model": "deepseek/deepseek-v3.2",
-    #     "standard_model_name": "deepseek-v3.2"
-    # },
+    # deepseek
+    {
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v3.2",
+        "standard_model_name": "deepseek-v3.2"
+    },
 
     # gemma
     {

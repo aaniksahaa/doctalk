@@ -473,14 +473,14 @@ def main():
     parser.add_argument(
         "--train-pct",
         type=float,
-        default=70,
-        help="Train split percentage (default: 70)",
+        default=80,
+        help="Train split percentage (default: 80)",
     )
     parser.add_argument(
         "--val-pct",
         type=float,
-        default=15,
-        help="Validation split percentage (default: 15)",
+        default=10,
+        help="Validation split percentage (default: 10)",
     )
     parser.add_argument(
         "--seed",
