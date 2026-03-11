@@ -1,14 +1,10 @@
 import argparse
 import json
-import os
 from pathlib import Path
 import pandas as pd
 from collections import Counter
 from transformers import AutoTokenizer
 
-# ==========================================
-# Initialize the Tokenizer
-# ==========================================
 print("Loading Bangla-BERT tokenizer for strict token counting...")
 try:
     tokenizer = AutoTokenizer.from_pretrained("sagorsarker/bangla-bert-base")
@@ -30,11 +26,14 @@ def process_dataset(data_dir, output_dir):
     total_parsed_videos = 0
     conv_type_counter = Counter()
     patient_call_turns = []
-    qa_call_turns = []  # NEW: Tracks Host-Doctor QA turns
+    qa_call_turns = []  
     video_durations = []
     specialty_counter = Counter()
     total_tokens_per_conv = []
     patient_vs_doctor_tokens = [] 
+    
+    # NEW: Tracking tokens for EVERY single utterance for the paper metrics
+    all_utterance_tokens = [] 
     
     print(f"Scanning dataset directory: {data_path.absolute()}")
 
@@ -47,7 +46,6 @@ def process_dataset(data_dir, output_dir):
         yt_metadata_path = video_folder / f"{video_id}_yt-dlp-metadata.json"
         derived_metadata_path = video_folder / f"{video_id}_derived-metadata.json"
         
-        # Audio Duration
         if yt_metadata_path.exists():
             try:
                 with open(yt_metadata_path, 'r', encoding='utf-8') as f:
@@ -57,7 +55,6 @@ def process_dataset(data_dir, output_dir):
             except Exception:
                 pass 
 
-        # Specialties
         if derived_metadata_path.exists():
             try:
                 with open(derived_metadata_path, 'r', encoding='utf-8') as f:
@@ -68,7 +65,6 @@ def process_dataset(data_dir, output_dir):
             except Exception:
                 pass
         
-        # Conversation Stats
         if not json_path.exists():
             continue
             
@@ -83,7 +79,6 @@ def process_dataset(data_dir, output_dir):
                 conv_type_counter[conv_type] += 1
                 turns = conv.get("turns", [])
                 
-                # Track turns for BOTH types
                 if conv_type == "patient_call":
                     patient_call_turns.append(len(turns))
                 elif conv_type == "host_doctor_qa":
@@ -98,6 +93,8 @@ def process_dataset(data_dir, output_dir):
                     text = turn.get("text", "")
                     tokens = get_token_count(text)
                     
+                    # Track individual utterance length
+                    all_utterance_tokens.append(tokens)
                     conv_total_tokens += tokens
                     
                     if conv_type == "patient_call":
@@ -121,12 +118,15 @@ def process_dataset(data_dir, output_dir):
     print(f"\n--- Processed {total_parsed_videos} parsed videos successfully ---")
     pd.DataFrame(list(conv_type_counter.items()), columns=["Type", "Count"]).to_csv(out_path / "stat_conversation_types.csv", index=False)
     pd.DataFrame({'turns': patient_call_turns}).to_csv(out_path / "stat_patient_call_turns_raw.csv", index=False)
-    pd.DataFrame({'turns': qa_call_turns}).to_csv(out_path / "stat_qa_turns_raw.csv", index=False) # NEW CSV
+    pd.DataFrame({'turns': qa_call_turns}).to_csv(out_path / "stat_qa_turns_raw.csv", index=False) 
     
     turn_freq = Counter(patient_call_turns)
     pd.DataFrame(list(turn_freq.items()), columns=["Turns", "Frequency"]).sort_values("Turns").to_csv(out_path / "stat_patient_call_turns_freq.csv", index=False)
     pd.DataFrame({'duration_seconds': video_durations}).to_csv(out_path / "stat_video_durations.csv", index=False)
     pd.DataFrame({'total_tokens': total_tokens_per_conv}).to_csv(out_path / "stat_conversation_tokens.csv", index=False)
+    
+    # NEW: Export Utterance Tokens
+    pd.DataFrame({'tokens': all_utterance_tokens}).to_csv(out_path / "stat_utterance_tokens_raw.csv", index=False)
     
     if patient_vs_doctor_tokens:
         pd.DataFrame(patient_vs_doctor_tokens).to_csv(out_path / "stat_patient_vs_doctor_tokens.csv", index=False)

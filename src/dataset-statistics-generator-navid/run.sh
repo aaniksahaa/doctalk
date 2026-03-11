@@ -4,7 +4,7 @@
 set -e
 
 echo "=========================================================="
-echo " 🚀 INITIALIZING TELEMEDBN STATISTICS PIPELINE 🚀 "
+echo "  INITIALIZING TELEMEDBN STATISTICS PIPELINE "
 echo "=========================================================="
 echo ""
 
@@ -51,5 +51,5 @@ python plot_downstream_stats.py
 echo "----------------------------------------------------------"
 
 echo ""
-echo "🎉 🎉 🎉 PIPELINE COMPLETE! ALL DATA, TABLES, AND PLOTS ARE READY! 🎉 🎉 🎉"
+echo "PIPELINE COMPLETE! ALL DATA, TABLES, AND PLOTS ARE READY! "
 echo ""

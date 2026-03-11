@@ -1,11 +1,22 @@
-=== OVERALL DATASET STATISTICS ===
-                       Metric     Count
-          Total Conversations    11,789
-     Dataset Duration (Hours)    557.63
-   Total Tokens (Bangla-BERT) 1,671,210
-   Unique Medical Specialties        26
- Patient Calls Proportion (%)     12.9%
-Host-Doctor QA Proportion (%)     87.1%
+=== PAPER-STYLE COMPARISON STATS ===
+                              Metric     Value
+                         # dialogues    11,789
+                        # utterances    25,410
+                            # tokens 1,671,210
+  Avg. # of utterances in a dialogue      2.16
+Median # of utterances in a dialogue         2
+   Max # of utterances in a dialogue        14
+   Min # of utterances in a dialogue         1
+    Avg. # of tokens in an utterance      65.8
+     Max # of tokens in an utterance       418
+        Min # tokens in an utterance         2
+
+=== MACRO DATASET STATISTICS ===
+                       Metric  Count
+     Dataset Duration (Hours) 557.63
+   Unique Medical Specialties     26
+ Patient Calls Proportion (%)  12.9%
+Host-Doctor QA Proportion (%)  87.1%
 
 === PATIENT-DOCTOR CALLS ===
                     Metric           Count

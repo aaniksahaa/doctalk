@@ -14,11 +14,20 @@ def generate_core_summary(input_dir, output_dir):
     print(f"Reading core statistics from {in_p.absolute()}...")
 
     try:
-        # Load Basic CSVs
+        # --- 1. LOAD ALL CSVS ---
         df_types = pd.read_csv(in_p / "stat_conversation_types.csv")
         df_durations = pd.read_csv(in_p / "stat_video_durations.csv")
         df_tokens = pd.read_csv(in_p / "stat_conversation_tokens.csv")
 
+        f_spec = in_p / "stat_specialties.csv"
+        unique_specs = len(pd.read_csv(f_spec)) if f_spec.exists() else 0
+
+        f_turns = in_p / "stat_patient_call_turns_raw.csv"
+        f_qa_turns = in_p / "stat_qa_turns_raw.csv"
+        f_speaker = in_p / "stat_patient_vs_doctor_tokens.csv"
+        f_utt = in_p / "stat_utterance_tokens_raw.csv"
+
+        # --- 2. CALCULATE ORIGINAL MACRO STATS ---
         total_convs = df_types['Count'].sum()
         patient_calls = df_types[df_types['Type'] == 'patient_call']['Count'].values[0] if 'patient_call' in df_types['Type'].values else 0
         qa_sessions = df_types[df_types['Type'] == 'host_doctor_qa']['Count'].values[0] if 'host_doctor_qa' in df_types['Type'].values else 0
@@ -28,11 +37,7 @@ def generate_core_summary(input_dir, output_dir):
         pct_patient = (patient_calls / total_convs) * 100 if total_convs else 0
         pct_qa = (qa_sessions / total_convs) * 100 if total_convs else 0
 
-        # Load Advanced CSVs
-        f_spec = in_p / "stat_specialties.csv"
-        unique_specs = len(pd.read_csv(f_spec)) if f_spec.exists() else 0
-
-        f_turns = in_p / "stat_patient_call_turns_raw.csv"
+        # --- 3. CALCULATE GRANULAR PATIENT/QA STATS ---
         if f_turns.exists():
             df_turns = pd.read_csv(f_turns)
             total_turns = df_turns['turns'].sum()
@@ -41,7 +46,6 @@ def generate_core_summary(input_dir, output_dir):
         else:
             total_turns, avg_turns, max_turns = 0, 0, 0
 
-        f_qa_turns = in_p / "stat_qa_turns_raw.csv"
         if f_qa_turns.exists():
             df_qa_turns = pd.read_csv(f_qa_turns)
             qa_total_turns = df_qa_turns['turns'].sum()
@@ -50,7 +54,6 @@ def generate_core_summary(input_dir, output_dir):
         else:
             qa_total_turns, qa_avg_turns, qa_max_turns = 0, 0, 0
 
-        f_speaker = in_p / "stat_patient_vs_doctor_tokens.csv"
         if f_speaker.exists():
             df_speaker = pd.read_csv(f_speaker)
             total_doc = df_speaker['doctor_tokens'].sum()
@@ -60,7 +63,6 @@ def generate_core_summary(input_dir, output_dir):
         else:
             total_doc, total_pat, avg_doc, avg_pat = 0, 0, 0, 0
 
-        # Math Calculations
         total_patient_call_tokens = total_doc + total_pat
         pct_doc_tokens = (total_doc / total_patient_call_tokens) * 100 if total_patient_call_tokens else 0
         pct_pat_tokens = (total_pat / total_patient_call_tokens) * 100 if total_patient_call_tokens else 0
@@ -70,11 +72,40 @@ def generate_core_summary(input_dir, output_dir):
         avg_qa_tokens = total_qa_tokens / qa_sessions if qa_sessions > 0 else 0
         avg_tokens_per_qa_turn = total_qa_tokens / qa_total_turns if qa_total_turns else 0
 
-        # Build Dataframes
+        # --- 4. CALCULATE NEW PAPER-STYLE METRICS ---
+        all_turns = []
+        if f_turns.exists(): all_turns.extend(df_turns['turns'].tolist())
+        if f_qa_turns.exists(): all_turns.extend(df_qa_turns['turns'].tolist())
+        df_all_turns = pd.DataFrame({'turns': all_turns})
+
+        df_utt = pd.read_csv(f_utt) if f_utt.exists() else pd.DataFrame({'tokens': [0]})
+        total_utterances = len(df_utt)
+        
+        avg_utt_per_dial = df_all_turns['turns'].mean() if not df_all_turns.empty else 0
+        med_utt_per_dial = df_all_turns['turns'].median() if not df_all_turns.empty else 0
+        max_utt_per_dial = df_all_turns['turns'].max() if not df_all_turns.empty else 0
+        min_utt_per_dial = df_all_turns['turns'].min() if not df_all_turns.empty else 0
+        
+        avg_tok_per_utt = df_utt['tokens'].mean() if not df_utt.empty else 0
+        max_tok_per_utt = df_utt['tokens'].max() if not df_utt.empty else 0
+        min_tok_per_utt = df_utt['tokens'].min() if not df_utt.empty else 0
+
+        # --- 5. BUILD DATAFRAMES ---
+        df_paper_style = pd.DataFrame([
+            {"Metric": "# dialogues", "Value": f"{total_convs:,}"},
+            {"Metric": "# utterances", "Value": f"{total_utterances:,}"},
+            {"Metric": "# tokens", "Value": f"{total_tokens:,}"},
+            {"Metric": "Avg. # of utterances in a dialogue", "Value": f"{avg_utt_per_dial:.2f}"},
+            {"Metric": "Median # of utterances in a dialogue", "Value": f"{med_utt_per_dial:.0f}"},
+            {"Metric": "Max # of utterances in a dialogue", "Value": f"{max_utt_per_dial}"},
+            {"Metric": "Min # of utterances in a dialogue", "Value": f"{min_utt_per_dial}"},
+            {"Metric": "Avg. # of tokens in an utterance", "Value": f"{avg_tok_per_utt:.1f}"},
+            {"Metric": "Max # of tokens in an utterance", "Value": f"{max_tok_per_utt}"},
+            {"Metric": "Min # tokens in an utterance", "Value": f"{min_tok_per_utt}"}
+        ])
+
         df_overall = pd.DataFrame([
-            {"Metric": "Total Conversations", "Count": f"{total_convs:,}"},
             {"Metric": "Dataset Duration (Hours)", "Count": f"{total_hours:.2f}"},
-            {"Metric": "Total Tokens (Bangla-BERT)", "Count": f"{total_tokens:,}"},
             {"Metric": "Unique Medical Specialties", "Count": f"{unique_specs:,}"},
             {"Metric": "Patient Calls Proportion (%)", "Count": f"{pct_patient:.1f}%"},
             {"Metric": "Host-Doctor QA Proportion (%)", "Count": f"{pct_qa:.1f}%"}
@@ -103,9 +134,10 @@ def generate_core_summary(input_dir, output_dir):
             {"Metric": "Avg Tokens per Turn", "Count": f"{avg_tokens_per_qa_turn:.1f}"}
         ])
         
-        # Combine and Export
+        # --- 6. COMBINE AND EXPORT ---
         output_text = (
-            "=== OVERALL DATASET STATISTICS ===\n" + df_overall.to_string(index=False) + "\n\n" +
+            "=== PAPER-STYLE COMPARISON STATS ===\n" + df_paper_style.to_string(index=False) + "\n\n" +
+            "=== MACRO DATASET STATISTICS ===\n" + df_overall.to_string(index=False) + "\n\n" +
             "=== PATIENT-DOCTOR CALLS ===\n" + df_patient.to_string(index=False) + "\n\n" +
             "=== HOST-DOCTOR QA ===\n" + df_qa.to_string(index=False) + "\n"
         )
@@ -116,14 +148,16 @@ def generate_core_summary(input_dir, output_dir):
             f.write(output_text)
             
         with open(out_p / "table_core_summary.tex", "w", encoding="utf-8") as f:
-            f.write("% Overall Stats\n")
+            f.write("% Paper-Style Stats\n")
+            f.write(df_paper_style.to_latex(index=False))
+            f.write("\n% Macro Stats\n")
             f.write(df_overall.to_latex(index=False))
             f.write("\n% Patient-Doctor Calls\n")
             f.write(df_patient.to_latex(index=False))
             f.write("\n% Host-Doctor QA\n")
             f.write(df_qa.to_latex(index=False))
             
-        print(f"\n✓ Saved categorized tables (.txt and .tex) to {out_p.absolute()}")
+        print(f"\n✓ Saved all categorized tables (.txt and .tex) to {out_p.absolute()}")
         
     except Exception as e:
         print(f"Error reading CSVs: {e}")
