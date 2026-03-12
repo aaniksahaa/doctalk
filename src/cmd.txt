@@ -363,3 +363,161 @@ python infer_downstream.py \
   --model mmbert \
   --setting finetuned \
   --force-rewrite
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Triage Classification Fine-tuning  (BERT + Embedding-based)
+# ═══════════════════════════════════════════════════════════════════════
+#
+# Scripts live in: downstream-artifacts/triage/triage-finetuning/
+#   train_triage.py        — fine-tune BanglaBERT / mmBERT (sequence classification)
+#   train_triage_embed.py  — train MLP classifier on frozen multilingual embeddings
+#   infer_triage.py        — standalone triage inference (interactive / text / JSON)
+# ═══════════════════════════════════════════════════════════════════════
+
+# ---------- Install dependencies ----------
+pip install -U torch transformers datasets scikit-learn accelerate
+pip install -U sentence-transformers   # for embedding-based models
+pip install -U git+https://github.com/csebuetnlp/normalizer.git  # only for banglabert
+
+cd downstream-artifacts/triage/triage-finetuning
+
+# ─── BanglaBERT Triage (sequence classification, ~110M) ─────────────
+
+# Train — defaults (small dataset ~20 samples)
+python train_triage.py --model banglabert
+
+# Train — custom hyperparameters
+python train_triage.py --model banglabert \
+  --epochs 50 --train-batch 4 --grad-accum 2 \
+  --warmup-steps 10 --early-stopping 10 --logging-steps 5
+
+# ─── mmBERT Triage (sequence classification, ~307M) ─────────────────
+
+# Train — defaults
+python train_triage.py --model mmbert
+
+# Train — with FP16
+python train_triage.py --model mmbert --fp16
+
+# ─── Embedding + Classifier (multilingual-minilm) ───────────────────
+
+# Train — defaults (frozen embedder, only trains MLP head)
+python train_triage_embed.py --model multilingual-minilm
+
+# Train — custom hyperparameters
+python train_triage_embed.py --model multilingual-minilm \
+  --epochs 200 --lr 5e-4 --hidden-dim 256 --dropout 0.3
+
+# ─── Embedding + Classifier (multilingual-e5-small) ─────────────────
+
+python train_triage_embed.py --model multilingual-e5-small
+
+# ─── Standalone inference (all triage models) ────────────────────────
+
+# Interactive
+python infer_triage.py --model banglabert
+python infer_triage.py --model mmbert
+python infer_triage.py --model multilingual-minilm
+
+# Single text
+python infer_triage.py --model banglabert --text "রোগীর হিট স্ট্রোক, জ্বর এবং সর্দি আছে।"
+python infer_triage.py --model multilingual-minilm --text "রোগীর হিট স্ট্রোক, জ্বর এবং সর্দি আছে।"
+
+# JSON file in → JSON file out
+python infer_triage.py --model banglabert --json-input input.json --json-output preds.json
+python infer_triage.py --model multilingual-minilm --json-input input.json --json-output preds.json
+
+# ─── Unified downstream pipeline (infer_downstream.py) ──────────────
+# (run from src/, setting is always "finetuned" for local models)
+cd /home/aaniksahaa/research/doctalk/src
+
+# BERT-based triage
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model banglabert \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model mmbert \
+  --setting finetuned
+
+# Embedding-based triage
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model multilingual-minilm \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model multilingual-e5-small \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model multilingual-minilm \
+  --setting finetuned \
+  --force-rewrite
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Advice-Safety Classification Fine-tuning  (Embedding-based)
+# ═══════════════════════════════════════════════════════════════════════
+#
+# Scripts live in: downstream-artifacts/advice-safety/advice-safety-finetuning/
+#   train_advice_safety_embed.py  — train MLP on frozen (profile, rec) embedding pairs
+#   infer_advice_safety.py        — standalone inference (interactive / JSON)
+# ═══════════════════════════════════════════════════════════════════════
+
+cd downstream-artifacts/advice-safety/advice-safety-finetuning
+
+# ─── Embedding + Pair Classifier (multilingual-minilm) ──────────────
+
+# Train — defaults (each (profile, recommendation) pair is a training sample)
+python train_advice_safety_embed.py --model multilingual-minilm
+
+# Train — custom hyperparameters
+python train_advice_safety_embed.py --model multilingual-minilm \
+  --epochs 200 --lr 5e-4 --hidden-dim 256 --dropout 0.3
+
+# ─── Embedding + Pair Classifier (multilingual-e5-small) ────────────
+
+python train_advice_safety_embed.py --model multilingual-e5-small
+
+# ─── Standalone inference ────────────────────────────────────────────
+
+# JSON file (primary mode)
+python infer_advice_safety.py --model multilingual-minilm \
+  --json-input input.json --json-output preds.json
+
+# Interactive mode
+python infer_advice_safety.py --model multilingual-minilm
+
+# ─── Unified downstream pipeline (infer_downstream.py) ──────────────
+cd /home/aaniksahaa/research/doctalk/src
+
+# Embedding-based advice-safety
+python infer_downstream.py \
+  --tasks advice-safety \
+  --split test \
+  --model multilingual-minilm \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks advice-safety \
+  --split test \
+  --model multilingual-e5-small \
+  --setting finetuned
+
+python infer_downstream.py \
+  --tasks advice-safety \
+  --split test \
+  --model multilingual-minilm \
+  --setting finetuned \
+  --force-rewrite

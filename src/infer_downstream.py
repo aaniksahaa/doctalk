@@ -52,8 +52,10 @@ VALID_SPLITS = ["train", "val", "test"]
 
 # Local (non-LLM) fine-tuned models: model name → allowed tasks + forced setting
 LOCAL_MODELS = {
-    "banglabert": {"tasks": {"medical-ner"}, "setting": "finetuned"},
-    "mmbert":     {"tasks": {"medical-ner"}, "setting": "finetuned"},
+    "banglabert":            {"tasks": {"medical-ner", "triage"},           "setting": "finetuned"},
+    "mmbert":                {"tasks": {"medical-ner", "triage"},           "setting": "finetuned"},
+    "multilingual-minilm":   {"tasks": {"triage", "advice-safety"},         "setting": "finetuned"},
+    "multilingual-e5-small": {"tasks": {"triage", "advice-safety"},         "setting": "finetuned"},
 }
 
 
@@ -407,10 +409,55 @@ def save_local_model_output(
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
 
+def _load_local_predictor(task_name: str, model_name: str):
+    """Load the right local model predictor for a given task."""
+    if task_name == "medical-ner":
+        from local_ner_helper import LocalNERModel
+        return LocalNERModel(model_name)
+    elif task_name == "triage":
+        from local_triage_helper import LocalTriageModel
+        return LocalTriageModel(model_name)
+    elif task_name == "advice-safety":
+        from local_advice_safety_helper import LocalAdviceSafetyModel
+        return LocalAdviceSafetyModel(model_name)
+    else:
+        raise ValueError(
+            f"No local model support for task '{task_name}'"
+        )
+
+
+def _run_local_predict(task_name: str, predictor, inp: Dict[str, Any]) -> Dict[str, Any]:
+    """Call the predictor with the right input format for the task."""
+    if task_name == "medical-ner":
+        return predictor.predict(inp["text"])
+    elif task_name == "triage":
+        return predictor.predict(inp)
+    elif task_name == "advice-safety":
+        return predictor.predict(inp)
+    else:
+        raise ValueError(f"No local predict handler for task '{task_name}'")
+
+
+def _local_result_summary(task_name: str, output: Dict[str, Any]) -> str:
+    """One-line summary string for a local model prediction."""
+    if task_name == "medical-ner":
+        n_ents = len(output.get("entities", []))
+        return f"{n_ents} entities"
+    elif task_name == "triage":
+        return f"type={output.get('type', '?')}"
+    elif task_name == "advice-safety":
+        recs = output.get("recommendations", [])
+        labels = [r.get("label", "?") for r in recs]
+        safe = labels.count("SAFE")
+        harmful = labels.count("HARMFUL")
+        return f"{len(recs)} recs ({safe} SAFE, {harmful} HARMFUL)"
+    return "done"
+
+
 def run_local_model_task(task_name: str, args) -> None:
     """
     Run inference using a local fine-tuned model (no LLM API calls).
-    Currently supports: banglabert → medical-ner.
+    Supports: medical-ner, triage, advice-safety.
     """
     import time
 
@@ -482,10 +529,9 @@ def run_local_model_task(task_name: str, args) -> None:
         return
 
     # ── load local model (lazy import — only when needed) ──
-    print(f"  {C.DIM}Loading {model_name} model...{C.RESET}")
+    print(f"  {C.DIM}Loading {model_name} model for {task_name}...{C.RESET}")
     try:
-        from local_ner_helper import LocalNERModel
-        predictor = LocalNERModel(model_name)
+        predictor = _load_local_predictor(task_name, model_name)
     except (FileNotFoundError, ValueError) as e:
         print(f"{C.RED}{C.BOLD}Error:{C.RESET}{C.RED} {e}{C.RESET}")
         return
@@ -501,7 +547,7 @@ def run_local_model_task(task_name: str, args) -> None:
             try:
                 inp = load_sample_input(sample_dir)
                 t0 = time.time()
-                output = predictor.predict(inp["text"])
+                output = _run_local_predict(task_name, predictor, inp)
                 elapsed = time.time() - t0
                 total_time += elapsed
 
@@ -509,10 +555,10 @@ def run_local_model_task(task_name: str, args) -> None:
                     sample_dir, setting, model_name, output, elapsed,
                 )
                 total_success += 1
-                n_ents = len(output.get("entities", []))
+                summary = _local_result_summary(task_name, output)
                 print(
                     f"    {C.GREEN}✓{C.RESET} Sample {idx}: "
-                    f"{n_ents} entities ({elapsed:.3f}s)"
+                    f"{summary} ({elapsed:.3f}s)"
                 )
 
             except Exception as e:
