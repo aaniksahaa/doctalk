@@ -1,0 +1,22 @@
+{
+  "task": "advice-safety",
+  "model_type": "embedding_pair_classifier",
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_model_short": "multilingual-minilm",
+  "embedding_dim": 384,
+  "hidden_dim": 256,
+  "dropout": 0.3,
+  "num_labels": 2,
+  "label_list": [
+    "HARMFUL",
+    "SAFE"
+  ],
+  "label2id": {
+    "HARMFUL": 0,
+    "SAFE": 1
+  },
+  "id2label": {
+    "0": "HARMFUL",
+    "1": "SAFE"
+  }
+}
