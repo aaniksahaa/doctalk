@@ -9,10 +9,11 @@ and saves results back into each sample directory.
 Output structure (per sample):
   <sample_dir>/
     inference/
-      <setting>/          (e.g., zero-shot, few-shot)
+      <setting>/          (e.g., zero-shot, few-shot, cot)
         <model>/          (e.g., gemini-3-flash-preview, openai-gpt-4o-mini)
           output.json
           inference_metadata.json
+          llm_output.txt        (raw LLM response text)
 
 Usage:
   python infer_downstream.py --tasks medical-ner --split test --model gemini-3-flash-preview --setting zero-shot
@@ -24,6 +25,7 @@ Usage:
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,6 +44,7 @@ PROMPTS_DIR = Path(__file__).parent / "prompts"
 INFERENCE_SUBDIR = "inference"
 OUTPUT_FILE = "output.json"
 INFERENCE_METADATA_FILE = "inference_metadata.json"
+LLM_RAW_OUTPUT_FILE = "llm_output.txt"
 
 VALID_TASKS = ["medical-ner", "advice-safety", "advice-generation", "triage"]
 ALL_TASKS_STR = ";".join(VALID_TASKS)
@@ -158,8 +161,9 @@ def save_output(
     standard_model_name: str | None = None,
     inference_metadata: InferenceMetadata | None = None,
     batch_size: int | None = None,
+    llm_raw_output: str | None = None,
 ) -> None:
-    """Save inference output and inference metadata to the sample directory."""
+    """Save inference output, raw LLM output, and metadata to the sample directory."""
     effective_name = standard_model_name or normalize_model_name(model)
     output_dir = sample_dir / INFERENCE_SUBDIR / setting / effective_name
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -198,6 +202,63 @@ def save_output(
     with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
 
+    # Always save the raw LLM output when available
+    if llm_raw_output is not None:
+        raw_output_path = output_dir / LLM_RAW_OUTPUT_FILE
+        with open(raw_output_path, "w", encoding="utf-8") as f:
+            f.write(llm_raw_output)
+
+
+# ── CoT JSON extraction ──────────────────────────────────────────────────────
+
+def extract_json_from_cot_response(raw_text: str) -> List[Dict[str, Any]]:
+    """Extract the JSON array from a chain-of-thought response.
+
+    CoT responses contain reasoning text followed by a JSON block.
+    This function finds the last JSON code block (```json ... ```)
+    or falls back to locating the last valid JSON array in the text.
+
+    Returns:
+        Parsed list of dicts (one per sample).
+    """
+    # Strategy 1: Find the last ```json ... ``` block
+    json_blocks = re.findall(r"```json\s*\n?(.*?)```", raw_text, re.DOTALL)
+    if json_blocks:
+        raw_json = json_blocks[-1].strip()
+        result = json.loads(raw_json)
+        if isinstance(result, dict):
+            result = [result]
+        if not isinstance(result, list):
+            raise ValueError(
+                f"Expected JSON array in code block, got {type(result).__name__}"
+            )
+        return result
+
+    # Strategy 2: Find the last [...] JSON array in the text
+    last_bracket = raw_text.rfind("]")
+    if last_bracket >= 0:
+        depth = 0
+        for i in range(last_bracket, -1, -1):
+            if raw_text[i] == "]":
+                depth += 1
+            elif raw_text[i] == "[":
+                depth -= 1
+                if depth == 0:
+                    candidate = raw_text[i : last_bracket + 1]
+                    try:
+                        result = json.loads(candidate)
+                        if isinstance(result, dict):
+                            result = [result]
+                        if isinstance(result, list):
+                            return result
+                    except json.JSONDecodeError:
+                        pass
+                    break
+
+    raise ValueError(
+        "Could not extract JSON array from chain-of-thought response"
+    )
+
 
 # ── Batching ─────────────────────────────────────────────────────────────────
 
@@ -221,13 +282,17 @@ def run_inference_on_batch(
     max_retries: int = 2,
     provider: str = None,
     options: LLMOptions = None,
-) -> Tuple[List[Dict[str, Any]], InferenceMetadata]:
+    cot_mode: bool = False,
+) -> Tuple[List[Dict[str, Any]], InferenceMetadata, str]:
     """
     Send a batch of inputs to the LLM for inference.
 
     Constructs prompt by appending the JSON-encoded batch array after the
     header prompt. Uses system.md as the system prompt. Returns the parsed
-    JSON array from the LLM response.
+    JSON array from the LLM response along with the raw response text.
+
+    In CoT mode, the LLM is expected to produce reasoning text followed by
+    a JSON code block; the JSON is extracted from that mixed response.
 
     Retries up to max_retries times on parse failures.
 
@@ -239,11 +304,14 @@ def run_inference_on_batch(
         max_retries: Max retries on parse failure
         provider: LLM provider (auto-detected if None)
         options: LLM inference options (sampling params etc.)
+        cot_mode: If True, expect chain-of-thought response and extract
+            JSON from within reasoning text
 
     Returns:
-        Tuple of (results, metadata) where results is a list of output dicts
-        (one per sample, same order as input) and metadata is the
-        InferenceMetadata from the successful LLM call.
+        Tuple of (results, metadata, raw_response) where results is a list
+        of output dicts (one per sample, same order as input), metadata is
+        the InferenceMetadata from the successful LLM call, and
+        raw_response is the full unmodified LLM output text.
     """
     input_json = json.dumps(batch_inputs, ensure_ascii=False, indent=2)
     prompt = header_prompt + input_json
@@ -261,20 +329,25 @@ def run_inference_on_batch(
             )
 
             raw = response.content.strip()
+            raw_response = raw  # preserve the full raw output
 
-            # Strip markdown fences if present
-            if raw.startswith("```"):
-                lines = raw.split("\n")
-                # Remove first line (```json or ```) and last line (```)
-                start = 1
-                end = len(lines)
-                for i in range(len(lines) - 1, 0, -1):
-                    if lines[i].strip() == "```":
-                        end = i
-                        break
-                raw = "\n".join(lines[start:end])
+            if cot_mode:
+                # CoT: extract JSON from reasoning + JSON response
+                result = extract_json_from_cot_response(raw)
+            else:
+                # Standard: expect pure JSON (possibly in markdown fences)
+                if raw.startswith("```"):
+                    lines = raw.split("\n")
+                    # Remove first line (```json or ```) and last line (```)
+                    start = 1
+                    end = len(lines)
+                    for i in range(len(lines) - 1, 0, -1):
+                        if lines[i].strip() == "```":
+                            end = i
+                            break
+                    raw = "\n".join(lines[start:end])
 
-            result = json.loads(raw)
+                result = json.loads(raw)
 
             # Some models return a single object for batch of 1
             if isinstance(result, dict):
@@ -291,7 +364,7 @@ def run_inference_on_batch(
                     f"got {len(result)}"
                 )
 
-            return result, response.metadata
+            return result, response.metadata, raw_response
 
         except Exception as e:
             last_error = e
@@ -688,6 +761,9 @@ def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
     # ── load prompts ──
     system_prompt, header_prompt = load_prompts(task_name, args.setting)
 
+    # ── detect CoT mode ──
+    is_cot = args.setting == "cot"
+
     # ── discover samples ──
     all_samples = discover_samples(split_dir)
 
@@ -728,7 +804,8 @@ def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
     print(f"  {C.BOLD}Model{C.RESET}        : {C.CYAN}{args.model}{C.RESET}")
     print(f"  {C.BOLD}Model (dir){C.RESET}  : {C.CYAN}{effective_model_name}{C.RESET}")
     print(f"  {C.BOLD}Provider{C.RESET}     : {C.BLUE}{args.provider or 'auto-detect'}{C.RESET}")
-    print(f"  {C.BOLD}Setting{C.RESET}      : {C.YELLOW}{args.setting}{C.RESET}")
+    print(f"  {C.BOLD}Setting{C.RESET}      : {C.YELLOW}{args.setting}{C.RESET}"
+          f"{f' {C.MAGENTA}(chain-of-thought){C.RESET}' if is_cot else ''}")
     print(f"  {C.BOLD}Batch size{C.RESET}   : {args.batch_size}")
     print(f"  {C.BOLD}Max retries{C.RESET}  : {args.max_retries}")
     print(f"  {C.BOLD}Split dir{C.RESET}    : {C.DIM}{split_dir}{C.RESET}")
@@ -778,7 +855,7 @@ def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
 
             # Run inference
             try:
-                results, inference_meta = run_inference_on_batch(
+                results, inference_meta, raw_response = run_inference_on_batch(
                     model=args.model,
                     system_prompt=system_prompt,
                     header_prompt=header_prompt,
@@ -786,6 +863,7 @@ def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
                     max_retries=args.max_retries,
                     provider=args.provider,
                     options=llm_options,
+                    cot_mode=is_cot,
                 )
 
                 # Save individual outputs
@@ -795,6 +873,7 @@ def run_task(task_name: str, args, llm_options: LLMOptions = None) -> None:
                         standard_model_name=args.standard_model_name,
                         inference_metadata=inference_meta,
                         batch_size=len(batch_inputs),
+                        llm_raw_output=raw_response,
                     )
                     total_success += 1
 

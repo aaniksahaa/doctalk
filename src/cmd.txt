@@ -136,6 +136,30 @@ python infer_downstream.py \
   --batch-size 3 \
   --force-rewrite
 
+# Triage inference with Chain-of-Thought (CoT) setting
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting cot \
+  --batch-size 3
+
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting cot \
+  --batch-size 3 \
+  --force-rewrite
+
+python infer_downstream.py \
+  --tasks triage \
+  --split test \
+  --model gemini-2.5-flash \
+  --setting cot \
+  --batch-size 3 \
+  --first-n 10
+
 # Multiple tasks in one command (semicolon-separated)
 python infer_downstream.py \
   --tasks "medical-ner;advice-safety;triage" \
