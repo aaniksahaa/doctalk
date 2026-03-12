@@ -1,0 +1,28 @@
+{
+  "task": "triage",
+  "model_type": "embedding_classifier",
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_model_short": "multilingual-minilm",
+  "embedding_dim": 384,
+  "hidden_dim": 256,
+  "dropout": 0.3,
+  "num_labels": 4,
+  "label_list": [
+    "INVESTIGATION_OR_SPECIALIST_REFERRAL",
+    "REASSURANCE_SELF_CARE",
+    "ROUTINE_OUTPATIENT_VISIT",
+    "URGENT_EMERGENCY_CARE"
+  ],
+  "label2id": {
+    "INVESTIGATION_OR_SPECIALIST_REFERRAL": 0,
+    "REASSURANCE_SELF_CARE": 1,
+    "ROUTINE_OUTPATIENT_VISIT": 2,
+    "URGENT_EMERGENCY_CARE": 3
+  },
+  "id2label": {
+    "0": "INVESTIGATION_OR_SPECIALIST_REFERRAL",
+    "1": "REASSURANCE_SELF_CARE",
+    "2": "ROUTINE_OUTPATIENT_VISIT",
+    "3": "URGENT_EMERGENCY_CARE"
+  }
+}

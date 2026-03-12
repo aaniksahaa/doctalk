@@ -1,0 +1,51 @@
+{
+  "config": {
+    "model_short": "banglabert",
+    "hf_name": "csebuetnlp/banglabert",
+    "normalize_mode": "bangla",
+    "max_length": 512,
+    "seed": 42,
+    "lr": 3e-05,
+    "train_batch": 4,
+    "eval_batch": 8,
+    "grad_accum": 2,
+    "epochs": 50,
+    "warmup_steps": 10,
+    "early_stopping": 10,
+    "fp16": false,
+    "weight_decay": 0.01,
+    "logging_steps": 5,
+    "save_total_limit": 3,
+    "data_dir": "/home/aaniksahaa/research/doctalk/src/saved-data/downstream-datasets/triage/split",
+    "output_dir": "/home/aaniksahaa/research/doctalk/src/downstream-artifacts/triage/triage-finetuning/banglabert-output"
+  },
+  "validation": {
+    "eval_loss": 1.3639869689941406,
+    "eval_accuracy": 0.5,
+    "eval_f1_macro": 0.26666666666666666,
+    "eval_f1_weighted": 0.4,
+    "eval_precision_macro": 0.2222222222222222,
+    "eval_recall_macro": 0.3333333333333333,
+    "eval_INVESTIGATION_OR_SPECIALIST_REFERRAL_f1": 0.8,
+    "eval_REASSURANCE_SELF_CARE_f1": 0.0,
+    "eval_runtime": 0.0256,
+    "eval_samples_per_second": 156.195,
+    "eval_steps_per_second": 39.049,
+    "epoch": 11.0
+  },
+  "test": {
+    "eval_loss": 1.3884475231170654,
+    "eval_accuracy": 0.2,
+    "eval_f1_macro": 0.25,
+    "eval_f1_weighted": 0.2,
+    "eval_precision_macro": 0.25,
+    "eval_recall_macro": 0.25,
+    "eval_INVESTIGATION_OR_SPECIALIST_REFERRAL_f1": 0.0,
+    "eval_ROUTINE_OUTPATIENT_VISIT_f1": 0.0,
+    "eval_URGENT_EMERGENCY_CARE_f1": 1.0,
+    "eval_runtime": 0.0351,
+    "eval_samples_per_second": 142.448,
+    "eval_steps_per_second": 28.49,
+    "epoch": 11.0
+  }
+}
