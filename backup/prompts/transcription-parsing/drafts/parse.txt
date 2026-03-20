@@ -1,8 +1,0 @@
-Context: Understand, in Bangladesh there are TV shows in public TV channels which broadcast health related shows where expert doctors are invited and they answer questions posed by the host presenter. The host normally asks general health related queries which have community value. In addition, in some cases, the show also features real patients calling from remote areas who tell their symptoms and seek for medical advice. Often the host also clarifies their problems to the doctor in case they are less legible. We have a audio transcript of such a video in Bengali. 
-
-Your task is to parse this raw transcribed text into a strcutured JSON containing the essential elements, namely, host-doctor single turn QA and also doctor-patient multi-turn conversation. We want a JSON in the following format.
-
-[
-	{
-]
-

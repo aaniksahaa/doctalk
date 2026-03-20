@@ -1,2 +1,0 @@
-ffmpeg -i a.mp3 -acodec pcm_s16le -ac 1 -ar 16000 output.wav
-
