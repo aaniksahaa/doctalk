@@ -431,7 +431,7 @@ See [src/evaluation-pipeline/EVALUATION_METRICS.md](src/evaluation-pipeline/EVAL
 
 ---
 
-## Future
+## Future Works
 
 We are actively working on the **Advice Generation** task, where a model receives only the patient profile and generates a free-text medical recommendation. This will include LLM-as-a-judge evaluation alongside automatic metrics (BLEU, token overlap). Stay tuned for updates.
 
