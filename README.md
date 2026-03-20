@@ -437,6 +437,8 @@ We are actively working on the **Advice Generation** task, where a model receive
 
 ---
 
+
+<!--
 ## Citation
 
 If you use DocTalkBN in your research, please cite:
@@ -447,6 +449,7 @@ If you use DocTalkBN in your research, please cite:
   year    = {2025}
 }
 ```
+-->
 
 ---
 
