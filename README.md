@@ -383,7 +383,7 @@ Each processed video is stored as a JSON array of conversation exchanges. Each e
 Two exchange types are distinguished:
 
 - **`host_doctor_qa`** — a discussion between the show host and the doctor (general medical Q&A)
-- **`patient_call`** — a live phone-in or in-studio patient consultation with the doctor
+- **`patient_call`** — a live phone-in patient consultation with the doctor
 
 ```json
 [
