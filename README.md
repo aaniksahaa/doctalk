@@ -1,4 +1,4 @@
-# 💊 DocTalkBN: A Multimodal Conversational Medical Dataset in Bengali
+# 💊 DocTalkBN: DocTalkBN: A Novel Dataset of Expert Telemedicine Conversations in Bengali
 
 **DocTalkBN** is an expert-grounded, multimodal dataset of real-world doctor-patient interactions in Bengali, sourced from health programs on Bengali television and YouTube channels. It captures authentic clinical conversations across 25+ medical specialties and provides curated benchmarks for four downstream medical NLP tasks.
 
@@ -378,34 +378,34 @@ Medical specialties covered include cardiology, neurology, gastroenterology, ped
 
 ## Dataset Format
 
-Each processed video is stored as a structured JSON file:
+Each processed video is stored as a JSON array of conversation exchanges. Each exchange has a `type`, a `timestamp` marking its position in the video, and a `turns` list of speaker utterances.
+
+Two exchange types are distinguished:
+
+- **`host_doctor_qa`** — a discussion between the show host and the doctor (general medical Q&A)
+- **`patient_call`** — a live phone-in or in-studio patient consultation with the doctor
 
 ```json
-{
-  "id": "video_id",
-  "yt-source": "https://www.youtube.com/watch?v=...",
-  "date": "YYYY-MM-DD",
-  "topic_of_disease": ["cardiology", "neurology"],
-  "person_data": { "doctor_info": "..." },
-  "messages": [
-    {
-      "id": "msg_1",
-      "reply_to_id": null,
-      "sender": "interviewer",
-      "text": "...",
-      "start": 12.5,
-      "end": 24.3
-    },
-    {
-      "id": "msg_2",
-      "reply_to_id": "msg_1",
-      "sender": "doctor",
-      "text": "...",
-      "start": 25.0,
-      "end": 45.7
-    }
-  ]
-}
+[
+  {
+    "type": "host_doctor_qa",
+    "timestamp": "00:01:15.910",
+    "turns": [
+      { "speaker": "host",   "text": "মাথাব্যথা কখন সতর্কবার্তা?" },
+      { "speaker": "doctor", "text": "৯০–৯৫% ক্ষেত্রে মাথাব্যথা সাধারণ টেনশন টাইপ..." }
+    ]
+  },
+  {
+    "type": "patient_call",
+    "timestamp": "00:12:12.389",
+    "turns": [
+      { "speaker": "patient", "text": "আমার হঠাৎ হঠাৎ মাথা ব্যথা হয়, বয়স ৪৮।" },
+      { "speaker": "doctor",  "text": "আপনার অন্য কোনো সমস্যা আছে?" },
+      { "speaker": "patient", "text": "না, অন্য কোনো সমস্যা নাই।" },
+      { "speaker": "doctor",  "text": "স্থানীয় একজন ফিজিশিয়ানকে দেখান..." }
+    ]
+  }
+]
 ```
 
 ---
@@ -437,6 +437,9 @@ We are actively working on the **Advice Generation** task, where a model receive
 
 ---
 
+
+
+<!--
 ## Citation
 
 If you use DocTalkBN in your research, please cite:
@@ -447,6 +450,7 @@ If you use DocTalkBN in your research, please cite:
   year    = {2025}
 }
 ```
+-->
 
 ---
 
