@@ -1,0 +1,116 @@
+todo
+- we have yt audio download setup ready, and data links too 
+- maybe have a ui for data preparation 
+    - the ui should be like a chat-ui 
+    - at top, the video playing from youtube 
+    - then below, at left, a primary predicted annotation if possible 
+    - and at right a chat ui, where an annotator can switch role, like doctor1/2/3, patient1/2/3, interviewer, and can send message
+    - can also reply to a previous message  
+- first make list of video-id and metadata, for playlist, we need video-ids separate, maybe with some command 
+- so in a machine, download some data first with proper metadata info 
+- recruit volunteer, annotators 
+- then transcription in a fixed format - like multi turn conv format - interviewer, doctor1/2, patient1/2 
+- 
+
+
+https://rapidapi.com/ytjar/api/yt-api/playground/endpoint_7a15a536-16f8-4d81-9509-1b9e042d1592
+
+
+
+- annotation plan - 
+- focusing on a specific genre of disease 
+- concern ethical 
+- also including west bengal shows 
+- api key 
+- patient data should be anonymized 
+- 
+
+I 
+D 
+P1 
+i 
+D 
+REPLYING TO P1 - D1 
+
+AUDIO -----> MULTI-TURN (REPLY STRUCTURE) [JSON]
+
+Tasks:
+======
+
+- 
+bangla Audio to text 
+
+- two pass --> stt model, text to annoteted - local model 
+- audio - voice difference - audio freq etc - audio feature extract - clustering 
+- ollama - gpt-oss 20b 
+
+
+
+https://medinform.jmir.org/2025/1/e70940
+
+Extracting Symptoms of Complex Conditions From Online Discourse (Subreddit to Symptomatology): Lexicon-Based Approach
+Extracting Symptoms of Complex Conditions From Online Discourse (Subreddit to Symptomatology): Lexicon-Based Approach
+
+- map qa - links 
+
+JSON 
+
+{
+    id: 
+    yt-source: 
+    "date":
+    "topic_of_disease": cardio/opthalmo/osteo 
+    person_data: doctor_info  
+    duration: 
+    language: 
+    messages: [
+        {
+            "id": 
+            "reply_to_id":
+            "sender":"i / d1/d2/d3 / p1/p2/p3" 
+            "text:
+            "start":
+            "end" 
+        },
+        {
+            "id": 
+            "reply_to_id":
+            "sender": 
+            "text:
+            "start":
+            "end" 
+        },
+        {
+            "id": 
+            "reply_to_id":
+            "sender": 
+            "text:
+            "start":
+            "end" 
+        }
+    ]
+}
+
+END GOAL 
+
+- not a serious doctor - at hand but accurate doctor for somewhat minor causes, but still seeking a reliable expert grounded answer 
+- rag 
+- finetuning - qa pair - 
+- coherently multi turn conversation 
+- many shot icl 
+- generation - training 
+- reasoning model 
+
+RESULTS 
+
+- some methods comparisons 
+- llm as a judge 
+- USER STUDY 
+- 
+
+
+- maybe we can publish this annotator software as a paper too in system demo track 
+- 
+
+
+- be very CAREFUL ABOUT COPYRIGHT... ALMOST ALL THE VIDEOS HAVE COPYRIGHT NOTICE...
