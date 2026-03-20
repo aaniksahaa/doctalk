@@ -10,10 +10,6 @@ if problem --> update yt-dlp, that should work
 yt-dlp https://www.youtube.com/watch?v=OtigY6XCE7U
 
 yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=OtigY6XCE7U
-
-
-yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
-
 yt-dlp -x --audio-format mp3 https://www.youtube.com/watch?v=WO225Y4kewA
 
 # Metadata extraction

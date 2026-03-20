@@ -1,8 +1,33 @@
-# 💊 DocTalkBN: DocTalkBN: A Novel Dataset of Expert Telemedicine Conversations in Bengali
+# 💊 DocTalkBN: A Novel Dataset of Expert Telemedicine Conversations in Bengali
 
 **DocTalkBN** is an expert-grounded, multimodal dataset of real-world doctor-patient interactions in Bengali, sourced from health programs on Bengali television and YouTube channels. It captures authentic clinical conversations across 25+ medical specialties and provides curated benchmarks for four downstream medical NLP tasks.
 
 > **Language:** Bengali (Bangla) &nbsp;|&nbsp; **Domain:** Healthcare / Clinical NLP &nbsp;|&nbsp; **Platform:** Linux
+
+---
+
+## Example Dataset
+
+The `example_dataset/` directory contains a small, ready-to-use sample of the full corpus — one folder per video, each named by its YouTube video ID.
+
+```
+example_dataset/
+└── <video_id>/                                          # one entry per video (YouTube ID)
+    ├── <video_id>_yt-dlp-metadata.json                  # raw YouTube metadata (title, channel, duration, …)
+    ├── <video_id>_derived-metadata.json                 # derived fields: medical tags, specialty, etc.
+    ├── audio/
+    │   └── <video_id>_audio.mp3                         # downloaded audio
+    └── transcribed/
+        └── yt-auto/                                     # source: YouTube auto-captions
+            ├── <video_id>_transcription.srt             # raw SRT captions
+            ├── <video_id>_transcription-processed-with-timestamp.txt
+            ├── <video_id>_transcription-processed-without-timestamp.txt
+            └── parsed/
+                └── gemini-3-flash-preview/
+                    └── <video_id>_conversation.json     # structured conversation (exchanges + turns)
+```
+
+The `conversation.json` at the leaf is the core artifact — a list of exchanges (type `host_doctor_qa` or `patient_call`), each containing timestamped, speaker-labelled turns. See the [Dataset Format](#dataset-format) section for the schema.
 
 ---
 

@@ -521,3 +521,17 @@ python infer_downstream.py \
   --model multilingual-minilm \
   --setting finetuned \
   --force-rewrite
+
+
+
+# Default: top 10 videos
+python generate_example_dataset.py
+
+# Custom count
+python generate_example_dataset.py --n 5
+
+# Dry run (no audio download)
+python generate_example_dataset.py --n 10 --skip-audio
+
+# Custom paths/model
+python generate_example_dataset.py --n 10 --folder saved-data --output example_dataset --parse-model gemini-3-flash-preview
