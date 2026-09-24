@@ -28,6 +28,16 @@ python extract_tag_and_derived_metadata.py \
   --model qwen3:30b-instruct \
   --force-rewrite
 
+# audio download (idempotent; sister folder dataset/<id>/audio/)
+python download_audio.py --folder saved-data --file filtered-results.json
+python download_audio.py --only-transcribed
+python download_audio.py --first-n 5
+python download_audio.py --video-ids wRnLnfox9S8,mcJs7Gjk5hY --delay 1
+python download_audio.py --format best
+python download_audio.py --status
+python download_audio.py --dry-run --first-n 20
+python download_audio.py --video-ids wRnLnfox9S8 --force-rewrite
+
 python parse_transcriptions.py \
   --folder saved-data \
   --file filtered-results.json \
@@ -524,14 +534,14 @@ python infer_downstream.py \
 
 
 
-# Default: top 10 videos
-python generate_example_dataset.py
+# Example dataset: replica of saved-data/ (dataset/ + downstream-datasets/) for the top-N ranked videos
+python generate_example_dataset.py --list                 # ranking only
+python generate_example_dataset.py                        # top 10 -> ../example_dataset (with audio)
+python generate_example_dataset.py --n 10 --prune         # also remove non-selected / legacy folders from the output
+python generate_example_dataset.py --n 10 --skip-audio    # no audio download
+python generate_example_dataset.py --force-rewrite        # re-copy everything (existing audio kept)
+python generate_example_dataset.py --video-ids -6kjXI-GjTk,-Ekeawl8S8s   # explicit selection
+python generate_example_dataset.py --folder saved-data --output ../example_dataset --parse-model gemini-3-flash-preview
 
-# Custom count
-python generate_example_dataset.py --n 5
-
-# Dry run (no audio download)
-python generate_example_dataset.py --n 10 --skip-audio
-
-# Custom paths/model
-python generate_example_dataset.py --n 10 --folder saved-data --output example_dataset --parse-model gemini-3-flash-preview
+# audio status of the example dataset
+python download_audio.py --status --folder ../example_dataset

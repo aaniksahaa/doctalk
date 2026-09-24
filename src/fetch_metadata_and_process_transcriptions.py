@@ -100,6 +100,28 @@ def add_failure(metadata: Dict, idx: int, video_id: str, reason: str):
     })
 
 
+
+def reset_video_folder(video_folder: Path):
+    """
+    Remove a video folder's contents so it can be reprocessed from scratch,
+    but keep an existing ``audio/`` sub-folder (downloaded by download_audio.py)
+    because audio is expensive to re-fetch and independent of the transcription.
+    If there is no audio folder the whole video folder is removed, exactly as before.
+    """
+    audio_folder = video_folder / "audio"
+    if not audio_folder.is_dir():
+        shutil.rmtree(video_folder)
+        return
+    for child in video_folder.iterdir():
+        if child == audio_folder:
+            continue
+        if child.is_dir() and not child.is_symlink():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
+    print(f"  ℹ Kept existing audio folder: {audio_folder}")
+
+
 def process_video_with_retry(video_data: Dict, idx: int, dataset_path: Path, lang: str, metadata: Dict, max_retries: int = 2, force_rewrite: bool = False) -> tuple[bool, bool]:
     """
     Process a video with retry logic and exponential backoff.
@@ -144,10 +166,10 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
             return True, True  # Success, was skipped
         elif lock_file.exists() and force_rewrite:
             print(f"  ⚠ Force rewrite enabled. Deleting and reprocessing...")
-            shutil.rmtree(video_folder)
+            reset_video_folder(video_folder)
         else:
             print(f"  ⚠ Folder exists but no lock file. Deleting and reprocessing...")
-            shutil.rmtree(video_folder)
+            reset_video_folder(video_folder)
     
     # Create folder structure
     video_folder.mkdir(parents=True, exist_ok=True)
@@ -164,7 +186,7 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     if not success:
         print(f"  ✗ Failed to get metadata: {output}")
         add_failure(metadata, idx, video_id, "failed to get metadata")
-        shutil.rmtree(video_folder)
+        reset_video_folder(video_folder)
         return False, False
     
     # Save metadata
@@ -192,7 +214,7 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     if not success or not srt_temp_file.exists():
         print(f"  ✗ Failed to get subtitles: {output}")
         add_failure(metadata, idx, video_id, "failed to get srt")
-        shutil.rmtree(video_folder)
+        reset_video_folder(video_folder)
         return False, False
     
     # Rename subtitle file
@@ -223,7 +245,7 @@ def process_video(video_data: Dict, idx: int, dataset_path: Path, lang: str, met
     except Exception as e:
         print(f"  ✗ Failed to process: {str(e)}")
         add_failure(metadata, idx, video_id, "failed to process")
-        shutil.rmtree(video_folder)
+        reset_video_folder(video_folder)
         return False, False
     
     # Step 4: Create lock file

@@ -1,0 +1,9 @@
+{
+  "video_id": "-Ekeawl8S8s",
+  "model": "gemini-2.5-flash",
+  "batch_size": 3,
+  "total_patient_calls": 5,
+  "total_batches": 2,
+  "total_classified": 5,
+  "timestamp": "2026-03-08T15:03:31.300661+00:00"
+}

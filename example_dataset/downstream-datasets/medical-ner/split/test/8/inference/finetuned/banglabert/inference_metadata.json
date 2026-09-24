@@ -1,0 +1,7 @@
+{
+  "model": "banglabert",
+  "setting": "finetuned",
+  "provider": "local",
+  "inference_time_seconds": 0.0126,
+  "timestamp": "2026-03-10T09:22:11.684138+00:00"
+}

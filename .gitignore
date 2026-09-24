@@ -48,3 +48,11 @@ label_info.json
 
 
 
+
+# audio download run log (download_audio.py)
+audio-download-metadata.json
+**/audio-download-metadata.json
+
+# example_dataset/ mirrors saved-data/ and must stay tracked despite the dataset/ rules above
+!example_dataset/dataset/
+!example_dataset/downstream-datasets/

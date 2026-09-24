@@ -1,0 +1,152 @@
+{
+  "TEST_INVESTIGATION": {
+    "strict": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 1,
+      "possible": 0
+    },
+    "partial": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 1,
+      "possible": 0
+    },
+    "ent_type": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 1,
+      "possible": 0
+    },
+    "exact": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 1,
+      "possible": 0
+    }
+  },
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "partial": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "ent_type": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "exact": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 1,
+      "incorrect": 3,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 2,
+      "precision": 0.16666666666666666,
+      "recall": 0.16666666666666666,
+      "f1": 0.16666666666666666,
+      "actual": 6,
+      "possible": 6
+    },
+    "partial": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 3,
+      "missed": 2,
+      "spurious": 2,
+      "precision": 0.4166666666666667,
+      "recall": 0.4166666666666667,
+      "f1": 0.4166666666666667,
+      "actual": 6,
+      "possible": 6
+    },
+    "ent_type": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 2,
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1": 0.6666666666666666,
+      "actual": 6,
+      "possible": 6
+    },
+    "exact": {
+      "correct": 1,
+      "incorrect": 3,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 2,
+      "precision": 0.16666666666666666,
+      "recall": 0.16666666666666666,
+      "f1": 0.16666666666666666,
+      "actual": 6,
+      "possible": 6
+    }
+  }
+}

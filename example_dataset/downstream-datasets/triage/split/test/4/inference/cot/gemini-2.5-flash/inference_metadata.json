@@ -1,0 +1,18 @@
+{
+  "model": "gemini-2.5-flash",
+  "setting": "cot",
+  "provider": "google",
+  "model_id": "gemini-2.5-flash",
+  "input_tokens": 2819,
+  "output_tokens": 1412,
+  "total_tokens": 4231,
+  "input_tokens_per_sample": 939.7,
+  "output_tokens_per_sample": 470.7,
+  "total_tokens_per_sample": 1410.3,
+  "inference_time_seconds": 17.912,
+  "inference_time_per_sample_seconds": 5.971,
+  "cost_usd": 0.0,
+  "cost_usd_per_sample": 0.0,
+  "batch_size": 3,
+  "timestamp": "2026-03-12T06:04:47.482351+00:00"
+}

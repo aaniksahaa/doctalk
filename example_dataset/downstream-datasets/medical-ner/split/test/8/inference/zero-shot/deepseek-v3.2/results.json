@@ -1,0 +1,102 @@
+{
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "actual": 5,
+      "possible": 5
+    },
+    "partial": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "actual": 5,
+      "possible": 5
+    },
+    "ent_type": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "actual": 5,
+      "possible": 5
+    },
+    "exact": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "actual": 5,
+      "possible": 5
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 3,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 0
+    },
+    "partial": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 3,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 0
+    },
+    "ent_type": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 3,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 0
+    },
+    "exact": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 3,
+      "precision": 0.0,
+      "recall": 0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 0
+    }
+  }
+}

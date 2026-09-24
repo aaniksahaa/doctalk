@@ -1,0 +1,18 @@
+{
+  "model": "qwen3.5-flash",
+  "setting": "zero-shot",
+  "provider": "openrouter",
+  "model_id": "qwen/qwen3.5-flash-20260224",
+  "input_tokens": 1940,
+  "output_tokens": 12390,
+  "total_tokens": 14330,
+  "input_tokens_per_sample": 646.7,
+  "output_tokens_per_sample": 4130.0,
+  "total_tokens_per_sample": 4776.7,
+  "inference_time_seconds": 99.36,
+  "inference_time_per_sample_seconds": 33.12,
+  "cost_usd": 0.0050985,
+  "cost_usd_per_sample": 0.001699,
+  "batch_size": 3,
+  "timestamp": "2026-03-10T08:07:01.623168+00:00"
+}

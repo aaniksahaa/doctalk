@@ -1,0 +1,7 @@
+{
+  "model": "multilingual-minilm",
+  "setting": "finetuned",
+  "provider": "local",
+  "inference_time_seconds": 0.0064,
+  "timestamp": "2026-03-12T06:49:27.503762+00:00"
+}

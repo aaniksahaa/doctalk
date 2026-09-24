@@ -1,0 +1,302 @@
+[
+  {
+    "text": "ফুসফুসের যক্ষার তুলনায় মেরুদন্ডের যক্ষার প্রবণতা কেমন এবং এর বৈশিষ্ট্য কী? যক্ষা বলতেই সাধারণত ফুসফুসের যক্ষা বোঝায়, তবে মেরুদন্ডের যক্ষাকে আমরা সেকেন্ডারি টিবি বলি। ফুসফুসের যক্ষায় কাশি বা রক্ত পড়ার মতো লক্ষণ থাকলেও মেরুদন্ডের যক্ষায় ৯০-৯৫% ক্ষেত্রে প্রধান উপসর্গ হলো ব্যথা। এছাড়া ৫০% ক্ষেত্রে রোগীর প্যারালাইসিস হওয়ার ঝুঁকি থাকে। এটি শরীরের যেকোনো হাড় বা অঙ্গে হতে পারে। অনেক সময় ফুসফুসে যক্ষা না থাকলেও মেরুদন্ডে এটি হতে পারে। সাধারণত পিঠের থোরাসিক ভার্টিব্রাতে এই সমস্যা বেশি দেখা যায়।",
+    "entities": [
+      {
+        "text": "ফুসফুসের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "যক্ষা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ফুসফুসের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষাকে",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "সেকেন্ডারি টিবি",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ফুসফুসের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষায়",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "কাশি",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "রক্ত পড়ার",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষায়",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "প্যারালাইসিস",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "হাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "অঙ্গে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ফুসফুসে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মেরুদন্ডে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "পিঠের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "থোরাসিক ভার্টিব্রাতে",
+        "label": "ANATOMY_BODY_PART"
+      }
+    ]
+  },
+  {
+    "text": "মেরুদন্ডের যক্ষার উপসর্গগুলো কী কী এবং এটি নির্ণয় করা কেন কঠিন? এর প্রধান লক্ষণ হলো মেরুদন্ডে ব্যথা যা রাতের বেলা বাড়ে। এছাড়া পা ঝিনঝিন করা, অবশ হওয়া, এমনকি প্রস্রাব-পায়খানা বন্ধ হয়ে যাওয়ার মতো উপসর্গ দেখা দিতে পারে। যেহেতু সাধারণ যক্ষার মতো উচ্চ তাপমাত্রা বা কাশির উপসর্গ সবসময় থাকে না, তাই অনেক সময় রোগ নির্ণয়ে দেরি হয়। সঠিক সময়ে চিকিৎসা না হলে মেরুদন্ড বাঁকা হয়ে যাওয়া বা প্যারালাইসিসের মতো জটিলতা তৈরি হতে পারে। অনেক ক্ষেত্রে রোগীরা বুঝতে না পেরে বিভিন্ন বিভাগের চিকিৎসকের কাছে ঘুরতে থাকেন, ফলে রোগটি জটিল আকার ধারণ করে।",
+    "entities": [
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মেরুদন্ডে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "পা",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ঝিনঝিন করা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "অবশ হওয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "প্রস্রাব-পায়খানা বন্ধ হয়ে যাওয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "যক্ষার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "উচ্চ তাপমাত্রা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "কাশির",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মেরুদন্ড",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "বাঁকা হয়ে যাওয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "প্যারালাইসিসের",
+        "label": "SYMPTOM_SIGN"
+      }
+    ]
+  },
+  {
+    "text": "মেরুদন্ডের যক্ষা বা বোন টিবি নিশ্চিতভাবে নির্ণয় করার পদ্ধতি কী এবং এর ওষুধের কোর্স কতদিনের হয়? এমআরআই এবং অন্যান্য সাপোর্টিভ ইনভেস্টিগেশনের পাশাপাশি নিশ্চিত হওয়ার জন্য হিস্টোপ্যাথলজি বা টিস্যু পরীক্ষা করা হয়। চিকিৎসার জন্য দীর্ঘমেয়াদী ওষুধের প্রয়োজন হয়। আগে ১৮-২৪ মাস ওষুধ খেতে হতো, তবে বর্তমানে বিশ্বব্যাপী ১২ মাসের একটি কোর্স অনুসরণ করা হয়। এটি একটি শক্তিশালী ওষুধের কোর্স যা নিয়মিত সেবন করা জরুরি। ওষুধের টক্সিসিটি বা পার্শ্বপ্রতিক্রিয়া কমানোর জন্য এখন ওষুধের ডোজ ও সময়সীমা আরও কমানোর বিষয়ে গবেষণা চলছে।",
+    "entities": [
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "বোন টিবি",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "এমআরআই",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "সাপোর্টিভ ইনভেস্টিগেশনের",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "হিস্টোপ্যাথলজি",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "টিস্যু পরীক্ষা",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "ওষুধ",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "টক্সিসিটি",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "পার্শ্বপ্রতিক্রিয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      }
+    ]
+  },
+  {
+    "text": "অপারেশন ছাড়া মেরুদন্ডের যক্ষার চিকিৎসা এবং রোগীর জীবনযাপন কেমন হওয়া উচিত? মেরুদন্ডের যক্ষা মূলত ওষুধের মাধ্যমেই ভালো হয়, তবে প্যারালাইসিস বা স্নায়বিক জটিলতা দেখা দিলে সার্জারি প্রয়োজন হতে পারে। এই রোগটি ছোঁয়াচে নয়, তাই রোগী পরিবারের সবার সাথেই স্বাভাবিকভাবে থাকতে পারেন। রোগীকে পুষ্টিকর খাবার, বিশেষ করে মাছ-মাংস বেশি খেতে হবে। মেরুদন্ড যাতে সামনে বা পাশে বাঁকা না হয় সেজন্য আমরা 'ব্রেস' বা বিশেষ খাঁচা ব্যবহারের পরামর্শ দেই। এছাড়া কিছু ক্ষেত্রে ফিজিওথেরাপি বা ব্যায়ামের প্রয়োজন হতে পারে। সঠিক সময়ে সঠিক ডোজে ওষুধ সেবন করলে এই রোগ এখন শতভাগ নিরাময়যোগ্য।",
+    "entities": [
+      {
+        "text": "অপারেশন",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মেরুদন্ডের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "যক্ষা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ওষুধের",
+        "label": "DRUG_MEDICATION"
+      },
+      {
+        "text": "প্যারালাইসিস",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "স্নায়বিক জটিলতা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "সার্জারি",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মেরুদন্ড",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "বাঁকা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "ব্রেস",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "খাঁচা",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ফিজিওথেরাপি",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ব্যায়াম",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ওষুধ",
+        "label": "DRUG_MEDICATION"
+      }
+    ]
+  }
+]

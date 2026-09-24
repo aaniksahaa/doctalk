@@ -1,0 +1,33 @@
+{
+  "task": "triage",
+  "generator_model": "gemini-2.5-flash",
+  "total_elements": 20,
+  "source_videos": 4,
+  "train_count": 13,
+  "val_count": 3,
+  "test_count": 4,
+  "train_pct": 65.0,
+  "val_pct": 15.0,
+  "test_pct": 20.0,
+  "seed": 42,
+  "timestamp": "2026-09-24T08:25:23.052249+00:00",
+  "example_subset": {
+    "note": "Subset of saved-data/downstream-datasets restricted to the selected example videos; element numbering is preserved from the full dataset.",
+    "full_total_elements": 29,
+    "full_source_videos": 8,
+    "full_split": {
+      "train": 20,
+      "val": 4,
+      "test": 5
+    },
+    "selected_video_ids": [
+      "-Ekeawl8S8s",
+      "047c2wU31ys",
+      "-bdJJXgVlLg",
+      "09vFjkACBTY"
+    ],
+    "omitted_aggregate_files": [
+      "split/test/summary.csv"
+    ]
+  }
+}

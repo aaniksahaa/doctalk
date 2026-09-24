@@ -1,0 +1,102 @@
+{
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 3,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "actual": 4,
+      "possible": 3
+    },
+    "partial": {
+      "correct": 3,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "actual": 4,
+      "possible": 3
+    },
+    "ent_type": {
+      "correct": 3,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "actual": 4,
+      "possible": 3
+    },
+    "exact": {
+      "correct": 3,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "actual": 4,
+      "possible": 3
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 1,
+      "incorrect": 4,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 1,
+      "precision": 0.16666666666666666,
+      "recall": 0.16666666666666666,
+      "f1": 0.16666666666666666,
+      "actual": 6,
+      "possible": 6
+    },
+    "partial": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 4,
+      "missed": 1,
+      "spurious": 1,
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5,
+      "actual": 6,
+      "possible": 6
+    },
+    "ent_type": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 1,
+      "precision": 0.8333333333333334,
+      "recall": 0.8333333333333334,
+      "f1": 0.8333333333333334,
+      "actual": 6,
+      "possible": 6
+    },
+    "exact": {
+      "correct": 1,
+      "incorrect": 4,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 1,
+      "precision": 0.16666666666666666,
+      "recall": 0.16666666666666666,
+      "f1": 0.16666666666666666,
+      "actual": 6,
+      "possible": 6
+    }
+  }
+}

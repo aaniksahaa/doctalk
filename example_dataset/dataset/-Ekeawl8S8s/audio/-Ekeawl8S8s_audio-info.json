@@ -1,0 +1,19 @@
+{
+  "video_id": "-Ekeawl8S8s",
+  "file": "-Ekeawl8S8s_audio.mp3",
+  "format_requested": "mp3",
+  "audio_quality": "5",
+  "extension": "mp3",
+  "size_bytes": 22588485,
+  "downloaded_at": "2026-09-24T08:27:33+00:00",
+  "adopted_existing_file": false,
+  "yt_dlp_version": "2026.08.19",
+  "codec": "mp3",
+  "sample_rate": 48000,
+  "channels": 2,
+  "bit_rate": 69316,
+  "container": "mp3",
+  "duration_sec": 2607.0,
+  "expected_duration_sec": 2607.0,
+  "duration_mismatch": false
+}

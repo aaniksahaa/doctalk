@@ -1,0 +1,340 @@
+[
+  {
+    "text": "দীর্ঘদিন ধরে মাথা ব্যথা কিন্তু কোনো ওষুধে আরাম পাচ্ছে না, এ ধরনের সমস্যার পিছনে কারণগুলো কী? এর প্রধান কারণ হলো সারভাইক্যাল ভার্টিব্রা বা ঘাড়ের হাড়ের সমস্যা। রোগীরা প্রায়ই বলেন ওষুধ খেয়েও আরাম পাচ্ছেন না। অনেক সময় সিটি স্ক্যান বা এমআরআই রিপোর্ট নরমাল আসে, কারণ সমস্যাটি হাড়ের ভেতরে নয় বরং মাংসপেশি বা পজিশনের হতে পারে। রোগীরা অনেক সময় আতঙ্কে থাকেন যে ভেতরে টিউমার আছে কি না, কিন্তু আসলে সমস্যাটি ঘাড় থেকে মাথায় ছড়িয়ে পড়ে।",
+    "entities": [
+      {
+        "text": "মাথা ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "সারভাইক্যাল ভার্টিব্রা",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ঘাড়ের হাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "সিটি স্ক্যান",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "এমআরআই",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "হাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মাংসপেশি",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "টিউমার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ঘাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মাথায়",
+        "label": "ANATOMY_BODY_PART"
+      }
+    ]
+  },
+  {
+    "text": "সারভিকোজেনিক হেডেক বা ঘাড়জনিত মাথা ব্যথা বিষয়টি একটু বুঝিয়ে বলবেন কি? সারভিকোজেনিক হেডেক মানে হলো ব্যথা মাথায় অনুভূত হলেও এর উৎপত্তি ঘাড় বা নেক থেকে। ঘাড়ের সি-টু (C2) লেভেলে চাপ দিলে যদি ব্যথা পাওয়া যায়, তবে বোঝা যায় সমস্যাটি সেখান থেকেই আসছে। অ্যাসেসমেন্টের মাধ্যমে ট্রিগার পয়েন্ট বা মায়োফেশিয়াল রিলিজ করে এটি নির্ণয় করা হয়। এছাড়া 'ফরোয়ার্ড হেড পোশ্চার' বা সামনের দিকে ঝুঁকে থাকার কারণেও এই ব্যথা হয়। এক্ষেত্রে মাংসপেশির ইমব্যালেন্স দূর করা জরুরি।",
+    "entities": [
+      {
+        "text": "সারভিকোজেনিক হেডেক",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ঘাড়জনিত মাথা ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "সারভিকোজেনিক হেডেক",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মাথায়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ঘাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "নেক",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ঘাড়ের সি-টু (C2)",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "অ্যাসেসমেন্ট",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "ট্রিগার পয়েন্ট",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মায়োফেশিয়াল রিলিজ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ফরোয়ার্ড হেড পোশ্চার",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মাংসপেশির ইমব্যালেন্স",
+        "label": "DISEASE_CONDITION"
+      }
+    ]
+  },
+  {
+    "text": "মোবাইল ফোন বা ইন্টারনেটের অতিরিক্ত ব্যবহার কি মাথা ব্যথার কারণ হতে পারে? অবশ্যই, একে আমরা 'টেক্সট নেক' বলি। দীর্ঘক্ষণ নিচু হয়ে মোবাইল স্ক্রল করার ফলে ঘাড়ের মাংসপেশিতে টান পড়ে এবং স্নায়ুতে চাপ সৃষ্টি হয়। এর ফলে শুধু মাথা ব্যথাই নয়, বরং ঘুমের সমস্যা বা ইনসোমনিয়াও হতে পারে। এমনকি দীর্ঘক্ষণ স্ক্রল করার ফলে হাতের আঙুলের মাংসপেশিতেও ব্যথা হতে পারে।",
+    "entities": [
+      {
+        "text": "মাথা ব্যথার",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "টেক্সট নেক",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ঘাড়ের মাংসপেশিতে টান",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "স্নায়ুতে চাপ",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "মাথা ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "ঘুমের সমস্যা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "ইনসোমনিয়া",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "হাতের আঙুল",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মাংসপেশিতে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      }
+    ]
+  },
+  {
+    "text": "মাইগ্রেন বা টেনশন টাইপ হেডেকের চিকিৎসায় ফিজিওথেরাপির ভূমিকা কতটুকু? মাইগ্রেন এবং টেনশন হেডেকের জন্য ফিজিওথেরাপি অত্যন্ত কার্যকর। প্রথমে রোগীর পোশ্চার বা অঙ্গভঙ্গি অ্যাসেসমেন্ট করা হয়। পোশ্চার কারেকশন করার কয়েকদিনের মধ্যেই রোগী ভালো বোধ করতে শুরু করেন। নির্দিষ্ট কিছু আইসোমেট্রিক এক্সারসাইজ বা ঘাড়ের মাংসপেশি শক্তিশালী করার ব্যায়াম করলে মাইগ্রেনের সমস্যা থেকে মুক্তি পাওয়া সম্ভব। যেমন, মাথা সোজা রেখে হাতের বিপরীতে চাপ দেওয়ার ব্যায়ামটি বেশ কার্যকর।",
+    "entities": [
+      {
+        "text": "মাইগ্রেন",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "টেনশন টাইপ হেডেকের",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ফিজিওথেরাপির",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মাইগ্রেন",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "টেনশন হেডেকের",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "ফিজিওথেরাপি",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "পোশ্চার অ্যাসেসমেন্ট",
+        "label": "TEST_INVESTIGATION"
+      },
+      {
+        "text": "পোশ্চার কারেকশন",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "আইসোমেট্রিক এক্সারসাইজ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ঘাড়ের মাংসপেশি শক্তিশালী করার ব্যায়াম",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মাইগ্রেনের সমস্যা",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "মাথা",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "হাতের",
+        "label": "ANATOMY_BODY_PART"
+      }
+    ]
+  },
+  {
+    "text": "ঘাড়ের স্নায়ুতে চাপ বা নার্ভ কমপ্রেশন থেকে মুক্তি পেতে আপনার পরামর্শ কী? প্রধান পরামর্শ হলো পোশ্চার কেয়ার। আমি একে 'পুলিশ পোশ্চার' বলি—অর্থাৎ বুক টানটান করে সোজা হয়ে বসা। এতে ঘাড়ের ওপর অতিরিক্ত চাপ পড়ে না এবং স্নায়ুগুলো মুক্ত থাকে। প্রতি এক বা দুই ঘণ্টা অন্তর কয়েকবার সোজা হয়ে বসার অভ্যাস করলে টাইট হয়ে যাওয়া মাংসপেশিগুলো শিথিল হয় এবং ব্যথা কমে যায়। পুলিশ পোশ্চারে থাকলে শোল্ডার রাউন্ডেড হয় না এবং কাইফোসিস প্রতিরোধ করা যায়।",
+    "entities": [
+      {
+        "text": "ঘাড়ের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "স্নায়ুতে চাপ",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "নার্ভ কমপ্রেশন",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "পোশ্চার কেয়ার",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "পুলিশ পোশ্চার",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "বুক",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ঘাড়ের",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "চাপ",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "স্নায়ুগুলো",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মাংসপেশিগুলো",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "পুলিশ পোশ্চারে",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "শোল্ডার রাউন্ডেড",
+        "label": "DISEASE_CONDITION"
+      },
+      {
+        "text": "কাইফোসিস",
+        "label": "DISEASE_CONDITION"
+      }
+    ]
+  },
+  {
+    "text": "মাথা ব্যথায় তেল মালিশ বা সেঁক দেওয়ার সঠিক নিয়ম কী? মাথা ব্যথার উৎস যেহেতু ঘাড়, তাই মাথায় মালিশ না করে ঘাড়ে মালিশ করা উচিত। নারকেল তেলের সাথে রসুন গরম করে লাল করে সেই তেল ঘাড়ে মালিশ করলে ভালো ফল পাওয়া যায়। আর সেঁকের ক্ষেত্রে গরম নয়, বরং ১০ মিনিট ঠান্ডা সেঁক দিলে সাময়িক আরাম পাওয়া যায়। তবে স্থায়ী সমাধানের জন্য মায়োফেশিয়াল রিলিজ এবং পোশ্চার ঠিক করা জরুরি।",
+    "entities": [
+      {
+        "text": "মাথা ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "তেল মালিশ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "সেঁক",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মাথা ব্যথা",
+        "label": "SYMPTOM_SIGN"
+      },
+      {
+        "text": "ঘাড়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মাথায়",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মালিশ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ঘাড়ে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মালিশ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ঘাড়ে",
+        "label": "ANATOMY_BODY_PART"
+      },
+      {
+        "text": "মালিশ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "সেঁকের",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "ঠান্ডা সেঁক",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "মায়োফেশিয়াল রিলিজ",
+        "label": "TREATMENT_PROCEDURE"
+      },
+      {
+        "text": "পোশ্চার ঠিক করা",
+        "label": "TREATMENT_PROCEDURE"
+      }
+    ]
+  }
+]

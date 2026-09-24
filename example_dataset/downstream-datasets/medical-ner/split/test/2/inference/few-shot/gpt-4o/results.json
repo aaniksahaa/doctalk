@@ -1,0 +1,102 @@
+{
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "actual": 1,
+      "possible": 3
+    },
+    "partial": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "actual": 1,
+      "possible": 3
+    },
+    "ent_type": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "actual": 1,
+      "possible": 3
+    },
+    "exact": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1": 0.5,
+      "actual": 1,
+      "possible": 3
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 2,
+      "incorrect": 3,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.2857142857142857,
+      "recall": 0.3333333333333333,
+      "f1": 0.30769230769230765,
+      "actual": 7,
+      "possible": 6
+    },
+    "partial": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 3,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.5,
+      "recall": 0.5833333333333334,
+      "f1": 0.5384615384615384,
+      "actual": 7,
+      "possible": 6
+    },
+    "ent_type": {
+      "correct": 5,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.7142857142857143,
+      "recall": 0.8333333333333334,
+      "f1": 0.7692307692307692,
+      "actual": 7,
+      "possible": 6
+    },
+    "exact": {
+      "correct": 2,
+      "incorrect": 3,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.2857142857142857,
+      "recall": 0.3333333333333333,
+      "f1": 0.30769230769230765,
+      "actual": 7,
+      "possible": 6
+    }
+  }
+}

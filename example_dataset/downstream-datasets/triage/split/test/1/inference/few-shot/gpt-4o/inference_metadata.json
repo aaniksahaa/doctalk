@@ -1,0 +1,18 @@
+{
+  "model": "gpt-4o",
+  "setting": "few-shot",
+  "provider": "openai",
+  "model_id": "gpt-4o-2024-08-06",
+  "input_tokens": 1729,
+  "output_tokens": 402,
+  "total_tokens": 2131,
+  "input_tokens_per_sample": 576.3,
+  "output_tokens_per_sample": 134.0,
+  "total_tokens_per_sample": 710.3,
+  "inference_time_seconds": 4.237,
+  "inference_time_per_sample_seconds": 1.412,
+  "cost_usd": 0.0,
+  "cost_usd_per_sample": 0.0,
+  "batch_size": 3,
+  "timestamp": "2026-03-10T07:45:03.519053+00:00"
+}

@@ -1,0 +1,105 @@
+{
+  "text": "ফুসফুসের যক্ষার তুলনায় মেরুদন্ডের যক্ষার প্রবণতা কেমন এবং এর বৈশিষ্ট্য কী? যক্ষা বলতেই সাধারণত ফুসফুসের যক্ষা বোঝায়, তবে মেরুদন্ডের যক্ষাকে আমরা সেকেন্ডারি টিবি বলি। ফুসফুসের যক্ষায় কাশি বা রক্ত পড়ার মতো লক্ষণ থাকলেও মেরুদন্ডের যক্ষায় ৯০-৯৫% ক্ষেত্রে প্রধান উপসর্গ হলো ব্যথা। এছাড়া ৫০% ক্ষেত্রে রোগীর প্যারালাইসিস হওয়ার ঝুঁকি থাকে। এটি শরীরের যেকোনো হাড় বা অঙ্গে হতে পারে। অনেক সময় ফুসফুসে যক্ষা না থাকলেও মেরুদন্ডে এটি হতে পারে। সাধারণত পিঠের থোরাসিক ভার্টিব্রাতে এই সমস্যা বেশি দেখা যায়।",
+  "entities": [
+    {
+      "text": "ফুসফুসের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষার",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "মেরুদন্ডের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষার",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "যক্ষা",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ফুসফুসের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষা",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "মেরুদন্ডের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষাকে",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "সেকেন্ডারি টিবি",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ফুসফুসের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষায়",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "কাশি",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "রক্ত পড়ার",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "মেরুদন্ডের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষায়",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ব্যথা",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "প্যারালাইসিস",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "হাড়",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "অঙ্গে",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "ফুসফুসে",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "যক্ষা",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "মেরুদন্ডে",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "পিঠের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "থোরাসিক ভার্টিব্রাতে",
+      "label": "ANATOMY_BODY_PART"
+    }
+  ]
+}

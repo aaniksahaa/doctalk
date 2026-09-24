@@ -1,0 +1,42 @@
+### Patient 1
+
+The patient reports having diabetes since 2017, but is unable to control their blood sugar or lose weight.
+
+-   **Symptoms/Complaints:** Uncontrolled diabetes, difficulty losing weight.
+-   **Duration:** Diabetes for 6 years (since 2017), uncontrolled for an unspecified period.
+-   **Severity:** No acute severe symptoms are described. This appears to be a chronic management issue rather than an acute crisis.
+-   **Red flags:** No signs of diabetic ketoacidosis (DKA), hyperosmolar hyperglycemic state (HHS), severe hypoglycemia, or acute complications like vision loss, severe neuropathy, or organ damage are mentioned. The primary concern is chronic poor control.
+-   **Assessment:** This patient requires a re-evaluation of their current diabetes management plan, including medication regimen, dietary habits, and exercise. This is a common presentation for patients with chronic conditions needing adjustment to their treatment plan. It does not require emergency care or immediate specialist referral in an acute sense, but rather a structured review in an outpatient setting.
+
+**Classification:** ROUTINE_OUTPATIENT_VISIT
+
+### Patient 2
+
+The patient's 50-year-old mother, with a 15-year history of diabetes, has been severely ill for the past 15 days, unable to stand, experiencing severe dizziness, and has a fasting blood sugar of 18 mmol/L despite insulin use.
+
+-   **Symptoms/Complaints:** Severe illness (প্রচণ্ড অসুস্থ), inability to stand (দাঁড়িয়ে থাকতে পারছেন না), severe dizziness (মাথা ঘোরে খুব), extremely high fasting blood sugar (খালি পেটে সুগার ১৮ mmol/L), despite insulin use.
+-   **Duration:** Acute severe illness for the last 15 days.
+-   **Severity:** High. The patient is described as "severely ill" and "unable to stand," indicating significant systemic compromise. A fasting blood sugar of 18 mmol/L (324 mg/dL) is dangerously high and strongly suggests uncontrolled hyperglycemia, possibly leading to diabetic ketoacidosis (DKA) or hyperosmolar hyperglycemic state (HHS), both of which are medical emergencies. Severe dizziness further points to acute physiological distress.
+-   **Red flags:**
+    *   "Severely ill" and "unable to stand" for 15 days: Indicates significant clinical deterioration.
+    *   Fasting blood sugar 18 mmol/L: Critically high, immediate risk of DKA/HHS.
+    *   Severe dizziness: Could be due to dehydration, electrolyte imbalance, or other acute complications of severe hyperglycemia.
+    *   Acute worsening despite current insulin regimen.
+-   **Assessment:** This patient presents with an acute, severe diabetic emergency. The combination of prolonged severe illness, inability to stand, severe dizziness, and extremely high blood sugar necessitates immediate medical attention. She is at high risk for DKA or HHS, which require urgent hospital admission for intravenous fluids, insulin, electrolyte management, and close monitoring. Delay in care could be life-threatening.
+
+**Classification:** URGENT_EMERGENCY_CARE
+
+### Final Answer
+
+```json
+[
+  {
+    "patient_profile": "আমি পটুয়াখালী থেকে বলছি। ২০১৭ সাল থেকে আমার ডায়াবেটিস, কিন্তু আমার ওজন কমে না আর ডায়াবেটিসও কোনোভাবে নিয়ন্ত্রণ করতে পারছি না।",
+    "type": "ROUTINE_OUTPATIENT_VISIT"
+  },
+  {
+    "patient_profile": "আমার আম্মুর বয়স ৫০ বছর, ১৫ বছর ধরে ডায়াবেটিস। গত ১৫ দিন ধরে উনি প্রচণ্ড অসুস্থ, দাঁড়িয়ে থাকতে পারছেন না। ইনসুলিন (Humalog 25 Mix) সকালে ১০ ও রাতে ৬ ইউনিট নিচ্ছেন, তাও খালি পেটে সুগার ১৮ থাকে। মাথা ঘোরে খুব। উনার ওজন কেমন? উনার ওজন একটু বেশির দিকে।",
+    "type": "URGENT_EMERGENCY_CARE"
+  }
+]
+```

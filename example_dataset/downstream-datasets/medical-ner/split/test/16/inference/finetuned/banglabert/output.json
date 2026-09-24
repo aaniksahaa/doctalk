@@ -1,0 +1,85 @@
+{
+  "text": "দীর্ঘদিন ধরে মাথা ব্যথা কিন্তু কোনো ওষুধে আরাম পাচ্ছে না, এ ধরনের সমস্যার পিছনে কারণগুলো কী? এর প্রধান কারণ হলো সারভাইক্যাল ভার্টিব্রা বা ঘাড়ের হাড়ের সমস্যা। রোগীরা প্রায়ই বলেন ওষুধ খেয়েও আরাম পাচ্ছেন না। অনেক সময় সিটি স্ক্যান বা এমআরআই রিপোর্ট নরমাল আসে, কারণ সমস্যাটি হাড়ের ভেতরে নয় বরং মাংসপেশি বা পজিশনের হতে পারে। রোগীরা অনেক সময় আতঙ্কে থাকেন যে ভেতরে টিউমার আছে কি না, কিন্তু আসলে সমস্যাটি ঘাড় থেকে মাথায় ছড়িয়ে পড়ে।",
+  "entities": [
+    {
+      "text": "মাথা ব্যথা",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "সারভাই",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ক্যাল ভার্টি",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ব্রা",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ঘাড়ের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "হাড়ের",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "সমস্যা",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "সিটি",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "স্ক্যান",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "এম",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "আর",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "আই",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "হাড়ের",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মাংস",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "পেশ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ি",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "পজিশন",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "টিউমার",
+      "label": "DISEASE_CONDITION"
+    },
+    {
+      "text": "ঘাড়",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মাথায়",
+      "label": "ANATOMY_BODY_PART"
+    }
+  ]
+}

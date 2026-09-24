@@ -1,0 +1,19 @@
+{
+  "video_id": "047c2wU31ys",
+  "file": "047c2wU31ys_audio.mp3",
+  "format_requested": "mp3",
+  "audio_quality": "5",
+  "extension": "mp3",
+  "size_bytes": 13960701,
+  "downloaded_at": "2026-09-24T08:27:56+00:00",
+  "adopted_existing_file": false,
+  "yt_dlp_version": "2026.08.19",
+  "codec": "mp3",
+  "sample_rate": 48000,
+  "channels": 2,
+  "bit_rate": 74113,
+  "container": "mp3",
+  "duration_sec": 1506.96,
+  "expected_duration_sec": 1507.0,
+  "duration_mismatch": false
+}

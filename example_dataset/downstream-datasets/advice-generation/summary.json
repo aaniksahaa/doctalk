@@ -1,0 +1,33 @@
+{
+  "task": "advice-generation",
+  "generator_model": "gemini-2.5-flash",
+  "total_elements": 20,
+  "source_videos": 6,
+  "train_count": 15,
+  "val_count": 3,
+  "test_count": 2,
+  "train_pct": 75.0,
+  "val_pct": 15.0,
+  "test_pct": 10.0,
+  "seed": 42,
+  "timestamp": "2026-09-24T08:25:23.049223+00:00",
+  "example_subset": {
+    "note": "Subset of saved-data/downstream-datasets restricted to the selected example videos; element numbering is preserved from the full dataset.",
+    "full_total_elements": 23,
+    "full_source_videos": 9,
+    "full_split": {
+      "train": 16,
+      "val": 3,
+      "test": 4
+    },
+    "selected_video_ids": [
+      "-6kjXI-GjTk",
+      "-4Zy5ZWzwUI",
+      "-9PpYhYbmk0",
+      "-Ch1w8Yp9iY",
+      "-9fxflWfcs8",
+      "-2RnQZ8pTnE"
+    ],
+    "omitted_aggregate_files": []
+  }
+}

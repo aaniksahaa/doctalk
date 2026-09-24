@@ -1,0 +1,73 @@
+{
+  "text": "মেরুদন্ড বাঁকা হওয়ার চিকিৎসায় ব্যায়াম বা ফিজিওথেরাপির ভূমিকা কী এবং কখন সার্জারি প্রয়োজন হয়? আমরা কবজ এঙ্গেল (Cobb Angle) দিয়ে বাঁকা হওয়ার মাত্রা পরিমাপ করি। যদি বাঁক ২০ ডিগ্রির নিচে থাকে, তবে কোনো চিকিৎসার প্রয়োজন হয় না, শুধু পর্যবেক্ষণে রাখা হয়। ২০ থেকে ৪০ ডিগ্রি হলে ব্রেসিং বা বিশেষ সাপোর্টের মাধ্যমে চিকিৎসা করা হয় এবং কিছু ব্যায়াম করানো হয়। কিন্তু যদি বাঁক ৪০-৫০ ডিগ্রির বেশি হয়, তবে সার্জারি ছাড়া এটি ঠিক করা সম্ভব নয়।",
+  "entities": [
+    {
+      "text": "মেরুদন্ড",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "বাঁকা হওয়ার",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "চিকিৎসায়",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ব্যায়াম",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ফিজিওথেরাপি",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "সার্জারি",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "কবজ এঙ্গেল (Cobb Angle)",
+      "label": "TEST_INVESTIGATION"
+    },
+    {
+      "text": "বাঁকা হওয়ার মাত্রা পরিমাপ",
+      "label": "TEST_INVESTIGATION"
+    },
+    {
+      "text": "বাঁক",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "চিকিৎসার",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "পর্যবেক্ষণে রাখা",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ব্রেসিং",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "বিশেষ সাপোর্টের",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "চিকিৎসা",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ব্যায়াম",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "বাঁক",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "সার্জারি",
+      "label": "TREATMENT_PROCEDURE"
+    }
+  ]
+}

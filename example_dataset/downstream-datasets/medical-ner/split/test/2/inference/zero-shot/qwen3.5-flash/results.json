@@ -1,0 +1,102 @@
+{
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "partial": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "ent_type": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    },
+    "exact": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1": 0.8,
+      "actual": 2,
+      "possible": 3
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 2,
+      "incorrect": 2,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 1,
+      "precision": 0.4,
+      "recall": 0.3333333333333333,
+      "f1": 0.3636363636363636,
+      "actual": 5,
+      "possible": 6
+    },
+    "partial": {
+      "correct": 2,
+      "incorrect": 0,
+      "partial": 2,
+      "missed": 2,
+      "spurious": 1,
+      "precision": 0.6,
+      "recall": 0.5,
+      "f1": 0.5454545454545454,
+      "actual": 5,
+      "possible": 6
+    },
+    "ent_type": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 1,
+      "precision": 0.8,
+      "recall": 0.6666666666666666,
+      "f1": 0.7272727272727272,
+      "actual": 5,
+      "possible": 6
+    },
+    "exact": {
+      "correct": 2,
+      "incorrect": 2,
+      "partial": 0,
+      "missed": 2,
+      "spurious": 1,
+      "precision": 0.4,
+      "recall": 0.3333333333333333,
+      "f1": 0.3636363636363636,
+      "actual": 5,
+      "possible": 6
+    }
+  }
+}

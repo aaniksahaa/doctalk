@@ -1,0 +1,152 @@
+{
+  "DISEASE_CONDITION": {
+    "strict": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "actual": 2,
+      "possible": 1
+    },
+    "partial": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "actual": 2,
+      "possible": 1
+    },
+    "ent_type": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "actual": 2,
+      "possible": 1
+    },
+    "exact": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 0,
+      "spurious": 1,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "actual": 2,
+      "possible": 1
+    }
+  },
+  "ANATOMY_BODY_PART": {
+    "strict": {
+      "correct": 0,
+      "incorrect": 1,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 2
+    },
+    "partial": {
+      "correct": 0,
+      "incorrect": 0,
+      "partial": 1,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.16666666666666666,
+      "recall": 0.25,
+      "f1": 0.2,
+      "actual": 3,
+      "possible": 2
+    },
+    "ent_type": {
+      "correct": 1,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.3333333333333333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "actual": 3,
+      "possible": 2
+    },
+    "exact": {
+      "correct": 0,
+      "incorrect": 1,
+      "partial": 0,
+      "missed": 1,
+      "spurious": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0,
+      "actual": 3,
+      "possible": 2
+    }
+  },
+  "SYMPTOM_SIGN": {
+    "strict": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 3,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.5714285714285714,
+      "f1": 0.7272727272727273,
+      "actual": 4,
+      "possible": 7
+    },
+    "partial": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 3,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.5714285714285714,
+      "f1": 0.7272727272727273,
+      "actual": 4,
+      "possible": 7
+    },
+    "ent_type": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 3,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.5714285714285714,
+      "f1": 0.7272727272727273,
+      "actual": 4,
+      "possible": 7
+    },
+    "exact": {
+      "correct": 4,
+      "incorrect": 0,
+      "partial": 0,
+      "missed": 3,
+      "spurious": 0,
+      "precision": 1.0,
+      "recall": 0.5714285714285714,
+      "f1": 0.7272727272727273,
+      "actual": 4,
+      "possible": 7
+    }
+  }
+}

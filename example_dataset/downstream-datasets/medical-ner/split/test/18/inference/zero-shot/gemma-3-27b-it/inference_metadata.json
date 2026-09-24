@@ -1,0 +1,18 @@
+{
+  "model": "gemma-3-27b-it",
+  "setting": "zero-shot",
+  "provider": "openrouter",
+  "model_id": "google/gemma-3-27b-it",
+  "input_tokens": 955,
+  "output_tokens": 334,
+  "total_tokens": 1289,
+  "input_tokens_per_sample": 955.0,
+  "output_tokens_per_sample": 334.0,
+  "total_tokens_per_sample": 1289.0,
+  "inference_time_seconds": 4.504,
+  "inference_time_per_sample_seconds": 4.504,
+  "cost_usd": 6.47361e-05,
+  "cost_usd_per_sample": 6.5e-05,
+  "batch_size": 1,
+  "timestamp": "2026-03-10T08:13:59.956492+00:00"
+}

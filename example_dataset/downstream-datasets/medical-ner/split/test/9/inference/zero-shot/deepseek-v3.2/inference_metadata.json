@@ -1,0 +1,18 @@
+{
+  "model": "deepseek-v3.2",
+  "setting": "zero-shot",
+  "provider": "openrouter",
+  "model_id": "deepseek/deepseek-v3.2-20251201",
+  "input_tokens": 1470,
+  "output_tokens": 1230,
+  "total_tokens": 2700,
+  "input_tokens_per_sample": 490.0,
+  "output_tokens_per_sample": 410.0,
+  "total_tokens_per_sample": 900.0,
+  "inference_time_seconds": 90.075,
+  "inference_time_per_sample_seconds": 30.025,
+  "cost_usd": 0.0008328672,
+  "cost_usd_per_sample": 0.000278,
+  "batch_size": 3,
+  "timestamp": "2026-03-10T08:09:51.840874+00:00"
+}

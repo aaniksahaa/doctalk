@@ -1,0 +1,9 @@
+{
+  "video_id": "-2RnQZ8pTnE",
+  "model": "gemini-2.5-flash",
+  "batch_size": 5,
+  "total_samples": 5,
+  "total_batches": 1,
+  "total_annotations": 5,
+  "timestamp": "2026-03-08T13:18:29.609443+00:00"
+}

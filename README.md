@@ -8,28 +8,52 @@
 
 ## Example Dataset
 
-The `example_dataset/` directory contains a small, ready-to-use sample of the full corpus — one folder per video, each named by its YouTube video ID.
+The `example_dataset/` directory is a small, ready-to-use replica of the full `saved-data/`
+corpus restricted to the 10 highest-ranked videos, as if the corpus contained only those videos.
+It carries the same layout as `saved-data/` (`dataset/` and `downstream-datasets/`), so every
+script that reads `saved-data/` can be pointed at it with `--folder ../example_dataset`.
 
 ```
 example_dataset/
-└── <video_id>/                                          # one entry per video (YouTube ID)
-    ├── <video_id>_yt-dlp-metadata.json                  # raw YouTube metadata (title, channel, duration, …)
-    ├── <video_id>_derived-metadata.json                 # derived fields: medical tags, specialty, etc.
-    ├── audio/
-    │   └── <video_id>_audio.mp3                         # downloaded audio
-    └── transcribed/
-        └── yt-auto/                                     # source: YouTube auto-captions
-            ├── <video_id>_transcription.srt             # raw SRT captions
-            ├── <video_id>_transcription-processed-with-timestamp.txt
-            ├── <video_id>_transcription-processed-without-timestamp.txt
-            └── parsed/
-                └── gemini-3-flash-preview/
-                    └── <video_id>_conversation.json     # structured conversation (exchanges + turns)
+├── filtered-results.json                                # input entries of the selected videos only
+├── example-selection.json                               # ranking, per-video statistics, score formula
+├── dataset/
+│   └── <video_id>/                                      # full copy of saved-data/dataset/<video_id>/
+│       ├── <video_id>_yt-dlp-metadata.json              # raw YouTube metadata (title, channel, duration, …)
+│       ├── <video_id>_derived-metadata.json             # derived fields: medical tags, specialty, etc.
+│       ├── audio/
+│       │   ├── <video_id>_audio.mp3                     # downloaded audio (see download_audio.py)
+│       │   └── <video_id>_audio-info.json               # format, size, duration
+│       └── transcribed/
+│           └── yt-auto/                                 # source: YouTube auto-captions
+│               ├── <video_id>_transcription.srt
+│               ├── <video_id>_transcription-processed-with-timestamp.txt
+│               ├── <video_id>_transcription-processed-without-timestamp.txt
+│               └── parsed/
+│                   └── gemini-3-flash-preview/
+│                       ├── <video_id>_conversation.json # structured conversation (exchanges + turns)
+│                       └── downstream/<task>/<model>/   # per-video downstream generation outputs
+└── downstream-datasets/
+    └── <task>/                                          # medical-ner, advice-safety, advice-generation, triage
+        ├── summary.json                                 # recomputed for the subset
+        ├── all/<idx>/                                   # metadata.json, input.json, ground_truth.json
+        └── split/{train,val,test}/<idx>/                # only elements whose origin video is selected;
+                                                         # numbering preserved from the full dataset
 ```
 
 The `conversation.json` at the leaf is the core artifact — a list of exchanges (type `host_doctor_qa` or `patient_call`), each containing timestamped, speaker-labelled turns. See the [Dataset Format](#dataset-format) section for the schema.
 
----
+Videos are ranked by `generate_example_dataset.py` using the downstream elements linked to them
+(via `origin_video_id` in the element metadata), their test-split elements (which carry inference
+results), patient calls, host-doctor exchanges and duration; the exact formula and every
+per-video statistic are stored in `example-selection.json`.
+
+```bash
+cd src/
+python generate_example_dataset.py --list            # show the ranking only
+python generate_example_dataset.py --n 10 --prune    # rebuild ../example_dataset for the top 10 (+ audio)
+python generate_example_dataset.py --skip-audio      # without audio download
+```
 
 ## Overview
 
@@ -63,6 +87,7 @@ doctalk/
 │   ├── search_yt_videos_*.py       # YouTube video search & scraping
 │   ├── filter_healthcare_data.py   # LLM-based healthcare video filtering
 │   ├── fetch_metadata_and_process_transcriptions.py
+│   ├── download_audio.py           # Idempotent audio download into dataset/<id>/audio/
 │   ├── extract_tag_and_derived_metadata.py
 │   ├── parse_transcriptions.py     # SRT/VTT → structured conversations
 │   ├── generate_medical_ner_dataset.py
@@ -95,7 +120,7 @@ doctalk/
 ## Prerequisites
 
 ```bash
-pip install -U yt-dlp
+pip install -U yt-dlp   # keep it current: an outdated yt-dlp (or one without a JS runtime such as deno/node) yields HTTP 403 on audio downloads
 pip install -U torch transformers datasets evaluate seqeval accelerate
 pip install -U sentence-transformers
 pip install -U scikit-learn
@@ -147,6 +172,41 @@ python extract_tag_and_derived_metadata.py \
   --file filtered-results.json \
   --model qwen3:30b-instruct
 ```
+
+### Step 3b — Audio Download (optional, multimodal layer)
+
+Downloads the audio track of each video into `dataset/<video_id>/audio/`, a sister of the
+`transcribed/` folder. The step is additive and idempotent: a video is considered done when
+both `audio/.audio.lock` and the audio file exist, so re-running only fetches what is missing.
+Interrupted downloads are resumed by yt-dlp; failed videos have no lock file and are retried
+on the next run. Failures are logged to `saved-data/audio-download-metadata.json`.
+
+```bash
+# All videos in filtered-results.json (mp3, yt-dlp default quality)
+python download_audio.py --folder saved-data --file filtered-results.json
+
+# Only videos whose transcription step completed (dataset/<id>/.lock exists)
+python download_audio.py --only-transcribed
+
+# A handful of videos, or explicit IDs
+python download_audio.py --first-n 5
+python download_audio.py --video-ids wRnLnfox9S8,mcJs7Gjk5hY
+
+# Other containers / quality; 'best' keeps the source codec (usually opus) without re-encoding
+python download_audio.py --format m4a --audio-quality 0
+python download_audio.py --format best
+
+# See what is downloaded / pending without downloading anything
+python download_audio.py --status
+python download_audio.py --dry-run --first-n 20
+
+# Re-download from scratch
+python download_audio.py --video-ids wRnLnfox9S8 --force-rewrite
+```
+
+`fetch_metadata_and_process_transcriptions.py` keeps an existing `audio/` folder when it
+resets a video folder (for `--force-rewrite` or a failed retry), so audio never has to be
+fetched twice.
 
 ### Step 4 — Transcription Parsing (SRT → Structured Conversations)
 

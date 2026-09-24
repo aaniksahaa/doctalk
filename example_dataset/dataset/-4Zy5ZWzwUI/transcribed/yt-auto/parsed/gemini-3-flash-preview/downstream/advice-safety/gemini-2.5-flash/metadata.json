@@ -1,0 +1,10 @@
+{
+  "video_id": "-4Zy5ZWzwUI",
+  "model": "gemini-2.5-flash",
+  "batch_size": 3,
+  "total_conversations": 8,
+  "total_batches": 3,
+  "total_profiles": 8,
+  "total_recommendations": 11,
+  "timestamp": "2026-03-08T16:26:22.266577+00:00"
+}

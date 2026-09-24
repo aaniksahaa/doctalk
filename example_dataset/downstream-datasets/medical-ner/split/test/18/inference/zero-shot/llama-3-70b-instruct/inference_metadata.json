@@ -1,0 +1,18 @@
+{
+  "model": "llama-3-70b-instruct",
+  "setting": "zero-shot",
+  "provider": "openrouter",
+  "model_id": "meta-llama/llama-3-70b-instruct",
+  "input_tokens": 1491,
+  "output_tokens": 692,
+  "total_tokens": 2183,
+  "input_tokens_per_sample": 1491.0,
+  "output_tokens_per_sample": 692.0,
+  "total_tokens_per_sample": 2183.0,
+  "inference_time_seconds": 28.907,
+  "inference_time_per_sample_seconds": 28.907,
+  "cost_usd": 0.0012597651,
+  "cost_usd_per_sample": 0.00126,
+  "batch_size": 1,
+  "timestamp": "2026-03-10T08:03:37.872462+00:00"
+}

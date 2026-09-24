@@ -1,0 +1,35 @@
+{
+  "task": "medical-ner",
+  "generator_model": "gemini-2.5-flash",
+  "total_elements": 35,
+  "source_videos": 6,
+  "train_count": 24,
+  "val_count": 5,
+  "test_count": 6,
+  "train_pct": 68.6,
+  "val_pct": 14.3,
+  "test_pct": 17.1,
+  "seed": 42,
+  "timestamp": "2026-09-24T08:25:23.051430+00:00",
+  "example_subset": {
+    "note": "Subset of saved-data/downstream-datasets restricted to the selected example videos; element numbering is preserved from the full dataset.",
+    "full_total_elements": 38,
+    "full_source_videos": 9,
+    "full_split": {
+      "train": 26,
+      "val": 5,
+      "test": 7
+    },
+    "selected_video_ids": [
+      "-6kjXI-GjTk",
+      "-4Zy5ZWzwUI",
+      "-9PpYhYbmk0",
+      "-Ch1w8Yp9iY",
+      "-9fxflWfcs8",
+      "-2RnQZ8pTnE"
+    ],
+    "omitted_aggregate_files": [
+      "split/test/aggregated_results.json"
+    ]
+  }
+}

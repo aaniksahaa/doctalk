@@ -1,0 +1,55 @@
+### Patient 1
+
+The patient reports severe back and kidney-area pain, along with burning urination. They have a confirmed diagnosis of kidney stones. A crucial piece of information is that their urine flow is normal, ruling out acute obstruction.
+
+-   **Key Symptoms/Complaints:** Severe back/kidney pain (কোমরে এবং কিডনির অবস্থানে প্রচুর ব্যথা), burning urination (প্রস্রাবে জ্বালাপোড়া).
+-   **Existing Diagnosis:** Kidney stones (কিডনিতে পাথর) confirmed by prior testing.
+-   **Important Finding:** Urinary flow is normal (আগের মতো স্বাভাবিক গতিতেই বের হয়) — this indicates no acute, complete obstruction, which would be an immediate emergency.
+-   **Severity/Duration/Progression:** "প্রচুর ব্যথা" indicates significant pain. Burning urination suggests possible infection or irritation.
+-   **Red Flags:** While severe pain and burning urination are concerning, the absence of acute obstruction (normal urine flow) prevents it from being an immediate life-threatening emergency. However, a known kidney stone causing such symptoms requires specialized management.
+-   **Assessment:** The patient needs a urological specialist referral for comprehensive evaluation of the kidney stone (size, location, impact on kidney function) and to formulate a definitive management plan (e.g., medical expulsive therapy, lithotripsy, or surgery). They also need evaluation for urinary tract infection. This goes beyond what a general practitioner can manage in a routine visit and certainly isn't self-care.
+
+**Classification:** INVESTIGATION_OR_SPECIALIST_REFERRAL
+
+### Patient 2
+
+The patient has a history of chronic kidney disease (CKD) since 2019, with significantly elevated creatinine levels (4.8, later 3). They also have a history of surgically managed urinary tract infections. They are currently on medication.
+
+-   **Key Symptoms/Complaints:** Chronic kidney problems (কিডনি সমস্যায় ভুগছি) since 2019.
+-   **History/Diagnosis:** No diabetes. History of UTI with surgical intervention. Elevated creatinine levels (4.8, then 3), indicating advanced CKD. Currently on medication.
+-   **Severity/Duration/Progression:** This is a chronic, severe condition. Creatinine levels of 3-4.8 are indicative of significant kidney impairment, likely CKD Stage 4 or 5.
+-   **Red Flags:** Significantly elevated creatinine is a major concern. History of UTI requiring surgery suggests underlying structural or recurrent issues contributing to CKD progression.
+-   **Assessment:** The patient has established advanced chronic kidney disease. While their creatinine has improved from its peak, a level of 3 is still high and requires ongoing, specialized nephrological management. This includes regular monitoring of kidney function, blood pressure, electrolytes, and assessment for complications of CKD. They need continuous care from a nephrologist to manage their condition, slow progression, and potentially prepare for future renal replacement therapy. This is not a situation for self-care or a routine GP visit. There are no signs of acute, life-threatening deterioration described that would warrant emergency care.
+
+**Classification:** INVESTIGATION_OR_SPECIALIST_REFERRAL
+
+### Patient 3
+
+The patient has a significant cardiac history (stents, bypass surgery) and was recently hospitalized for pulmonary edema (fluid in the lungs) during Ramadan, which was treated. They are now experiencing intermittent shortness of breath and are asking if they can use an inhaler. They are a non-smoker and state the shortness of breath is a new problem.
+
+-   **Key Symptoms/Complaints:** Intermittent shortness of breath (মাঝে মাঝে শ্বাসকষ্ট হয়).
+-   **History/Diagnosis:** Extensive cardiac history: coronary artery disease with stent placement (হার্টে রিং পরানো হয়েছে) and bypass surgery (বাইপাস সার্জারি হয়েছে). Recent hospitalization (last Ramadan) for pulmonary edema (ফুসফুসে পানি জমেছে) requiring treatment. Non-smoker.
+-   **Severity/Duration/Progression:** The shortness of breath is recurrent and occurs in the context of severe underlying heart disease and recent heart failure (pulmonary edema). The patient's query about an inhaler suggests they are seeking symptomatic relief, but the underlying cause needs immediate investigation.
+-   **Red Flags:** The combination of severe cardiac history, recent heart failure exacerbation (pulmonary edema), and ongoing recurrent shortness of breath is highly concerning for worsening or recurrent heart failure. Shortness of breath in this patient must be considered cardiac in origin until proven otherwise. Using an inhaler without a proper diagnosis could mask symptoms or be ineffective, potentially delaying critical cardiac care.
+-   **Assessment:** Given the patient's complex cardiac history and recent hospitalization for pulmonary edema, any recurrence of shortness of breath warrants an urgent cardiac evaluation. This is crucial to rule out acute cardiac decompensation, optimize heart failure management, and determine the appropriate treatment. Delaying care could lead to significant deterioration. This requires prompt assessment, possibly in an emergency setting or an urgent cardiology clinic visit.
+
+**Classification:** URGENT_EMERGENCY_CARE
+
+### Final Answer
+
+```json
+[
+  {
+    "patient_profile": "আমার কোমরে এবং কিডনির অবস্থানে প্রচুর ব্যথা হয়। প্রস্রাবেও জ্বালাপোড়া আছে। রংপুরে পরীক্ষা করিয়েছিলাম, সেখানে কিডনিতে পাথর ধরা পড়েছে। এখন আমি কী করতে পারি? আপনার প্রস্রাবের গতিবেগ কেমন? প্রস্রাব কি আগের মতো স্বাভাবিক গতিতে বের হয় নাকি ধীর গতিতে? আগের মতো স্বাভাবিক গতিতেই বের হয়।",
+    "type": "INVESTIGATION_OR_SPECIALIST_REFERRAL"
+  },
+  {
+    "patient_profile": "আমি ২০১৯ সাল থেকে কিডনি সমস্যায় ভুগছি। আমার ডায়াবেটিস নেই, তবে আগে প্রস্রাবে ইনফেকশন ছিল যা অপারেশন করা হয়েছে। আমি নিয়মিত ওষুধ খাচ্ছি। আপনার কিডনি ক্রিয়েটিনিন লেভেল কত ছিল? ২০১৯ সালে ৪.৮ ছিল, পরে ৩-এ নেমেছিল। এখন শুধু ওষুধ খাচ্ছি।",
+    "type": "INVESTIGATION_OR_SPECIALIST_REFERRAL"
+  },
+  {
+    "patient_profile": "আমার হার্টে রিং পরানো হয়েছে এবং বাইপাস সার্জারি হয়েছে। গত রমজানে শ্বাসকষ্ট হওয়ায় হাসপাতালে ভর্তি হয়েছিলাম, ডাক্তার বলেছিলেন ফুসফুসে পানি জমেছে। ইনজেকশন দিয়ে পানি বের করা হয়েছে। এখন মাঝে মাঝে শ্বাসকষ্ট হয়, আমি কি ইনহেলার নিতে পারব? আপনি কি ধূমপান করেন? আপনার কি আগে থেকে হাঁপানির কোনো পারিবারিক ইতিহাস আছে? আমি ধূমপান করি না, তবে শ্বাসকষ্টের সমস্যাটি নতুন করে দেখা দিচ্ছে।",
+    "type": "URGENT_EMERGENCY_CARE"
+  }
+]
+```

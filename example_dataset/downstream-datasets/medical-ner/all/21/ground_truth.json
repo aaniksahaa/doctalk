@@ -1,0 +1,65 @@
+{
+  "text": "মাথা ব্যথায় তেল মালিশ বা সেঁক দেওয়ার সঠিক নিয়ম কী? মাথা ব্যথার উৎস যেহেতু ঘাড়, তাই মাথায় মালিশ না করে ঘাড়ে মালিশ করা উচিত। নারকেল তেলের সাথে রসুন গরম করে লাল করে সেই তেল ঘাড়ে মালিশ করলে ভালো ফল পাওয়া যায়। আর সেঁকের ক্ষেত্রে গরম নয়, বরং ১০ মিনিট ঠান্ডা সেঁক দিলে সাময়িক আরাম পাওয়া যায়। তবে স্থায়ী সমাধানের জন্য মায়োফেশিয়াল রিলিজ এবং পোশ্চার ঠিক করা জরুরি।",
+  "entities": [
+    {
+      "text": "মাথা ব্যথা",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "তেল মালিশ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "সেঁক",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "মাথা ব্যথা",
+      "label": "SYMPTOM_SIGN"
+    },
+    {
+      "text": "ঘাড়",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মাথায়",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মালিশ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ঘাড়ে",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মালিশ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ঘাড়ে",
+      "label": "ANATOMY_BODY_PART"
+    },
+    {
+      "text": "মালিশ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "সেঁকের",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "ঠান্ডা সেঁক",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "মায়োফেশিয়াল রিলিজ",
+      "label": "TREATMENT_PROCEDURE"
+    },
+    {
+      "text": "পোশ্চার ঠিক করা",
+      "label": "TREATMENT_PROCEDURE"
+    }
+  ]
+}
