@@ -1,0 +1,3 @@
+we may do everything on the small replica in example_dataset/ folder which is a univrse on its own 10 videos.
+
+the tasks are doing ASR and particularly judging medical ASR, and also porting the textual downstream datasets to audio or multimodal, the only challenge seems to be accurate cropping of audios corresponding to text chunks 
